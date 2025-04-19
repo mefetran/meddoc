@@ -4,13 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import mefetran.dgusev.meddocs.ui.navigation.Routes
+import mefetran.dgusev.meddocs.ui.screen.home.HomeScreen
+import mefetran.dgusev.meddocs.ui.screen.login.LoginScreen
+import mefetran.dgusev.meddocs.ui.screen.registration.RegistrationScreen
+import mefetran.dgusev.meddocs.ui.screen.settings.SettingsScreen
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +20,54 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MeddocsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = rememberNavController()
+
+                NavHost(navController = navController, startDestination = Routes.Login) {
+                    composable<Routes.Login> {
+                        LoginScreen(
+                            navigateToHomeScreen = {
+                                navController.navigate(Routes.Home) {
+                                    popUpTo<Routes.Login> { inclusive = true }
+                                }
+                            },
+                            navigateToRegistrationScreen = {
+                                navController.navigate(Routes.Registration)
+                            }
+                        )
+                    }
+
+                    composable<Routes.Home> {
+                        HomeScreen(
+                            navigateToSettingsScreen = {
+                                navController.navigate(Routes.Settings)
+                            },
+                            navigateToLoginScreen = {
+                                navController.navigate(Routes.Login) {
+                                    popUpTo<Routes.Home> { inclusive = true }
+                                }
+                            }
+                        )
+                    }
+
+                    composable<Routes.Settings> {
+                        SettingsScreen(
+                            navigateToHomeScreen = {
+                                navController.popBackStack(Routes.Home, inclusive = false)
+                            }
+                        )
+                    }
+
+                    composable<Routes.Registration> {
+                        RegistrationScreen(
+                            navigateToHomeScreen = {
+                                navController.navigate(Routes.Home) {
+                                    popUpTo<Routes.Login> { inclusive = true }
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MeddocsTheme {
-        Greeting("Android")
     }
 }

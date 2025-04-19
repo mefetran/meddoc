@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.hilt.android)
     kotlin("kapt")
     id("realm-android")
 }
@@ -15,7 +18,7 @@ android {
         minSdk = 28
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -30,11 +33,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -42,6 +45,17 @@ android {
 }
 
 dependencies {
+    // Google Font Provider
+    implementation(libs.androidx.compose.ui.google.fonts)
+
+    // Jetpack Navigation
+    implementation(libs.androidx.navigation)
+    androidTestImplementation(libs.androidx.navigation.testing)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
     // Lifecycle
     kapt(libs.androidx.lifecycle.compiler)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
