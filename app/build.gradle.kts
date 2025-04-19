@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.protobuf)
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.hilt.android)
     kotlin("kapt")
@@ -44,7 +45,28 @@ android {
     }
 }
 
+
+protobuf {
+    protoc {
+        artifact = libs.google.protobuf.protoc.get().toString()
+    }
+
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                maybeCreate("java").apply {
+                    option("lite")
+                }
+            }
+        }
+    }
+}
+
 dependencies {
+
+    // KotlinX coroutines
+    implementation(libs.org.jetbrains.kotlinx.coroutines)
+
     // Google Font Provider
     implementation(libs.androidx.compose.ui.google.fonts)
 
@@ -69,6 +91,9 @@ dependencies {
 
     // Datastore
     implementation(libs.androidx.datastore)
+
+    // Protobuf Google
+    implementation(libs.google.protobuf.javalite)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

@@ -15,6 +15,9 @@ datastore = "1.1.4"
 hilt = "2.56.1"
 ksp = "2.0.21-1.0.28"
 navigation = "2.8.9"
+kotlinxCoroutines = "1.10.1"
+protobufPlugin = "0.9.5"
+protobuf = "4.28.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,7 +59,14 @@ androidx-navigation = { group = "androidx.navigation", name = "navigation-compos
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigation" }
 
 # Google Font Provider
-androidx-compose-ui-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "compose"}
+androidx-compose-ui-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "compose" }
+
+# KotlinX coroutines
+org-jetbrains-kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+
+# Protobuf Google
+google-protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "protobuf" }
+google-protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -67,3 +77,6 @@ google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 # Hilt plugin
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
+# Protobuf plugin
+google-protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
