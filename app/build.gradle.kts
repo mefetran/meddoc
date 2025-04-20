@@ -63,6 +63,8 @@ protobuf {
 }
 
 dependencies {
+    // KotlinX serialization
+    implementation(libs.org.jetbrains.kotlinx.serialization.json)
 
     // KotlinX coroutines
     implementation(libs.org.jetbrains.kotlinx.coroutines)
@@ -86,8 +88,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
 
     // Ktor
-    implementation(libs.ktor.client.core)
+    implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.serialization)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.serialization.kotlinx.json)
 
     // Datastore
     implementation(libs.androidx.datastore)
