@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_button">Войти</string>
+    <string name="sign_up_button">Зарегистрироваться</string>
+    <string name="password_label">Пароль</string>
+    <string name="welcome_title">Добро пожаловать в Meddocs!</string>
+    <string name="sign_in_hint">Войдите, чтобы продолжить</string>
+    <string name="sign_up_hint">Впервые у нас? Создайте аккаунт</string>
+    <string name="error_invalid_email">Пожалуйста, введите корректный адрес электронной почты</string>
+    <string name="error_empty_password">Пожалуйста, введите пароль</string>
+</resources>

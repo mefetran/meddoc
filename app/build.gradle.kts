@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "mefetran.dgusev.meddocs"
-        minSdk = 28
+        minSdk = 29
         targetSdk = 35
         versionCode = 1
         versionName = "0.0.1"
@@ -78,6 +78,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
 
     // Lifecycle
@@ -108,6 +109,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

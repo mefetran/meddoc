@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">Meddocs</string>
+    <string name="app_name" translatable="false">Meddocs</string>
+    <string name="sign_in_button">Sign In</string>
+    <string name="sign_up_button">Sign Up</string>
+    <string name="email_label" translatable="false">Email</string>
+    <string name="password_label">Password</string>
+    <string name="welcome_title">Welcome to Meddocs!</string>
+    <string name="sign_in_hint">Sign in to continue</string>
+    <string name="sign_up_hint">New here? Create an account</string>
+    <string name="error_invalid_email">Please enter a valid email address</string>
+    <string name="error_empty_password">Please enter your password</string>
 </resources>
