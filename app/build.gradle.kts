@@ -63,6 +63,9 @@ protobuf {
 }
 
 dependencies {
+    // SplashScreen
+    implementation(libs.androidx.core.splashscreen)
+
     // KotlinX serialization
     implementation(libs.org.jetbrains.kotlinx.serialization.json)
 

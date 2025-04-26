@@ -9,4 +9,9 @@
     <string name="sign_up_hint">New here? Create an account</string>
     <string name="error_invalid_email">Please enter a valid email address</string>
     <string name="error_empty_password">Please enter your password</string>
+    <string name="name_label">Name</string>
+    <string name="create_account_button">Create Account</string>
+    <string name="error_short_password">Password must be at least 8 characters</string>
+    <string name="optional_label">optional</string>
+    <string name="sign_up_title">Sign Up</string>
 </resources>

@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -37,12 +38,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
-import mefetran.dgusev.meddocs.ui.screen.login.model.LoginState
+import mefetran.dgusev.meddocs.ui.screen.login.model.SignInState
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 
 @Composable
-fun LoginScreen(
-    state: LoginState,
+fun SignInScreen(
+    state: SignInState,
     emailValue: TextFieldValue,
     passwordValue: TextFieldValue,
     modifier: Modifier = Modifier,
@@ -79,7 +80,20 @@ fun LoginScreen(
             Spacer(Modifier.height(16.dp))
             OutlinedTextField(
                 value = emailValue,
-                onValueChange = onNewEmailValue,
+                onValueChange = { newValue ->
+                    val text = newValue.text.trim().replace(" ", "")
+                    val isPasting = newValue.text.length > emailValue.text.length + 1
+                    val newTextFieldValue = if (isPasting) {
+                        TextFieldValue(
+                            text = text,
+                            selection = TextRange(text.length)
+                        )
+                    } else {
+                        newValue.copy(text)
+                    }
+
+                    onNewEmailValue(newTextFieldValue)
+                },
                 modifier = Modifier
                     .align(Alignment.Start)
                     .fillMaxWidth(),
@@ -105,7 +119,20 @@ fun LoginScreen(
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
                 value = passwordValue,
-                onValueChange = onNewPasswordValue,
+                onValueChange = { newValue ->
+                    val text = newValue.text.trim().replace(" ", "")
+                    val isPasting = newValue.text.length > emailValue.text.length + 1
+                    val newTextFieldValue = if (isPasting) {
+                        TextFieldValue(
+                            text = text,
+                            selection = TextRange(text.length)
+                        )
+                    } else {
+                        newValue.copy(text)
+                    }
+
+                    onNewPasswordValue(newTextFieldValue)
+                },
                 modifier = Modifier
                     .align(Alignment.Start)
                     .fillMaxWidth(),
@@ -115,7 +142,7 @@ fun LoginScreen(
                     )
                 },
                 supportingText = {
-                    if (state.isPasswordError) {
+                    if (state.isPasswordEmptyError) {
                         Text(
                             text = stringResource(id = R.string.error_empty_password)
                         )
@@ -139,7 +166,7 @@ fun LoginScreen(
                     }
                 },
                 singleLine = true,
-                isError = state.isPasswordError,
+                isError = state.isPasswordEmptyError,
             )
             Spacer(Modifier.height(16.dp))
             Button(
@@ -155,9 +182,9 @@ fun LoginScreen(
             Text(
                 text = stringResource(id = R.string.sign_up_hint),
                 style = MaterialTheme.typography.labelLarge,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 8.dp)
             )
-            Spacer(Modifier.height(8.dp))
             Button(
                 onClick = navigateToRegistrationScreen,
                 modifier = Modifier.height(48.dp),
@@ -173,13 +200,13 @@ fun LoginScreen(
 
 @Preview(showBackground = true, locale = "ru")
 @Composable
-fun LoginScreenPreview(modifier: Modifier = Modifier) {
+fun SignInScreenPreview(modifier: Modifier = Modifier) {
     val emailValue by remember { mutableStateOf(TextFieldValue("")) }
     val passwordValue by remember { mutableStateOf(TextFieldValue("")) }
 
     MeddocsTheme {
-        LoginScreen(
-            state = LoginState(isEmailError = true, isPasswordError = true),
+        SignInScreen(
+            state = SignInState(isEmailError = true, isPasswordEmptyError = true),
             emailValue = emailValue,
             passwordValue = passwordValue,
             navigateToHomeScreen = {},
