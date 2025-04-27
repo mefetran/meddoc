@@ -1,4 +1,4 @@
-package mefetran.dgusev.meddocs.ui.screen.login
+package mefetran.dgusev.meddocs.ui.screen.signin
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -38,16 +38,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
-import mefetran.dgusev.meddocs.ui.screen.login.model.SignInState
+import mefetran.dgusev.meddocs.ui.screen.signin.model.SignInState
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 
 @Composable
-fun SignInScreen(
+internal fun SignInScreen(
     state: SignInState,
     emailValue: TextFieldValue,
     passwordValue: TextFieldValue,
     modifier: Modifier = Modifier,
-    navigateToHomeScreen: () -> Unit,
+    navigateToMain: () -> Unit,
     navigateToRegistrationScreen: () -> Unit,
     onNewEmailValue: (TextFieldValue) -> Unit,
     onNewPasswordValue: (TextFieldValue) -> Unit,
@@ -153,7 +153,7 @@ fun SignInScreen(
                     imeAction = ImeAction.Send,
                 ),
                 keyboardActions = KeyboardActions(onSend = {
-                    navigateToHomeScreen()
+                    navigateToMain()
                 }),
                 visualTransformation = if (state.showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
@@ -170,7 +170,7 @@ fun SignInScreen(
             )
             Spacer(Modifier.height(16.dp))
             Button(
-                onClick = navigateToHomeScreen,
+                onClick = navigateToMain,
                 modifier = Modifier.fillMaxWidth().height(48.dp)
             ) {
                 Text(
@@ -200,7 +200,7 @@ fun SignInScreen(
 
 @Preview(showBackground = true, locale = "ru")
 @Composable
-fun SignInScreenPreview(modifier: Modifier = Modifier) {
+internal fun SignInScreenPreview(modifier: Modifier = Modifier) {
     val emailValue by remember { mutableStateOf(TextFieldValue("")) }
     val passwordValue by remember { mutableStateOf(TextFieldValue("")) }
 
@@ -209,7 +209,7 @@ fun SignInScreenPreview(modifier: Modifier = Modifier) {
             state = SignInState(isEmailError = true, isPasswordEmptyError = true),
             emailValue = emailValue,
             passwordValue = passwordValue,
-            navigateToHomeScreen = {},
+            navigateToMain = {},
             navigateToRegistrationScreen = {},
             onNewPasswordValue = {},
             onNewEmailValue = {},

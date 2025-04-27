@@ -17,9 +17,9 @@ import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 
 @Composable
-fun HomeScreen(
+internal fun HomeScreen(
     modifier: Modifier = Modifier,
-    navigateToLoginScreen: () -> Unit,
+    navigateToSignInScreen: () -> Unit,
     navigateToSettingsScreen: () -> Unit,
 ) {
     Surface(
@@ -37,7 +37,7 @@ fun HomeScreen(
                 textAlign = TextAlign.Center,
             )
             Button(
-                onClick = navigateToLoginScreen,
+                onClick = navigateToSignInScreen,
             ) {
                 Text(
                     text = "Navigate to Login screen",
@@ -58,10 +58,10 @@ fun HomeScreen(
 
 @Preview(showBackground = true, locale = "ru")
 @Composable
-fun HomeScreenPreview(modifier: Modifier = Modifier) {
+internal fun HomeScreenPreview(modifier: Modifier = Modifier) {
     MeddocsTheme {
         HomeScreen(
-            navigateToLoginScreen = {},
+            navigateToSignInScreen = {},
             navigateToSettingsScreen = {},
         )
     }

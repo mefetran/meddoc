@@ -1,4 +1,4 @@
-package mefetran.dgusev.meddocs.ui.screen.registration
+package mefetran.dgusev.meddocs.ui.screen.signup
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -43,17 +43,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
 import mefetran.dgusev.meddocs.ui.components.BackToolbar
-import mefetran.dgusev.meddocs.ui.screen.registration.model.SignUpState
+import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpState
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 
 @Composable
-fun RegistrationScreen(
+internal fun SignUpScreen(
     state: SignUpState,
     emailValue: TextFieldValue,
     passwordValue: TextFieldValue,
     nameValue: TextFieldValue,
     modifier: Modifier = Modifier,
-    navigateToHomeScreen: () -> Unit,
+    navigateToMainScreen: () -> Unit,
     onNewEmailValue: (TextFieldValue) -> Unit,
     onNewPasswordValue: (TextFieldValue) -> Unit,
     onNewNameValue: (TextFieldValue) -> Unit,
@@ -157,7 +157,7 @@ fun RegistrationScreen(
                         imeAction = ImeAction.Send,
                     ),
                     keyboardActions = KeyboardActions(onSend = {
-                        navigateToHomeScreen()
+                        navigateToMainScreen()
                     }),
                     visualTransformation = if (state.showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
@@ -201,7 +201,7 @@ fun RegistrationScreen(
             }
             Spacer(Modifier.weight(1f))
             Button(
-                onClick = navigateToHomeScreen,
+                onClick = navigateToMainScreen,
                 modifier = Modifier
                     .padding(all = 16.dp)
                     .fillMaxWidth()
@@ -220,18 +220,18 @@ fun RegistrationScreen(
 
 @Preview(showBackground = true, locale = "ru")
 @Composable
-fun RegistrationScreenPreview(modifier: Modifier = Modifier) {
+internal fun SignUpPreview(modifier: Modifier = Modifier) {
     val emailValue by remember { mutableStateOf(TextFieldValue("")) }
     val passwordValue by remember { mutableStateOf(TextFieldValue("")) }
     val nameValue by remember { mutableStateOf(TextFieldValue("")) }
 
     MeddocsTheme {
-        RegistrationScreen(
+        SignUpScreen(
             state = SignUpState(isEmailError = false, isPasswordShortError = false),
             emailValue = emailValue,
             passwordValue = passwordValue,
             nameValue = nameValue,
-            navigateToHomeScreen = {},
+            navigateToMainScreen = {},
             onNewPasswordValue = {},
             onNewEmailValue = {},
             onShowPasswordClicked = {},

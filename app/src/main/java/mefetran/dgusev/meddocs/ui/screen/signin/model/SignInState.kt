@@ -1,4 +1,4 @@
-package mefetran.dgusev.meddocs.ui.screen.login.model
+package mefetran.dgusev.meddocs.ui.screen.signin.model
 
 data class SignInState(
     val showPassword: Boolean = false,
