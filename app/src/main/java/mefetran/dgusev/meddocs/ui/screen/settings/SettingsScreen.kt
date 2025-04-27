@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 
 @Composable
-fun SettingsScreen(
+internal fun SettingsScreen(
     modifier: Modifier = Modifier,
     navigateToHomeScreen: () -> Unit,
 ) {
@@ -49,7 +49,7 @@ fun SettingsScreen(
 
 @Preview(showBackground = true, locale = "ru")
 @Composable
-fun SettingsScreenPreview(modifier: Modifier = Modifier) {
+internal fun SettingsScreenPreview(modifier: Modifier = Modifier) {
     MeddocsTheme {
         SettingsScreen(
             navigateToHomeScreen = {},
