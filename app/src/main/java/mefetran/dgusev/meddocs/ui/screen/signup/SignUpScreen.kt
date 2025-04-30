@@ -85,7 +85,7 @@ internal fun SignUpScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(32.dp))
                 OutlinedTextField(
                     value = emailValue,
                     onValueChange = { newValue ->

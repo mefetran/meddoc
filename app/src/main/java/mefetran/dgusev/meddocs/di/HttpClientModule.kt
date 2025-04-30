@@ -20,7 +20,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
@@ -67,7 +66,4 @@ object HttpClientModule {
             accept(ContentType.Application.Json)
         }
     }
-
-    @Provides
-    fun provideDispatcher() = Dispatchers.IO
 }
