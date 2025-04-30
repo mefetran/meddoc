@@ -8,13 +8,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data object Settings
 
-fun NavGraphBuilder.settingsDestination(
-    onPopToHome: () -> Unit,
-) {
+fun NavGraphBuilder.settingsDestination() {
     composable<Settings> {
-        SettingsScreen(
-            navigateToHomeScreen = onPopToHome,
-        )
+        SettingsScreen()
     }
 }
 

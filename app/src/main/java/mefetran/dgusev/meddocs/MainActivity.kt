@@ -10,13 +10,9 @@ import androidx.navigation.NavDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import mefetran.dgusev.meddocs.ui.screen.home.popToHome
 import mefetran.dgusev.meddocs.ui.screen.main.mainDestination
 import mefetran.dgusev.meddocs.ui.screen.main.navigateToMain
-import mefetran.dgusev.meddocs.ui.screen.settings.navigateToSettings
-import mefetran.dgusev.meddocs.ui.screen.settings.settingsDestination
 import mefetran.dgusev.meddocs.ui.screen.signin.SignIn
-import mefetran.dgusev.meddocs.ui.screen.signin.navigateToSignIn
 import mefetran.dgusev.meddocs.ui.screen.signin.signInDestination
 import mefetran.dgusev.meddocs.ui.screen.signup.navigateToSignUp
 import mefetran.dgusev.meddocs.ui.screen.signup.signUpDestination
@@ -42,13 +38,13 @@ class MainActivity : ComponentActivity() {
             MeddocsTheme {
                 val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = SignIn) {
+                NavHost(
+                    navController = navController,
+                    startDestination = SignIn
+                ) {
                     signInDestination(
                         onNavigateToMain = navController::navigateToMain,
                         onNavigateToSignUp = navController::navigateToSignUp,
-                    )
-                    settingsDestination(
-                        onPopToHome = navController::popToHome,
                     )
                     signUpDestination(
                         onNavigateToMain = navController::navigateToMain,
@@ -56,10 +52,7 @@ class MainActivity : ComponentActivity() {
                             navController.popBackStack()
                         },
                     )
-                    mainDestination(
-                        onHomeNavigateToSettings = navController::navigateToSettings,
-                        onHomeNavigateToSignIn = navController::navigateToSignIn,
-                    )
+                    mainDestination()
                 }
             }
         }

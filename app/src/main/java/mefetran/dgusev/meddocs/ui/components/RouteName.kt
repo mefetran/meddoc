@@ -1,5 +1,5 @@
 package mefetran.dgusev.meddocs.ui.components
 
-interface RouteName {
+internal interface RouteName {
     fun routeName(): String
 }

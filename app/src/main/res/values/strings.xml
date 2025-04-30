@@ -14,4 +14,7 @@
     <string name="error_short_password">Password must be at least 8 characters</string>
     <string name="optional_label">optional</string>
     <string name="sign_up_title">Sign Up</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_documents">Documents</string>
+    <string name="nav_settings">Settings</string>
 </resources>

@@ -1,4 +1,4 @@
-package mefetran.dgusev.meddocs.ui.screen.settings
+package mefetran.dgusev.meddocs.ui.screen.documents
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,14 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 
 @Composable
-internal fun SettingsScreen(
-    modifier: Modifier = Modifier,
-) {
+internal fun DocumentsScreen(modifier: Modifier = Modifier) {
     Surface(
         color = MaterialTheme.colorScheme.surface,
         modifier = modifier.fillMaxSize(),
@@ -29,18 +25,10 @@ internal fun SettingsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Inside of Settings screen",
+                text = "Inside of Documents screen",
                 style = MaterialTheme.typography.displaySmall,
                 textAlign = TextAlign.Center,
             )
         }
-    }
-}
-
-@Preview(showBackground = true, locale = "ru")
-@Composable
-internal fun SettingsScreenPreview(modifier: Modifier = Modifier) {
-    MeddocsTheme {
-        SettingsScreen()
     }
 }
