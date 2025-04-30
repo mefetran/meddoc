@@ -4,7 +4,17 @@ option java_package = "mefetran.dgusev.meddocs.proto";
 option java_multiple_files = true;
 
 message Settings {
+    DarkThemeSettings dark_theme_settings = 1;
+    BearerTokens bearer_tokens = 2;
+    string current_language_code = 3;
+}
+
+message DarkThemeSettings {
     bool use_dark_theme = 1;
-    string access_token = 2;
-    string refresh_token = 3;
+    bool use_system_settings = 2;
+}
+
+message BearerTokens {
+    string access_token = 1;
+    string refresh_token = 2;
 }

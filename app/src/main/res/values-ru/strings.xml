@@ -16,4 +16,12 @@
     <string name="nav_home">Главная</string>
     <string name="nav_documents">Документы</string>
     <string name="nav_settings">Настройки</string>
+    <string name="theme_label">Тема</string>
+    <string name="theme_dark_label">Тёмная</string>
+    <string name="theme_light_label">Светлая</string>
+    <string name="theme_system_label">Системная</string>
+    <string name="settings_title">Настройки</string>
+    <string name="language_label">Язык</string>
+    <string name="language_english">Английский</string>
+    <string name="language_russian">Русский</string>
 </resources>
