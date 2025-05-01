@@ -11,10 +11,13 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -32,22 +35,23 @@ import mefetran.dgusev.meddocs.ui.screen.settings.settingsDestination
 
 @Composable
 internal fun MainNavHost() {
+    val mainViewModel = hiltViewModel<MainViewModel>()
+    val currentLanguageState by mainViewModel.currentLanguageState.collectAsStateWithLifecycle()
     val navController = rememberNavController()
-    val context = LocalContext.current
     val bottomNavigationDataItems = remember {
         listOf(
             BottomNavigationDataItem(
-                name = context.getString(R.string.nav_home),
+                localizedName = R.string.nav_home,
                 route = Home,
                 icon = Icons.Default.Home,
             ),
             BottomNavigationDataItem(
-                name = context.getString(R.string.nav_documents),
+                localizedName = R.string.nav_documents,
                 route = Documents,
                 icon = Icons.Default.MedicalServices,
             ),
             BottomNavigationDataItem(
-                name = context.getString(R.string.nav_settings),
+                localizedName = R.string.nav_settings,
                 route = Settings,
                 icon = Icons.Default.Settings,
             ),
@@ -60,6 +64,9 @@ internal fun MainNavHost() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
 
+                // Not ideal, but it's the best solution I have for now
+                LaunchedEffect(currentLanguageState) { }
+
                 bottomNavigationDataItems.forEach { bottomNavigationDataItem ->
                     NavigationBarItem(
                         selected = currentDestination?.hierarchy?.any {
@@ -70,10 +77,10 @@ internal fun MainNavHost() {
                         icon = {
                             Icon(
                                 imageVector = bottomNavigationDataItem.icon,
-                                contentDescription = bottomNavigationDataItem.name
+                                contentDescription = stringResource(id = bottomNavigationDataItem.localizedName)
                             )
                         },
-                        label = { Text(text = bottomNavigationDataItem.name) },
+                        label = { Text(text = stringResource(id = bottomNavigationDataItem.localizedName)) },
                         onClick = {
                             navController.navigate(bottomNavigationDataItem.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {

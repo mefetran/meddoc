@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
 import mefetran.dgusev.meddocs.ui.components.CustomExposedDropdownMenu
+import mefetran.dgusev.meddocs.ui.components.model.LanguageOption
 import mefetran.dgusev.meddocs.ui.components.model.ThemeOption
 import mefetran.dgusev.meddocs.ui.screen.settings.model.SettingsState
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
@@ -30,6 +31,7 @@ internal fun SettingsScreen(
     state: SettingsState,
     modifier: Modifier = Modifier,
     onThemeOptionClicked: (ThemeOption) -> Unit,
+    onLanguageOptionClicked: (LanguageOption) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val themesList = remember {
@@ -39,6 +41,13 @@ internal fun SettingsScreen(
             ThemeOption.Light,
         )
     }
+    val languagesList = remember {
+        listOf(
+            LanguageOption.English,
+            LanguageOption.Russian,
+        )
+    }
+
     Surface(
         color = MaterialTheme.colorScheme.surface,
         modifier = modifier.fillMaxSize(),
@@ -78,10 +87,28 @@ internal fun SettingsScreen(
                 dropdownText = { themeOption ->
                     Text(
                         text = stringResource(id = themeOption.localizedName),
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                 },
                 onOptionClicked = onThemeOptionClicked,
+            )
+            Spacer(Modifier.height(16.dp))
+            CustomExposedDropdownMenu(
+                options = languagesList,
+                label = stringResource(id = R.string.language_label),
+                initialValue = when (state.currentLanguageCode) {
+                    "en" -> stringResource(id = languagesList.find { it == LanguageOption.English }?.localizedName ?: languagesList.first().localizedName)
+                    "ru" -> stringResource(id = languagesList.find { it == LanguageOption.Russian }?.localizedName ?: languagesList.first().localizedName)
+
+                    else -> stringResource(id = R.string.language_unknown)
+                },
+                dropdownText = { languageOption ->
+                    Text(
+                        text = stringResource(id = languageOption.localizedName),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                },
+                onOptionClicked = onLanguageOptionClicked,
             )
         }
     }
@@ -92,8 +119,9 @@ internal fun SettingsScreen(
 internal fun SettingsScreenPreview(modifier: Modifier = Modifier) {
     MeddocsTheme {
         SettingsScreen(
-            state = SettingsState(),
+            state = SettingsState(currentLanguageCode = "ru"),
             onThemeOptionClicked = {},
+            onLanguageOptionClicked = {},
         )
     }
 }

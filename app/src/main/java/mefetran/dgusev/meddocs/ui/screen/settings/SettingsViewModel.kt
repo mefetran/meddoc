@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import mefetran.dgusev.meddocs.app.datastore.withLanguage
 import mefetran.dgusev.meddocs.app.datastore.withTheme
 import mefetran.dgusev.meddocs.proto.Settings
 import mefetran.dgusev.meddocs.ui.screen.settings.model.SettingsState
@@ -31,6 +32,7 @@ class SettingsViewModel @Inject constructor(
                     it.copy(
                         useSystemTheme = settings.darkThemeSettings.useSystemSettings,
                         useDarkTheme = settings.darkThemeSettings.useDarkTheme,
+                        currentLanguageCode = settings.currentLanguageCode,
                     )
                 }
             }
@@ -47,6 +49,16 @@ class SettingsViewModel @Inject constructor(
                     useDarkTheme = useDarkTheme,
                     useSystemTheme = useSystemTheme
                 )
+            }
+        }
+    }
+
+    fun selectLanguage(
+        languageCode: String,
+    ) {
+        viewModelScope.launch {
+            settingsDataStore.updateData {
+                it.withLanguage(languageCode)
             }
         }
     }

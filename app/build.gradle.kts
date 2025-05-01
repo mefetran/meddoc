@@ -43,6 +43,11 @@ android {
     buildFeatures {
         compose = true
     }
+
+    // Just want to try it
+    androidResources {
+        localeFilters.addAll(setOf("en", "ru"))
+    }
 }
 
 
@@ -107,6 +112,7 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)

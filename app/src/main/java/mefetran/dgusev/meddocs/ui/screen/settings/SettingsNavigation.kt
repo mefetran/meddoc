@@ -1,14 +1,16 @@
 package mefetran.dgusev.meddocs.ui.screen.settings
 
+import androidx.activity.compose.LocalActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
+import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
-import mefetran.dgusev.meddocs.R
+import mefetran.dgusev.meddocs.ui.components.model.ThemeOption
 
 @Serializable
 internal data object Settings
@@ -17,28 +19,37 @@ fun NavGraphBuilder.settingsDestination() {
     composable<Settings> {
         val settingsViewModel = hiltViewModel<SettingsViewModel>()
         val state by settingsViewModel.state.collectAsStateWithLifecycle()
-        val context = LocalContext.current
+        val activity = LocalActivity.current
 
         SettingsScreen(
             state = state,
-            onThemeOptionClicked = { option ->
-                when (option) {
-                    context.getString(R.string.theme_system_label) -> settingsViewModel.selectTheme(
-                        useSystemTheme = true,
-                        useDarkTheme = true
-                    )
-
-                    context.getString(R.string.theme_dark_label) -> settingsViewModel.selectTheme(
+            onThemeOptionClicked = { themeOption ->
+                when (themeOption) {
+                    ThemeOption.Dark -> settingsViewModel.selectTheme(
                         useSystemTheme = false,
                         useDarkTheme = true
                     )
 
-                    context.getString(R.string.theme_light_label) -> settingsViewModel.selectTheme(
+                    ThemeOption.Light -> settingsViewModel.selectTheme(
                         useSystemTheme = false,
                         useDarkTheme = false
                     )
+
+                    ThemeOption.System -> settingsViewModel.selectTheme(
+                        useSystemTheme = true,
+                        useDarkTheme = true
+                    )
                 }
-            }
+            },
+            onLanguageOptionClicked = { languageOption ->
+                activity?.let {
+                    activity.runOnUiThread {
+                        val appLocale = LocaleListCompat.forLanguageTags(languageOption.languageCode)
+                        AppCompatDelegate.setApplicationLocales(appLocale)
+                    }
+                    settingsViewModel.selectLanguage(languageOption.languageCode)
+                }
+            },
         )
     }
 }

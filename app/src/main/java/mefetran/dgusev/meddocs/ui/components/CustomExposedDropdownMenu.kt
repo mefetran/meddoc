@@ -31,8 +31,8 @@ import mefetran.dgusev.meddocs.R
 fun <T> CustomExposedDropdownMenu(
     options: List<T>,
     label: String,
-    modifier: Modifier = Modifier,
     initialValue: String,
+    modifier: Modifier = Modifier,
     dropdownText: @Composable (T) -> Unit,
     onOptionClicked: (T) -> Unit,
 ) {
