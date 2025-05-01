@@ -9,7 +9,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
-import mefetran.dgusev.meddocs.ui.components.RouteName
+import mefetran.dgusev.meddocs.ui.components.model.RouteName
 import mefetran.dgusev.meddocs.ui.screen.main.Main
 
 @Serializable

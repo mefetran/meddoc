@@ -28,12 +28,13 @@ import mefetran.dgusev.meddocs.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsExposedDropdownMenu(
-    options: List<String>,
+fun <T> CustomExposedDropdownMenu(
+    options: List<T>,
     label: String,
     modifier: Modifier = Modifier,
-    selectedOption: String = options.first(),
-    onOptionClicked: (String) -> Unit,
+    initialValue: String,
+    text: @Composable (T) -> Unit,
+    onOptionClicked: (T) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -42,7 +43,7 @@ fun SettingsExposedDropdownMenu(
         onExpandedChange = { expanded = it },
     ) {
         TextField(
-            value = selectedOption,
+            value = initialValue,
             onValueChange = {},
             modifier = modifier
                 .fillMaxWidth()
@@ -59,7 +60,7 @@ fun SettingsExposedDropdownMenu(
         ) {
             options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(text = option, style = MaterialTheme.typography.bodyLarge) },
+                    text = { text(option) },
                     onClick = {
                         onOptionClicked(option)
                         expanded = false
@@ -73,7 +74,7 @@ fun SettingsExposedDropdownMenu(
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, locale = "ru")
 @Composable
-fun SettingsExposedDropdownMenuPreview(modifier: Modifier = Modifier) {
+fun CustomExposedDropdownMenuPreview(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val options = remember {
         listOf(
@@ -93,9 +94,11 @@ fun SettingsExposedDropdownMenuPreview(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (options.isNotEmpty()) {
-                SettingsExposedDropdownMenu(
+                CustomExposedDropdownMenu(
                     options = options,
                     label = stringResource(id = R.string.theme_label),
+                    text = { Text(text = it, style = MaterialTheme.typography.bodyLarge) },
+                    initialValue = options.first(),
                     onOptionClicked = {},
                 )
             }
