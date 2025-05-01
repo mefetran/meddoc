@@ -15,13 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
-import mefetran.dgusev.meddocs.ui.components.SettingsExposedDropdownMenu
+import mefetran.dgusev.meddocs.ui.components.CustomExposedDropdownMenu
+import mefetran.dgusev.meddocs.ui.components.model.ThemeOption
 import mefetran.dgusev.meddocs.ui.screen.settings.model.SettingsState
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 
@@ -29,15 +29,16 @@ import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 internal fun SettingsScreen(
     state: SettingsState,
     modifier: Modifier = Modifier,
-    onThemeOptionClicked: (String) -> Unit,
+    onThemeOptionClicked: (ThemeOption) -> Unit,
 ) {
     val scrollState = rememberScrollState()
-    val context = LocalContext.current
-    val themesList = remember { listOf(
-        context.getString(R.string.theme_system_label),
-        context.getString(R.string.theme_dark_label),
-        context.getString(R.string.theme_light_label)
-    ) }
+    val themesList = remember {
+        listOf(
+            ThemeOption.System,
+            ThemeOption.Dark,
+            ThemeOption.Light,
+        )
+    }
     Surface(
         color = MaterialTheme.colorScheme.surface,
         modifier = modifier.fillMaxSize(),
@@ -55,21 +56,30 @@ internal fun SettingsScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Spacer(Modifier.height(32.dp))
-            SettingsExposedDropdownMenu(
+            CustomExposedDropdownMenu(
                 options = themesList,
                 label = stringResource(id = R.string.theme_label),
-                selectedOption = when(state.useSystemTheme) {
-                    true -> themesList.first()
+                initialValue = when (state.useSystemTheme) {
+                    true -> stringResource(id = themesList.first().localizedName)
                     false -> {
                         if (state.useDarkTheme) {
-                            themesList.find { it == stringResource(id = R.string.theme_dark_label) }
-                                ?: themesList.first()
+                            stringResource(
+                                id = themesList.find { it == ThemeOption.Dark }?.localizedName
+                                    ?: themesList.first().localizedName
+                            )
                         } else {
-                            val theme = themesList.find { it == stringResource(id = R.string.theme_light_label) }
-                                ?: themesList.first()
-                            theme
+                            stringResource(
+                                id = themesList.find { it == ThemeOption.Light }?.localizedName
+                                    ?: themesList.first().localizedName
+                            )
                         }
                     }
+                },
+                dropdownText = { themeOption ->
+                    Text(
+                        text = stringResource(id = themeOption.localizedName),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 },
                 onOptionClicked = onThemeOptionClicked,
             )
