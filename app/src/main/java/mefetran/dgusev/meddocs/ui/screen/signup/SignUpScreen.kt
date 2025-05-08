@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
 import mefetran.dgusev.meddocs.ui.components.BackToolbar
+import mefetran.dgusev.meddocs.ui.components.ScreenTitle
 import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpState
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 
@@ -79,12 +80,7 @@ internal fun SignUpScreen(
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
-                Text(
-                    text = stringResource(id = R.string.sign_up_title),
-                    style = MaterialTheme.typography.displayMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
+                ScreenTitle(stringResource(id = R.string.sign_up_title))
                 Spacer(Modifier.height(32.dp))
                 OutlinedTextField(
                     value = emailValue,

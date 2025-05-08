@@ -28,7 +28,7 @@ import mefetran.dgusev.meddocs.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T> CustomExposedDropdownMenu(
+fun <T : Any> CustomExposedDropdownMenu(
     options: List<T>,
     label: String,
     initialValue: String,

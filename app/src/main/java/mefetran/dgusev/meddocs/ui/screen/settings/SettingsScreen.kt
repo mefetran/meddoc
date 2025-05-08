@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
 import mefetran.dgusev.meddocs.ui.components.CustomExposedDropdownMenu
+import mefetran.dgusev.meddocs.ui.components.ScreenTitle
 import mefetran.dgusev.meddocs.ui.components.model.LanguageOption
 import mefetran.dgusev.meddocs.ui.components.model.ThemeOption
 import mefetran.dgusev.meddocs.ui.screen.settings.model.SettingsState
@@ -58,12 +59,7 @@ internal fun SettingsScreen(
                 .safeDrawingPadding()
                 .padding(16.dp),
         ) {
-            Text(
-                text = stringResource(id = R.string.settings_title),
-                style = MaterialTheme.typography.displayMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+            ScreenTitle(stringResource(id = R.string.settings_title))
             Spacer(Modifier.height(32.dp))
             CustomExposedDropdownMenu(
                 options = themesList,
