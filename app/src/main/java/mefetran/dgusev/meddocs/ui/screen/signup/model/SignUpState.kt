@@ -4,4 +4,5 @@ data class SignUpState(
     val showPassword: Boolean = false,
     val isEmailError: Boolean = false,
     val isPasswordShortError: Boolean = false,
+    val isLoading: Boolean = false,
 )

@@ -1,24 +1,22 @@
 package mefetran.dgusev.meddocs.data.model
 
 import io.realm.RealmObject
-import io.realm.RealmSet
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 import io.realm.annotations.Required
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @RealmClass
-open class Document(
+@Serializable
+open class User(
     @PrimaryKey
     var id: String = "",
     @Required
-    var title: String = "",
-    @Required
-    var content: String = "",
-    @Required
-    var date: String = "",
-    var description: String = "",
-    var tags: RealmSet<String> = RealmSet(),
-    var category: String = Category.Other.toString(),
+    var email: String = "",
+    var name: String = "",
+    @SerialName("created_at")
     var createdAt: String = "",
+    @SerialName("updated_at")
     var updatedAt: String = "",
 ) : RealmObject()

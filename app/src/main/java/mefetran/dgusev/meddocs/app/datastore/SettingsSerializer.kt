@@ -7,12 +7,19 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
 import com.google.protobuf.InvalidProtocolBufferException
+import mefetran.dgusev.meddocs.data.api.response.TokenPairResponse
 import mefetran.dgusev.meddocs.proto.BearerTokens
 import mefetran.dgusev.meddocs.proto.DarkThemeSettings
 import mefetran.dgusev.meddocs.proto.Settings
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.Locale
+
+
+val Context.settingsDataStore: DataStore<Settings> by dataStore(
+    fileName = "settings.pb",
+    serializer = SettingsSerializer,
+)
 
 object SettingsSerializer : Serializer<Settings> {
     @SuppressLint("ConstantLocale")
@@ -26,7 +33,14 @@ object SettingsSerializer : Serializer<Settings> {
                 .setUseSystemSettings(true)
                 .build()
         )
-        .setBearerTokens(BearerTokens.newBuilder().setAccessToken("").setRefreshToken("").build())
+        .setBearerTokens(
+            BearerTokens
+                .newBuilder()
+                .setAccessToken("")
+                .setRefreshToken("")
+                .setExpiresIn(0)
+                .build()
+        )
         .build()
 
     override suspend fun readFrom(input: InputStream): Settings {
@@ -59,7 +73,15 @@ fun Settings.withLanguage(languageCode: String): Settings = this
     .setCurrentLanguageCode(languageCode)
     .build()
 
-val Context.settingsDataStore: DataStore<Settings> by dataStore(
-    fileName = "settings.pb",
-    serializer = SettingsSerializer,
-)
+fun Settings.withBearerToken(tokenPairResponse: TokenPairResponse): Settings = this
+    .toBuilder()
+    .setBearerTokens(
+        this.bearerTokens.toBuilder()
+            .setAccessToken(tokenPairResponse.accessToken)
+            .setRefreshToken(tokenPairResponse.refreshToken)
+            .setExpiresIn(tokenPairResponse.expiresIn)
+            .build()
+    )
+    .build()
+
+fun BearerTokens.isBlank() = this.accessToken.isNullOrBlank() && this.refreshToken.isNullOrBlank()

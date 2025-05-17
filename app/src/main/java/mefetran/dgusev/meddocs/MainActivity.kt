@@ -7,19 +7,23 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import mefetran.dgusev.meddocs.app.datastore.isBlank
+import mefetran.dgusev.meddocs.ui.StartViewModel
+import mefetran.dgusev.meddocs.ui.screen.main.Main
 import mefetran.dgusev.meddocs.ui.screen.main.mainDestination
 import mefetran.dgusev.meddocs.ui.screen.main.navigateToMain
 import mefetran.dgusev.meddocs.ui.screen.signin.SignIn
 import mefetran.dgusev.meddocs.ui.screen.signin.signInDestination
 import mefetran.dgusev.meddocs.ui.screen.signup.navigateToSignUp
 import mefetran.dgusev.meddocs.ui.screen.signup.signUpDestination
-import mefetran.dgusev.meddocs.ui.StartViewModel
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 
 // An extension function that returns route as it named inside navigation stack
@@ -38,15 +42,17 @@ class MainActivity : AppCompatActivity() {
             startViewModel.isLoadingState.value
         }
         setContent {
-            val darkThemeSettings by startViewModel.darkThemeState.collectAsStateWithLifecycle()
+            val state by startViewModel.state.collectAsStateWithLifecycle()
+
             MeddocsTheme(
-                darkTheme = if (darkThemeSettings.useSystemSettings) isSystemInDarkTheme() else darkThemeSettings.useDarkTheme
+                darkTheme = if (state.darkThemeSettings.useSystemSettings) isSystemInDarkTheme() else state.darkThemeSettings.useDarkTheme
             ) {
                 val navController = rememberNavController()
+                val user = remember { startViewModel.getUser() }
 
                 NavHost(
                     navController = navController,
-                    startDestination = SignIn
+                    startDestination = if(state.bearerTokens.isBlank() && user == null) SignIn else Main
                 ) {
                     signInDestination(
                         onNavigateToMain = navController::navigateToMain,

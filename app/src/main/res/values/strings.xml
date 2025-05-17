@@ -26,4 +26,14 @@
     <string name="language_english">English</string>
     <string name="language_russian">Russian</string>
     <string name="language_unknown">Unknown</string>
+    <string name="category_laboratory">Laboratory</string>
+    <string name="category_instrumental">Instrumental</string>
+    <string name="category_ultrasound">Ultrasound</string>
+    <string name="category_xray">X-ray</string>
+    <string name="category_mri">MRI</string>
+    <string name="category_ct">CT Scan</string>
+    <string name="category_ecg">ECG</string>
+    <string name="category_endoscopy">Endoscopy</string>
+    <string name="category_functional_diagnostics">Func. diagnostics</string>
+    <string name="category_other">Other</string>
 </resources>

@@ -2,6 +2,7 @@ package mefetran.dgusev.meddocs.data.api.response
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import mefetran.dgusev.meddocs.data.model.Document
 
 @Serializable
 data class DocumentResponse(
@@ -12,4 +13,12 @@ data class DocumentResponse(
     val createdAt: String = "",
     @SerialName("updated_at")
     val updatedAt: String = "",
+)
+
+fun DocumentResponse.toDocument() = Document(
+    id = this.id,
+    title = this.title,
+    content = this.content,
+    createdAt = this.createdAt,
+    updatedAt = this.updatedAt,
 )

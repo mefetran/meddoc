@@ -25,4 +25,14 @@
     <string name="language_english">Английский</string>
     <string name="language_russian">Русский</string>
     <string name="language_unknown">Неизвестно</string>
+    <string name="category_laboratory">Лабораторное</string>
+    <string name="category_instrumental">Инструментальное</string>
+    <string name="category_ultrasound">УЗИ</string>
+    <string name="category_xray">Рентген</string>
+    <string name="category_mri">МРТ</string>
+    <string name="category_ct">КТ</string>
+    <string name="category_ecg">ЭКГ</string>
+    <string name="category_endoscopy">Эндоскопия</string>
+    <string name="category_functional_diagnostics">Функц. диагностика</string>
+    <string name="category_other">Другое</string>
 </resources>

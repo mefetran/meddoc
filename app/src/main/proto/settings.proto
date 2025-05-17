@@ -17,4 +17,5 @@ message DarkThemeSettings {
 message BearerTokens {
     string access_token = 1;
     string refresh_token = 2;
+    int32 expires_in = 3;
 }

@@ -2,6 +2,7 @@ package mefetran.dgusev.meddocs.data.api.request
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import mefetran.dgusev.meddocs.data.model.Document
 
 @Serializable
 data class UpdateDocumentRequestBody(
@@ -12,4 +13,14 @@ data class UpdateDocumentRequestBody(
     val createdAt: String = "",
     @SerialName("updated_at")
     val updatedAt: String = "",
-)
+) {
+    companion object {
+        fun fromDocument(document: Document) = UpdateDocumentRequestBody(
+            id = document.id,
+            title = document.title,
+            content = document.content,
+            createdAt = document.createdAt,
+            updatedAt = document.updatedAt,
+        )
+    }
+}

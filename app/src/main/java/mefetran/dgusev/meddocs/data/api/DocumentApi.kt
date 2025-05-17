@@ -15,28 +15,28 @@ import mefetran.dgusev.meddocs.data.api.response.DocumentResponse
 import javax.inject.Inject
 
 interface DocumentApi {
-    fun getDocuments(): Flow<Result<List<DocumentResponse>>>
+    suspend fun getDocuments(): Flow<Result<List<DocumentResponse>>>
 
-    fun createDocument(requestBody: CreateDocumentRequestBody): Flow<Result<DocumentResponse>>
+    suspend fun createDocument(requestBody: CreateDocumentRequestBody): Flow<Result<DocumentResponse>>
 
-    fun getDocumentById(id: String): Flow<Result<DocumentResponse>>
+    suspend fun getDocumentById(id: String): Flow<Result<DocumentResponse>>
 
-    fun updateDocumentById(
+    suspend fun updateDocumentById(
         id: String,
         requestBody: UpdateDocumentRequestBody
     ): Flow<Result<DocumentResponse>>
 
-    fun deleteDocumentById(id: String): Flow<Result<String>>
+    suspend fun deleteDocumentById(id: String): Flow<Result<String>>
 }
 
 class DocumentApiImpl @Inject constructor(private val httpClient: HttpClient) : DocumentApi {
-    override fun getDocuments(): Flow<Result<List<DocumentResponse>>> = flow {
+    override suspend fun getDocuments(): Flow<Result<List<DocumentResponse>>> = flow {
         emit(kotlin.runCatching {
             httpClient.get("documents").body()
         })
     }
 
-    override fun createDocument(requestBody: CreateDocumentRequestBody): Flow<Result<DocumentResponse>> =
+    override suspend fun createDocument(requestBody: CreateDocumentRequestBody): Flow<Result<DocumentResponse>> =
         flow {
             emit(kotlin.runCatching {
                 httpClient.post("documents") {
@@ -45,13 +45,13 @@ class DocumentApiImpl @Inject constructor(private val httpClient: HttpClient) : 
             })
         }
 
-    override fun getDocumentById(id: String): Flow<Result<DocumentResponse>> = flow {
+    override suspend fun getDocumentById(id: String): Flow<Result<DocumentResponse>> = flow {
         emit(kotlin.runCatching {
             httpClient.get("documents/$id").body()
         })
     }
 
-    override fun updateDocumentById(
+    override suspend fun updateDocumentById(
         id: String,
         requestBody: UpdateDocumentRequestBody
     ): Flow<Result<DocumentResponse>> = flow {
@@ -62,7 +62,7 @@ class DocumentApiImpl @Inject constructor(private val httpClient: HttpClient) : 
         })
     }
 
-    override fun deleteDocumentById(id: String): Flow<Result<String>> = flow {
+    override suspend fun deleteDocumentById(id: String): Flow<Result<String>> = flow {
         emit(kotlin.runCatching {
             httpClient.delete("documents/$id").body()
         })

@@ -1,7 +1,9 @@
 package mefetran.dgusev.meddocs.ui.screen.signup
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -38,7 +42,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
@@ -54,7 +57,7 @@ internal fun SignUpScreen(
     passwordValue: TextFieldValue,
     nameValue: TextFieldValue,
     modifier: Modifier = Modifier,
-    navigateToMainScreen: () -> Unit,
+    onSignUp: () -> Unit,
     onNewEmailValue: (TextFieldValue) -> Unit,
     onNewPasswordValue: (TextFieldValue) -> Unit,
     onNewNameValue: (TextFieldValue) -> Unit,
@@ -153,7 +156,7 @@ internal fun SignUpScreen(
                         imeAction = ImeAction.Send,
                     ),
                     keyboardActions = KeyboardActions(onSend = {
-                        navigateToMainScreen()
+                        onSignUp()
                     }),
                     visualTransformation = if (state.showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
@@ -197,7 +200,7 @@ internal fun SignUpScreen(
             }
             Spacer(Modifier.weight(1f))
             Button(
-                onClick = navigateToMainScreen,
+                onClick = onSignUp,
                 modifier = Modifier
                     .padding(all = 16.dp)
                     .fillMaxWidth()
@@ -212,6 +215,19 @@ internal fun SignUpScreen(
             }
         }
     }
+
+    if (state.isLoading) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.surfaceDim.copy(0.8f))
+        ) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary,
+                strokeWidth = 6.dp,
+                modifier = Modifier.size(56.dp),
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true, locale = "ru")
@@ -223,11 +239,11 @@ internal fun SignUpPreview(modifier: Modifier = Modifier) {
 
     MeddocsTheme {
         SignUpScreen(
-            state = SignUpState(isEmailError = false, isPasswordShortError = false),
+            state = SignUpState(isEmailError = false, isPasswordShortError = false, isLoading = true),
             emailValue = emailValue,
             passwordValue = passwordValue,
             nameValue = nameValue,
-            navigateToMainScreen = {},
+            onSignUp = {},
             onNewPasswordValue = {},
             onNewEmailValue = {},
             onShowPasswordClicked = {},

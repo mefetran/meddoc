@@ -1,30 +1,42 @@
 package mefetran.dgusev.meddocs.ui.screen.signup
 
+import android.util.Log
 import android.util.Patterns
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.substring
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import mefetran.dgusev.meddocs.app.EMAIL_LENGTH
 import mefetran.dgusev.meddocs.app.NAME_LENGTH
 import mefetran.dgusev.meddocs.app.PASSWORD_MAX_LENGTH
 import mefetran.dgusev.meddocs.app.PASSWORD_MIN_LENGTH
+import mefetran.dgusev.meddocs.app.datastore.withBearerToken
+import mefetran.dgusev.meddocs.data.api.request.UserRegistrationRequestBody
+import mefetran.dgusev.meddocs.data.api.request.UserSignInRequestBody
+import mefetran.dgusev.meddocs.data.repository.UserRepository
+import mefetran.dgusev.meddocs.di.FakeRepository
+import mefetran.dgusev.meddocs.proto.Settings
+import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpEvent
 import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpState
 import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val httpClient: HttpClient,
+    private val settingsDataStore: DataStore<Settings>,
     private val dispatcher: CoroutineDispatcher,
-) : ViewModel(){
+    @FakeRepository val userRepository: UserRepository,
+) : ViewModel() {
     private val _emailValue = MutableStateFlow(TextFieldValue(""))
     val emailValue = _emailValue.asStateFlow()
 
@@ -37,12 +49,25 @@ class SignUpViewModel @Inject constructor(
     private val _state = MutableStateFlow(SignUpState())
     val state = _state.asStateFlow()
 
+    private val _event =
+        MutableSharedFlow<SignUpEvent>()
+    val event = _event.asSharedFlow()
+
     fun updateEmailValue(newValue: TextFieldValue) {
         viewModelScope.launch {
             if (newValue.text.length < EMAIL_LENGTH) {
                 _emailValue.update { newValue }
             } else {
-                _emailValue.update { newValue.copy(text = newValue.text.substring(TextRange(0, EMAIL_LENGTH))) }
+                _emailValue.update {
+                    newValue.copy(
+                        text = newValue.text.substring(
+                            TextRange(
+                                0,
+                                EMAIL_LENGTH
+                            )
+                        )
+                    )
+                }
             }
             _state.update { it.copy(isEmailError = false) }
         }
@@ -53,7 +78,16 @@ class SignUpViewModel @Inject constructor(
             if (newValue.text.length < PASSWORD_MAX_LENGTH) {
                 _passwordValue.update { newValue }
             } else {
-                _passwordValue.update { newValue.copy(text = newValue.text.substring(TextRange(0, PASSWORD_MAX_LENGTH))) }
+                _passwordValue.update {
+                    newValue.copy(
+                        text = newValue.text.substring(
+                            TextRange(
+                                0,
+                                PASSWORD_MAX_LENGTH
+                            )
+                        )
+                    )
+                }
             }
             _state.update { it.copy(isPasswordShortError = newValue.text.length < PASSWORD_MIN_LENGTH) }
         }
@@ -70,7 +104,16 @@ class SignUpViewModel @Inject constructor(
             if (newValue.text.length < NAME_LENGTH) {
                 _nameValue.update { newValue }
             } else {
-                _nameValue.update { newValue.copy(text = newValue.text.substring(TextRange(0, NAME_LENGTH))) }
+                _nameValue.update {
+                    newValue.copy(
+                        text = newValue.text.substring(
+                            TextRange(
+                                0,
+                                NAME_LENGTH
+                            )
+                        )
+                    )
+                }
             }
         }
     }
@@ -84,7 +127,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun isInputValid(): Boolean {
+    private fun isInputValid(): Boolean {
         val isEmailValid = Patterns.EMAIL_ADDRESS.matcher(_emailValue.value.text).matches()
         val isPasswordValid = _passwordValue.value.text.length >= PASSWORD_MIN_LENGTH
 
@@ -98,5 +141,64 @@ class SignUpViewModel @Inject constructor(
         }
 
         return isEmailValid && isPasswordValid
+    }
+
+    private fun startLoading() {
+        _state.update {
+            it.copy(isLoading = true)
+        }
+    }
+
+    private fun stopLoading() {
+        _state.update {
+            it.copy(isLoading = false)
+        }
+    }
+
+    fun signUp() {
+        if (isInputValid()) {
+            startLoading()
+            viewModelScope.launch {
+                val userSignUpCredentials = UserRegistrationRequestBody(
+                    email = _emailValue.value.text,
+                    password = _passwordValue.value.text,
+                    name = _nameValue.value.text.ifBlank { null }
+                )
+
+                userRepository
+                    .signUpUser(userSignUpCredentials)
+                    .flowOn(dispatcher)
+                    .collect { signUpResult ->
+                        signUpResult
+                            .onSuccess { user ->
+                                userRepository.saveUser(user)
+                                val userSignInCredentials = UserSignInRequestBody(
+                                    email = _emailValue.value.text,
+                                    password = _passwordValue.value.text
+                                )
+                                userRepository
+                                    .signInUser(userSignInCredentials)
+                                    .flowOn(dispatcher)
+                                    .collect { signInResult ->
+                                        signInResult
+                                            .onSuccess { bearerTokens ->
+                                                settingsDataStore.updateData { settings ->
+                                                    settings.withBearerToken(bearerTokens)
+                                                }.also { _event.tryEmit(SignUpEvent.SignUp) }
+                                                stopLoading()
+                                            }
+                                            .onFailure { singInException ->
+                                                Log.e("SignUp", "${singInException.message}")
+                                                stopLoading()
+                                            }
+                                    }
+                            }
+                            .onFailure { signUpException ->
+                                Log.e("SignUp", "${signUpException.message}")
+                                stopLoading()
+                            }
+                    }
+            }
+        }
     }
 }
