@@ -36,7 +36,7 @@ class StartViewModel @Inject constructor(
     }
 
     private fun loadInitSettings() {
-        viewModelScope.launch {
+        runBlocking {
             val settings = settingsDataStore.data.first()
 
             _state.update {
@@ -48,7 +48,7 @@ class StartViewModel @Inject constructor(
 
             _isLoadingState.update { false }
 
-            collectSettings()
+            viewModelScope.launch { collectSettings() }
         }
     }
 

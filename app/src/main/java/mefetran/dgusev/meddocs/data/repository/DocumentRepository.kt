@@ -3,7 +3,7 @@ package mefetran.dgusev.meddocs.data.repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import mefetran.dgusev.meddocs.app.toRealmSet
+import mefetran.dgusev.meddocs.app.toRealmDictionary
 import mefetran.dgusev.meddocs.data.api.DocumentApi
 import mefetran.dgusev.meddocs.data.api.request.CreateDocumentRequestBody
 import mefetran.dgusev.meddocs.data.api.request.UpdateDocumentRequestBody
@@ -70,35 +70,30 @@ class FakeDocumentRepositoryImpl : DocumentRepository {
                     title = "Общий анализ крови",
                     date = LocalDate.now().minusDays(Random.nextLong(1, 5)).toString(),
                     description = "Показатели общего анализа крови в норме, без признаков воспаления или инфекции.",
-                    tags = setOf("Обследование", "Анализы").toRealmSet(),
                     category = Category.Laboratory.toString(),
                 ),
                 Document(
                     title = "Электрокардиограмма (ЭКГ)",
                     date = LocalDate.now().minusDays(Random.nextLong(6, 15)).toString(),
                     description = "Результаты ЭКГ в пределах нормы, нарушений ритма не выявлено.",
-                    tags = setOf("Сердце", "Диагностика").toRealmSet(),
                     category = Category.ECG.toString(),
                 ),
                 Document(
                     title = "УЗИ органов брюшной полости",
                     date = LocalDate.now().minusDays(Random.nextLong(16, 30)).toString(),
                     description = "Печень, поджелудочная и селезёнка без патологии, размеры в пределах нормы.",
-                    tags = setOf("УЗИ", "ЖКТ").toRealmSet(),
                     category = Category.Ultrasound.toString(),
                 ),
                 Document(
                     title = "МРТ головного мозга",
                     date = LocalDate.now().minusDays(Random.nextLong(31, 60)).toString(),
                     description = "Отсутствие признаков опухолевых образований или очаговых изменений.",
-                    tags = setOf("МРТ", "Голова").toRealmSet(),
                     category = Category.MRI.toString(),
                 ),
                 Document(
                     title = "Эндоскопия желудка (ФГДС)",
                     date = LocalDate.now().minusDays(Random.nextLong(61, 100)).toString(),
                     description = "Выявлен поверхностный гастрит, биопсия не проводилась.",
-                    tags = setOf("Желудок", "Гастроэнтерология").toRealmSet(),
                     category = Category.Endoscopy.toString(),
                 )
             )
@@ -110,7 +105,7 @@ class FakeDocumentRepositoryImpl : DocumentRepository {
             Document(
                 id = requestBody.id,
                 title = requestBody.title,
-                content = requestBody.content,
+                content = requestBody.content.toRealmDictionary(),
                 createdAt = requestBody.createdAt,
                 updatedAt = requestBody.updatedAt,
             )
@@ -124,7 +119,6 @@ class FakeDocumentRepositoryImpl : DocumentRepository {
                 title = "КТ органов грудной клетки",
                 date = LocalDate.now().minusDays(Random.nextLong(30, 90)).toString(),
                 description = "КТ-картина соответствует норме, патологических изменений не выявлено.",
-                tags = setOf("КТ", "Лёгкие").toRealmSet(),
                 category = Category.CT.toString(),
             )
         }
@@ -137,7 +131,7 @@ class FakeDocumentRepositoryImpl : DocumentRepository {
         Document(
             id = id,
             title = requestBody.title,
-            content = requestBody.content,
+            content = requestBody.content.toRealmDictionary(),
             createdAt = requestBody.createdAt,
             updatedAt = requestBody.updatedAt,
         )

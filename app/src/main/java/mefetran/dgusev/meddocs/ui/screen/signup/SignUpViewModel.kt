@@ -10,10 +10,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -118,8 +120,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-
-    fun showPasswordClicked() {
+    fun showPasswordInput() {
         viewModelScope.launch {
             _state.update {
                 it.copy(showPassword = !it.showPassword)
@@ -165,38 +166,38 @@ class SignUpViewModel @Inject constructor(
                     name = _nameValue.value.text.ifBlank { null }
                 )
 
-                userRepository
-                    .signUpUser(userSignUpCredentials)
-                    .flowOn(dispatcher)
-                    .collect { signUpResult ->
-                        signUpResult
-                            .onSuccess { user ->
-                                userRepository.saveUser(user)
-                                val userSignInCredentials = UserSignInRequestBody(
-                                    email = _emailValue.value.text,
-                                    password = _passwordValue.value.text
-                                )
-                                userRepository
-                                    .signInUser(userSignInCredentials)
-                                    .flowOn(dispatcher)
-                                    .collect { signInResult ->
-                                        signInResult
-                                            .onSuccess { bearerTokens ->
-                                                settingsDataStore.updateData { settings ->
-                                                    settings.withBearerToken(bearerTokens)
-                                                }.also { _event.tryEmit(SignUpEvent.SignUp) }
-                                                stopLoading()
-                                            }
-                                            .onFailure { singInException ->
-                                                Log.e("SignUp", "${singInException.message}")
-                                                stopLoading()
-                                            }
-                                    }
-                            }
-                            .onFailure { signUpException ->
-                                Log.e("SignUp", "${signUpException.message}")
+                val signUpDeferred = async {
+                    userRepository.signUpUser(userSignUpCredentials).flowOn(dispatcher).first()
+                }
+                val signUpResult = signUpDeferred.await()
+
+                signUpResult
+                    .onSuccess { user ->
+                        userRepository.saveUser(user)
+                        val userSignInCredentials = UserSignInRequestBody(
+                            email = _emailValue.value.text,
+                            password = _passwordValue.value.text
+                        )
+                        val signInDeferred = async {
+                            userRepository.signInUser(userSignInCredentials).flowOn(dispatcher)
+                                .first()
+                        }
+                        val signInResult = signInDeferred.await()
+                        signInResult
+                            .onSuccess { bearerTokens ->
+                                settingsDataStore.updateData { settings ->
+                                    settings.withBearerToken(bearerTokens)
+                                }.also { _event.tryEmit(SignUpEvent.SignUp) }
                                 stopLoading()
                             }
+                            .onFailure { singInException ->
+                                Log.e("SignIn", "${singInException.message}")
+                                stopLoading()
+                            }
+                    }
+                    .onFailure { signUpException ->
+                        Log.e("SignUp", "${signUpException.message}")
+                        stopLoading()
                     }
             }
         }

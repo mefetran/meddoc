@@ -1,6 +1,8 @@
 package mefetran.dgusev.meddocs.ui.screen.signin
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -47,7 +51,7 @@ internal fun SignInScreen(
     emailValue: TextFieldValue,
     passwordValue: TextFieldValue,
     modifier: Modifier = Modifier,
-    navigateToMain: () -> Unit,
+    onSignIn: () -> Unit,
     navigateToRegistrationScreen: () -> Unit,
     onNewEmailValue: (TextFieldValue) -> Unit,
     onNewPasswordValue: (TextFieldValue) -> Unit,
@@ -153,7 +157,7 @@ internal fun SignInScreen(
                     imeAction = ImeAction.Send,
                 ),
                 keyboardActions = KeyboardActions(onSend = {
-                    navigateToMain()
+                    onSignIn()
                 }),
                 visualTransformation = if (state.showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
@@ -170,7 +174,7 @@ internal fun SignInScreen(
             )
             Spacer(Modifier.height(16.dp))
             Button(
-                onClick = navigateToMain,
+                onClick = onSignIn,
                 modifier = Modifier.fillMaxWidth().height(48.dp)
             ) {
                 Text(
@@ -196,6 +200,19 @@ internal fun SignInScreen(
             }
         }
     }
+
+    if (state.isLoading) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.surfaceDim.copy(0.8f))
+        ) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary,
+                strokeWidth = 6.dp,
+                modifier = Modifier.size(56.dp),
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true, locale = "ru")
@@ -209,7 +226,7 @@ internal fun SignInScreenPreview(modifier: Modifier = Modifier) {
             state = SignInState(isEmailError = true, isPasswordEmptyError = true),
             emailValue = emailValue,
             passwordValue = passwordValue,
-            navigateToMain = {},
+            onSignIn = {},
             navigateToRegistrationScreen = {},
             onNewPasswordValue = {},
             onNewEmailValue = {},

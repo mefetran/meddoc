@@ -1,5 +1,5 @@
 package mefetran.dgusev.meddocs.app
 
-import io.realm.RealmSet
+import io.realm.RealmDictionary
 
-fun <T: Any> Set<T>.toRealmSet(): RealmSet<T> = RealmSet<T>(this)
+fun <V: Any> Map<String, V>.toRealmDictionary(): RealmDictionary<V> = RealmDictionary(this)

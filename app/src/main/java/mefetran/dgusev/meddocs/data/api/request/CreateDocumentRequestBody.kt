@@ -8,7 +8,7 @@ import mefetran.dgusev.meddocs.data.model.Document
 data class CreateDocumentRequestBody(
     val id: String = "",
     val title: String = "",
-    val content: String = "",
+    val content: Map<String, String> = hashMapOf(),
     @SerialName("created_at")
     val createdAt: String = "",
     @SerialName("updated_at")

@@ -59,7 +59,7 @@ fun NavGraphBuilder.signUpDestination(
             onNewEmailValue = signUpViewModel::updateEmailValue,
             onNewPasswordValue = signUpViewModel::updatePasswordValue,
             onNewNameValue = signUpViewModel::updateNameValue,
-            onShowPasswordClicked = signUpViewModel::showPasswordClicked,
+            onShowPasswordClicked = signUpViewModel::showPasswordInput,
             onSignUp = signUpViewModel::signUp,
             onBackClicked = onBackClicked,
         )

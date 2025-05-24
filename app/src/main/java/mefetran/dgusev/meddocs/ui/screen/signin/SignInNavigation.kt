@@ -2,6 +2,7 @@ package mefetran.dgusev.meddocs.ui.screen.signin
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -11,6 +12,7 @@ import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 import mefetran.dgusev.meddocs.ui.components.model.RouteName
 import mefetran.dgusev.meddocs.ui.screen.main.Main
+import mefetran.dgusev.meddocs.ui.screen.signin.model.SignInEvent
 
 @Serializable
 internal data object SignIn : RouteName {
@@ -45,20 +47,28 @@ fun NavGraphBuilder.signInDestination(
         val state by signInViewModel.state.collectAsStateWithLifecycle()
         val emailValue by signInViewModel.emailValue.collectAsStateWithLifecycle()
         val passwordValue by signInViewModel.passwordValue.collectAsStateWithLifecycle()
+        val event by signInViewModel.event.collectAsStateWithLifecycle(
+            initialValue = SignInEvent.Empty,
+        )
+
+        LaunchedEffect(event) {
+            when (event) {
+                SignInEvent.SignIn -> {
+                    onNavigateToMain()
+                }
+                else -> {}
+            }
+        }
 
         SignInScreen(
             state = state,
             emailValue = emailValue,
             passwordValue = passwordValue,
-            navigateToMain = {
-                if (signInViewModel.isInputValid()) {
-                    onNavigateToMain()
-                }
-            },
+            onSignIn = signInViewModel::signIn,
             navigateToRegistrationScreen = onNavigateToSignUp,
             onNewEmailValue = signInViewModel::updateEmailValue,
             onNewPasswordValue = signInViewModel::updatePasswordValue,
-            onShowPasswordClicked = signInViewModel::showPasswordClicked,
+            onShowPasswordClicked = signInViewModel::showPasswordInput,
         )
     }
 }

@@ -239,7 +239,8 @@ internal fun SignUpPreview(modifier: Modifier = Modifier) {
 
     MeddocsTheme {
         SignUpScreen(
-            state = SignUpState(isEmailError = false, isPasswordShortError = false, isLoading = true),
+            state = SignUpState(isEmailError = false, isPasswordShortError = false,
+                isLoading = false),
             emailValue = emailValue,
             passwordValue = passwordValue,
             nameValue = nameValue,
