@@ -36,4 +36,5 @@
     <string name="category_endoscopy">Endoscopy</string>
     <string name="category_functional_diagnostics">Func. diagnostics</string>
     <string name="category_other">Other</string>
+    <string name="logout_button">Logout</string>
 </resources>

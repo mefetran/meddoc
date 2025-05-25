@@ -35,19 +35,17 @@ fun NavGraphBuilder.signUpDestination(
     ) {
         val signUpViewModel = hiltViewModel<SignUpViewModel>()
         val state by signUpViewModel.state.collectAsStateWithLifecycle()
-        val event by signUpViewModel.event.collectAsStateWithLifecycle(
-            initialValue = SignUpEvent.Empty,
-        )
         val emailValue by signUpViewModel.emailValue.collectAsStateWithLifecycle()
         val passwordValue by signUpViewModel.passwordValue.collectAsStateWithLifecycle()
         val nameValue by signUpViewModel.nameValue.collectAsStateWithLifecycle()
 
-        LaunchedEffect(event) {
-            when (event) {
-                SignUpEvent.SignUp -> {
-                    onNavigateToMain()
+        LaunchedEffect(Unit) {
+            signUpViewModel.event.collect { event ->
+                when (event) {
+                    SignUpEvent.SignUp -> {
+                        onNavigateToMain()
+                    }
                 }
-                else -> {}
             }
         }
 

@@ -27,7 +27,7 @@ import mefetran.dgusev.meddocs.app.datastore.withBearerToken
 import mefetran.dgusev.meddocs.data.api.request.UserRegistrationRequestBody
 import mefetran.dgusev.meddocs.data.api.request.UserSignInRequestBody
 import mefetran.dgusev.meddocs.data.repository.UserRepository
-import mefetran.dgusev.meddocs.di.FakeRepository
+import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.proto.Settings
 import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpEvent
 import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpState
@@ -37,7 +37,7 @@ import javax.inject.Inject
 class SignUpViewModel @Inject constructor(
     private val settingsDataStore: DataStore<Settings>,
     private val dispatcher: CoroutineDispatcher,
-    @FakeRepository val userRepository: UserRepository,
+    @RealRepository val userRepository: UserRepository,
 ) : ViewModel() {
     private val _emailValue = MutableStateFlow(TextFieldValue(""))
     val emailValue = _emailValue.asStateFlow()
@@ -186,7 +186,7 @@ class SignUpViewModel @Inject constructor(
                         signInResult
                             .onSuccess { bearerTokens ->
                                 settingsDataStore.updateData { settings ->
-                                    settings.withBearerToken(bearerTokens)
+                                    settings.withBearerToken(tokenPairResponse = bearerTokens)
                                 }.also { _event.tryEmit(SignUpEvent.SignUp) }
                                 stopLoading()
                             }

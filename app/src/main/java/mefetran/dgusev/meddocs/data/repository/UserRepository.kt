@@ -5,7 +5,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import mefetran.dgusev.meddocs.data.api.UserApi
 import mefetran.dgusev.meddocs.data.api.UserRealmApi
-import mefetran.dgusev.meddocs.data.api.request.RefreshTokenRequestBody
 import mefetran.dgusev.meddocs.data.api.request.UserRegistrationRequestBody
 import mefetran.dgusev.meddocs.data.api.request.UserSignInRequestBody
 import mefetran.dgusev.meddocs.data.api.response.TokenPairResponse
@@ -17,10 +16,10 @@ interface UserRepository {
 
     suspend fun signInUser(userSignInCredentials: UserSignInRequestBody): Flow<Result<TokenPairResponse>>
 
-    suspend fun refreshToken(refreshTokenBody: RefreshTokenRequestBody): Flow<Result<TokenPairResponse>>
-
-    suspend fun getUser(): User?
+    suspend fun getUserOrNull(): User?
     suspend fun saveUser(user: User)
+
+    suspend fun deleteUser()
 }
 
 class RealUserRepositoryImpl @Inject constructor(
@@ -33,12 +32,11 @@ class RealUserRepositoryImpl @Inject constructor(
     override suspend fun signInUser(userSignInCredentials: UserSignInRequestBody): Flow<Result<TokenPairResponse>> =
         userApi.signInUser(userSignInCredentials)
 
-    override suspend fun refreshToken(refreshTokenBody: RefreshTokenRequestBody): Flow<Result<TokenPairResponse>> =
-        userApi.refreshToken(refreshTokenBody)
-
-    override suspend fun getUser(): User? = userRealmApi.getUser()
+    override suspend fun getUserOrNull(): User? = userRealmApi.getUserOrNull()
 
     override suspend fun saveUser(user: User) = userRealmApi.saveUser(user)
+
+    override suspend fun deleteUser() = userRealmApi.deleteUser()
 }
 
 class FakeUserRepositoryImpl @Inject constructor(
@@ -75,24 +73,9 @@ class FakeUserRepositoryImpl @Inject constructor(
             })
         }
 
-    override suspend fun refreshToken(refreshTokenBody: RefreshTokenRequestBody): Flow<Result<TokenPairResponse>> =
-        flow {
-            emit(runCatching {
-                TokenPairResponse(
-                    accessToken = Base64.encodeToString(
-                        refreshTokenBody.refreshToken.toByteArray(),
-                        Base64.DEFAULT
-                    ),
-                    refreshToken = Base64.encodeToString(
-                        refreshTokenBody.refreshToken.toByteArray().apply { shuffle() },
-                        Base64.DEFAULT
-                    ),
-                    expiresIn = 900,
-                )
-            })
-        }
-
-    override suspend fun getUser(): User? = userRealmApi.getUser()
+    override suspend fun getUserOrNull(): User? = userRealmApi.getUserOrNull()
 
     override suspend fun saveUser(user: User) = userRealmApi.saveUser(user)
+
+    override suspend fun deleteUser() = userRealmApi.deleteUser()
 }

@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,8 +31,9 @@ import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 internal fun SettingsScreen(
     state: SettingsState,
     modifier: Modifier = Modifier,
-    onThemeOptionClicked: (ThemeOption) -> Unit,
-    onLanguageOptionClicked: (LanguageOption) -> Unit,
+    onThemeOptionClick: (ThemeOption) -> Unit,
+    onLanguageOptionClick: (LanguageOption) -> Unit,
+    onLogoutClick: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val themesList = remember {
@@ -84,7 +87,7 @@ internal fun SettingsScreen(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 },
-                onOptionClicked = onThemeOptionClicked,
+                onOptionClicked = onThemeOptionClick,
             )
             Spacer(Modifier.height(16.dp))
             CustomExposedDropdownMenu(
@@ -102,8 +105,18 @@ internal fun SettingsScreen(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 },
-                onOptionClicked = onLanguageOptionClicked,
+                onOptionClicked = onLanguageOptionClick,
             )
+            Spacer(Modifier.weight(1f))
+            Button(
+                onClick = onLogoutClick,
+                modifier = Modifier.height(48.dp).align(Alignment.CenterHorizontally),
+            ) {
+                Text(
+                    text = stringResource(id = R.string.logout_button),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
     }
 }
@@ -114,8 +127,9 @@ internal fun SettingsScreenPreview(modifier: Modifier = Modifier) {
     MeddocsTheme {
         SettingsScreen(
             state = SettingsState(currentLanguageCode = "ru"),
-            onThemeOptionClicked = {},
-            onLanguageOptionClicked = {},
+            onThemeOptionClick = {},
+            onLanguageOptionClick = {},
+            onLogoutClick = {}
         )
     }
 }

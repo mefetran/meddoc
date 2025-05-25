@@ -47,16 +47,14 @@ fun NavGraphBuilder.signInDestination(
         val state by signInViewModel.state.collectAsStateWithLifecycle()
         val emailValue by signInViewModel.emailValue.collectAsStateWithLifecycle()
         val passwordValue by signInViewModel.passwordValue.collectAsStateWithLifecycle()
-        val event by signInViewModel.event.collectAsStateWithLifecycle(
-            initialValue = SignInEvent.Empty,
-        )
 
-        LaunchedEffect(event) {
-            when (event) {
-                SignInEvent.SignIn -> {
-                    onNavigateToMain()
+        LaunchedEffect(Unit) {
+            signInViewModel.event.collect { event ->
+                when (event) {
+                    SignInEvent.SignIn -> {
+                        onNavigateToMain()
+                    }
                 }
-                else -> {}
             }
         }
 

@@ -11,7 +11,9 @@ import mefetran.dgusev.meddocs.ui.screen.signin.SignIn
 @Serializable
 internal data object Main
 
-fun NavGraphBuilder.mainDestination() {
+fun NavGraphBuilder.mainDestination(
+    onNavigateToSignIn: () -> Unit,
+) {
     composable<Main>(
         enterTransition = {
             slideIntoContainer(
@@ -26,7 +28,9 @@ fun NavGraphBuilder.mainDestination() {
                 )
         },
     ) {
-        MainNavHost()
+        MainNavHost(
+            onNavigateToSignIn = onNavigateToSignIn,
+        )
     }
 }
 

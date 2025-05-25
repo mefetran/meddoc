@@ -6,6 +6,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import mefetran.dgusev.meddocs.data.api.DocumentApi
 import mefetran.dgusev.meddocs.data.api.DocumentApiImpl
+import mefetran.dgusev.meddocs.data.api.TokenRefresher
+import mefetran.dgusev.meddocs.data.api.TokenRefresherImpl
 import mefetran.dgusev.meddocs.data.api.UserApi
 import mefetran.dgusev.meddocs.data.api.UserApiImpl
 import mefetran.dgusev.meddocs.data.api.UserRealmApi
@@ -27,4 +29,8 @@ abstract class ApiModule {
     @Binds
     @Singleton
     abstract fun bindUserRealmApi(impl: UserRealmApiImpl): UserRealmApi
+
+    @Binds
+    @Singleton
+    abstract fun bindTokenRefresher(impl: TokenRefresherImpl): TokenRefresher
 }

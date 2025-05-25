@@ -35,4 +35,5 @@
     <string name="category_endoscopy">Эндоскопия</string>
     <string name="category_functional_diagnostics">Функц. диагностика</string>
     <string name="category_other">Другое</string>
+    <string name="logout_button">Выйти</string>
 </resources>

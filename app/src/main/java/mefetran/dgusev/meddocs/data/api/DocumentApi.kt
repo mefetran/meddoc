@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.flow
 import mefetran.dgusev.meddocs.data.api.request.CreateDocumentRequestBody
 import mefetran.dgusev.meddocs.data.api.request.UpdateDocumentRequestBody
 import mefetran.dgusev.meddocs.data.api.response.DocumentResponse
+import mefetran.dgusev.meddocs.di.DefaultClient
 import javax.inject.Inject
 
 interface DocumentApi {
@@ -29,7 +30,10 @@ interface DocumentApi {
     suspend fun deleteDocumentById(id: String): Flow<Result<String>>
 }
 
-class DocumentApiImpl @Inject constructor(private val httpClient: HttpClient) : DocumentApi {
+class DocumentApiImpl @Inject constructor(
+    @DefaultClient private val httpClient: HttpClient
+) :
+    DocumentApi {
     override suspend fun getDocuments(): Flow<Result<List<DocumentResponse>>> = flow {
         emit(kotlin.runCatching {
             httpClient.get("documents").body()

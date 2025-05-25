@@ -23,25 +23,7 @@ val Context.settingsDataStore: DataStore<Settings> by dataStore(
 
 object SettingsSerializer : Serializer<Settings> {
     @SuppressLint("ConstantLocale")
-    override val defaultValue: Settings = Settings
-        .newBuilder()
-        .setCurrentLanguageCode(Locale.getDefault().language)
-        .setDarkThemeSettings(
-            DarkThemeSettings
-                .newBuilder()
-                .setUseDarkTheme(true)
-                .setUseSystemSettings(true)
-                .build()
-        )
-        .setBearerTokens(
-            BearerTokens
-                .newBuilder()
-                .setAccessToken("")
-                .setRefreshToken("")
-                .setExpiresIn(0)
-                .build()
-        )
-        .build()
+    override val defaultValue: Settings = defaultSettings()
 
     override suspend fun readFrom(input: InputStream): Settings {
         try {
@@ -79,7 +61,27 @@ fun Settings.withBearerToken(tokenPairResponse: TokenPairResponse): Settings = t
         this.bearerTokens.toBuilder()
             .setAccessToken(tokenPairResponse.accessToken)
             .setRefreshToken(tokenPairResponse.refreshToken)
-            .setExpiresIn(tokenPairResponse.expiresIn)
+            .setTimestampSec(System.currentTimeMillis() / 1000 + (tokenPairResponse.expiresIn - 60).coerceAtLeast(0))
+            .build()
+    )
+    .build()
+
+fun defaultSettings(): Settings = Settings
+    .newBuilder()
+    .setCurrentLanguageCode(Locale.getDefault().language)
+    .setDarkThemeSettings(
+        DarkThemeSettings
+            .newBuilder()
+            .setUseDarkTheme(true)
+            .setUseSystemSettings(true)
+            .build()
+    )
+    .setBearerTokens(
+        BearerTokens
+            .newBuilder()
+            .setAccessToken("")
+            .setRefreshToken("")
+            .setTimestampSec(System.currentTimeMillis() / 1000)
             .build()
     )
     .build()

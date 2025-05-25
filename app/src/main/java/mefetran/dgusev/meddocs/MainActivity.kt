@@ -6,9 +6,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
@@ -16,11 +15,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import mefetran.dgusev.meddocs.app.datastore.isBlank
-import mefetran.dgusev.meddocs.ui.StartViewModel
+import mefetran.dgusev.meddocs.ui.AppEvent
+import mefetran.dgusev.meddocs.ui.AppViewModel
 import mefetran.dgusev.meddocs.ui.screen.main.Main
 import mefetran.dgusev.meddocs.ui.screen.main.mainDestination
 import mefetran.dgusev.meddocs.ui.screen.main.navigateToMain
 import mefetran.dgusev.meddocs.ui.screen.signin.SignIn
+import mefetran.dgusev.meddocs.ui.screen.signin.navigateToSignIn
 import mefetran.dgusev.meddocs.ui.screen.signin.signInDestination
 import mefetran.dgusev.meddocs.ui.screen.signup.navigateToSignUp
 import mefetran.dgusev.meddocs.ui.screen.signup.signUpDestination
@@ -32,27 +33,33 @@ val NavDestination.shortRoute: String?
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val startViewModel: StartViewModel by viewModels()
+    private val appViewModel: AppViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         splashScreen.setKeepOnScreenCondition {
-            startViewModel.isLoadingState.value
+            appViewModel.isLoadingState.value
         }
         setContent {
-            val state by startViewModel.state.collectAsStateWithLifecycle()
+            val state by appViewModel.state.collectAsStateWithLifecycle()
+            val navController = rememberNavController()
+
+            LaunchedEffect(Unit) {
+                appViewModel.event.collect { event ->
+                    when (event) {
+                        AppEvent.SignIn -> navController.navigateToSignIn()
+                    }
+                }
+            }
 
             MeddocsTheme(
                 darkTheme = if (state.darkThemeSettings.useSystemSettings) isSystemInDarkTheme() else state.darkThemeSettings.useDarkTheme
             ) {
-                val navController = rememberNavController()
-                val user = remember { startViewModel.getUser() }
-
                 NavHost(
                     navController = navController,
-                    startDestination = if(state.bearerTokens.isBlank() && user == null) SignIn else Main
+                    startDestination = if(state.bearerTokens.isBlank() && state.user == null) SignIn else Main
                 ) {
                     signInDestination(
                         onNavigateToMain = navController::navigateToMain,
@@ -64,7 +71,9 @@ class MainActivity : AppCompatActivity() {
                             navController.popBackStack()
                         },
                     )
-                    mainDestination()
+                    mainDestination(
+                        onNavigateToSignIn = navController::navigateToSignIn,
+                    )
                 }
             }
         }
