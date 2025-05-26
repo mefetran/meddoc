@@ -1,4 +1,4 @@
-package mefetran.dgusev.meddocs.data.api
+package mefetran.dgusev.meddocs.data.realm
 
 import io.realm.Realm
 import mefetran.dgusev.meddocs.data.model.User
@@ -21,16 +21,16 @@ class UserRealmApiImpl @Inject constructor() : UserRealmApi {
 
     override suspend fun saveUser(user: User) {
         Realm.getDefaultInstance().use { realm ->
-            realm.executeTransaction { currentRealm ->
-                currentRealm.insertOrUpdate(user)
+            realm.executeTransaction { transactionRealm ->
+                transactionRealm.insertOrUpdate(user)
             }
         }
     }
 
     override suspend fun deleteUser() {
         Realm.getDefaultInstance().use {  realm ->
-            realm.executeTransaction {  currentRealm ->
-                currentRealm.delete(User::class.java)
+            realm.executeTransaction {  transactionRealm ->
+                transactionRealm.delete(User::class.java)
             }
         }
     }

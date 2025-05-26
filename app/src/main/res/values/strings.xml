@@ -37,4 +37,18 @@
     <string name="category_functional_diagnostics">Func. diagnostics</string>
     <string name="category_other">Other</string>
     <string name="logout_button">Logout</string>
+    <string name="create_document_title">Create document</string>
+    <string name="title_label">Title</string>
+    <string name="description_label">Description</string>
+    <string name="date_label">Date</string>
+    <string name="category_label">Category</string>
+    <string name="additional_data_label">Additional data</string>
+    <string name="field_label">Field</string>
+    <string name="value_label">Value</string>
+    <string name="create_document_button">Create document</string>
+    <string name="add_button">Add</string>
+    <string name="delete_button">Delete</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="select_button">Select</string>
+    <string name="select_date">Select date</string>
 </resources>

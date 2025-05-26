@@ -11,13 +11,13 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.io.IOException
 import mefetran.dgusev.meddocs.app.datastore.withBearerToken
-import mefetran.dgusev.meddocs.data.api.request.RefreshTokenRequestBody
+import mefetran.dgusev.meddocs.data.api.request.user.RefreshTokenRequestBody
 import mefetran.dgusev.meddocs.proto.Settings
 import javax.inject.Inject
 
 class TokenManager @Inject constructor(
     private val settingsDataStore: DataStore<Settings>,
-    private val tokenRefresher: TokenRefresher,
+    private val tokenRefreshApi: TokenRefreshApi,
     private val dispatcher: CoroutineDispatcher,
     private val tokenInvalidationEmitter: TokenInvalidationEmitter,
 ) {
@@ -52,7 +52,7 @@ class TokenManager @Inject constructor(
         if (refreshToken.isBlank()) return null
 
         return try {
-            val result = tokenRefresher
+            val result = tokenRefreshApi
                 .refreshToken(RefreshTokenRequestBody(refreshToken))
                 .flowOn(dispatcher)
                 .first()

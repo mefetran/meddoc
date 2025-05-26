@@ -7,8 +7,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data object Documents
 
-fun NavGraphBuilder.documentsDestination() {
+fun NavGraphBuilder.documentsDestination(
+    onNavigateToCreateDocument: () -> Unit,
+) {
     composable<Documents> {
-        DocumentsScreen()
+        DocumentsScreen(
+            onNavigateToCreateDocument = onNavigateToCreateDocument,
+        )
     }
 }

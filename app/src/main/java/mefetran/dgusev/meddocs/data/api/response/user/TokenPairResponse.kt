@@ -1,4 +1,4 @@
-package mefetran.dgusev.meddocs.data.api.response
+package mefetran.dgusev.meddocs.data.api.response.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

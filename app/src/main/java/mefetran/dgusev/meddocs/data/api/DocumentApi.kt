@@ -9,9 +9,9 @@ import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import mefetran.dgusev.meddocs.data.api.request.CreateDocumentRequestBody
-import mefetran.dgusev.meddocs.data.api.request.UpdateDocumentRequestBody
-import mefetran.dgusev.meddocs.data.api.response.DocumentResponse
+import mefetran.dgusev.meddocs.data.api.request.document.CreateDocumentRequestBody
+import mefetran.dgusev.meddocs.data.api.request.document.UpdateDocumentRequestBody
+import mefetran.dgusev.meddocs.data.api.response.document.DocumentResponse
 import mefetran.dgusev.meddocs.di.DefaultClient
 import javax.inject.Inject
 

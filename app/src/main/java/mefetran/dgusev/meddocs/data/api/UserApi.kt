@@ -6,9 +6,9 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import mefetran.dgusev.meddocs.data.api.request.UserRegistrationRequestBody
-import mefetran.dgusev.meddocs.data.api.request.UserSignInRequestBody
-import mefetran.dgusev.meddocs.data.api.response.TokenPairResponse
+import mefetran.dgusev.meddocs.data.api.request.user.UserRegistrationRequestBody
+import mefetran.dgusev.meddocs.data.api.request.user.UserSignInRequestBody
+import mefetran.dgusev.meddocs.data.api.response.user.TokenPairResponse
 import mefetran.dgusev.meddocs.data.model.User
 import mefetran.dgusev.meddocs.di.AuthClient
 import javax.inject.Inject

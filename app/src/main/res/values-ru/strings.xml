@@ -36,4 +36,18 @@
     <string name="category_functional_diagnostics">Функц. диагностика</string>
     <string name="category_other">Другое</string>
     <string name="logout_button">Выйти</string>
+    <string name="create_document_title">Создать документ</string>
+    <string name="title_label">Название</string>
+    <string name="description_label">Описание</string>
+    <string name="date_label">Дата</string>
+    <string name="category_label">Категория</string>
+    <string name="additional_data_label">Дополнительная информация</string>
+    <string name="field_label">Поле</string>
+    <string name="value_label">Значение</string>
+    <string name="create_document_button">Создать документ</string>
+    <string name="add_button">Добавить</string>
+    <string name="delete_button">Удалить</string>
+    <string name="cancel_button">Отмена</string>
+    <string name="select_button">Выбрать</string>
+    <string name="select_date">Выберите дату</string>
 </resources>

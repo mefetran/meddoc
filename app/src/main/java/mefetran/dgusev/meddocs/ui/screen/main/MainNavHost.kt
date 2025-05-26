@@ -36,6 +36,7 @@ import mefetran.dgusev.meddocs.ui.screen.settings.settingsDestination
 @Composable
 internal fun MainNavHost(
     onNavigateToSignIn: () -> Unit,
+    onNavigateToCreateDocument: () -> Unit,
 ) {
     val mainViewModel = hiltViewModel<MainViewModel>()
     val currentLanguageState by mainViewModel.currentLanguageState.collectAsStateWithLifecycle()
@@ -104,7 +105,9 @@ internal fun MainNavHost(
         ) {
             homeDestination()
             settingsDestination(onNavigateToSignIn = onNavigateToSignIn)
-            documentsDestination()
+            documentsDestination(
+                onNavigateToCreateDocument = onNavigateToCreateDocument,
+            )
         }
     }
 }

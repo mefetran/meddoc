@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import mefetran.dgusev.meddocs.app.EMAIL_LENGTH
 import mefetran.dgusev.meddocs.app.PASSWORD_MAX_LENGTH
 import mefetran.dgusev.meddocs.app.datastore.withBearerToken
-import mefetran.dgusev.meddocs.data.api.request.UserSignInRequestBody
+import mefetran.dgusev.meddocs.data.api.request.user.UserSignInRequestBody
 import mefetran.dgusev.meddocs.data.repository.UserRepository
 import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.proto.Settings

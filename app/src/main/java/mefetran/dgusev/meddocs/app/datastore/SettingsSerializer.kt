@@ -7,7 +7,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
 import com.google.protobuf.InvalidProtocolBufferException
-import mefetran.dgusev.meddocs.data.api.response.TokenPairResponse
+import mefetran.dgusev.meddocs.data.api.response.user.TokenPairResponse
 import mefetran.dgusev.meddocs.proto.BearerTokens
 import mefetran.dgusev.meddocs.proto.DarkThemeSettings
 import mefetran.dgusev.meddocs.proto.Settings

@@ -4,10 +4,10 @@ import android.util.Base64
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import mefetran.dgusev.meddocs.data.api.UserApi
-import mefetran.dgusev.meddocs.data.api.UserRealmApi
-import mefetran.dgusev.meddocs.data.api.request.UserRegistrationRequestBody
-import mefetran.dgusev.meddocs.data.api.request.UserSignInRequestBody
-import mefetran.dgusev.meddocs.data.api.response.TokenPairResponse
+import mefetran.dgusev.meddocs.data.realm.UserRealmApi
+import mefetran.dgusev.meddocs.data.api.request.user.UserRegistrationRequestBody
+import mefetran.dgusev.meddocs.data.api.request.user.UserSignInRequestBody
+import mefetran.dgusev.meddocs.data.api.response.user.TokenPairResponse
 import mefetran.dgusev.meddocs.data.model.User
 import javax.inject.Inject
 

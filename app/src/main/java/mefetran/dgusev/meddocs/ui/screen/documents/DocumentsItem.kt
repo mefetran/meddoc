@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.data.model.Category
 import mefetran.dgusev.meddocs.data.model.Document
+import mefetran.dgusev.meddocs.data.model.icon
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 import java.time.LocalDate
 
@@ -62,7 +63,7 @@ fun DocumentsItem(
                     modifier = Modifier.weight(1f)
                 )
                 Icon(
-                    imageVector = category.icon,
+                    imageVector = category.icon(),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(20.dp)

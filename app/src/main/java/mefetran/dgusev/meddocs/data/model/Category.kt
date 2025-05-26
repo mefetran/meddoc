@@ -12,41 +12,37 @@ import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.vector.ImageVector
 import mefetran.dgusev.meddocs.R
 
 @Stable
-sealed class Category(
-    @StringRes val labelRes: Int,
-    val icon: ImageVector
-) {
-    data object Laboratory : Category(R.string.category_laboratory, Icons.Default.Biotech)
-    data object Instrumental : Category(R.string.category_instrumental, Icons.Default.MonitorHeart)
-    data object Ultrasound : Category(R.string.category_ultrasound, Icons.Default.Microwave)
-    data object XRay : Category(R.string.category_xray, Icons.Default.CameraAlt)
-    data object MRI : Category(R.string.category_mri, Icons.Default.MedicalInformation)
-    data object CT : Category(R.string.category_ct, Icons.Default.MedicalServices)
-    data object ECG : Category(R.string.category_ecg, Icons.Default.Favorite)
-    data object Endoscopy : Category(R.string.category_endoscopy, Icons.Default.Search)
-    data object FunctionalDiagnostics :
-        Category(R.string.category_functional_diagnostics, Icons.Default.Timeline)
+enum class Category(@StringRes val labelRes: Int) {
+    Laboratory(R.string.category_laboratory),
+    Instrumental(R.string.category_instrumental),
+    Ultrasound(R.string.category_ultrasound),
+    XRay(R.string.category_xray),
+    MRI(R.string.category_mri),
+    CT(R.string.category_ct),
+    ECG(R.string.category_ecg),
+    Endoscopy(R.string.category_endoscopy),
+    FunctionalDiagnostics(R.string.category_functional_diagnostics),
+    Other(R.string.category_other);
+}
 
-    data object Other : Category(R.string.category_other, Icons.Default.MoreHoriz)
-
-    companion object {
-        private val values = listOf(
-            Laboratory,
-            Instrumental,
-            Ultrasound,
-            XRay,
-            MRI,
-            CT,
-            ECG,
-            Endoscopy,
-            FunctionalDiagnostics,
-            Other
-        )
-        fun fromString(value: String) = values.firstOrNull { it.toString().lowercase() == value.lowercase() } ?: Other
+@Composable
+fun Category.icon(): ImageVector {
+    return when (this) {
+        Category.Laboratory -> Icons.Default.Biotech
+        Category.Instrumental -> Icons.Default.MonitorHeart
+        Category.Ultrasound -> Icons.Default.Microwave
+        Category.XRay -> Icons.Default.CameraAlt
+        Category.MRI -> Icons.Default.MedicalInformation
+        Category.CT -> Icons.Default.MedicalServices
+        Category.ECG -> Icons.Default.Favorite
+        Category.Endoscopy -> Icons.Default.Search
+        Category.FunctionalDiagnostics -> Icons.Default.Timeline
+        Category.Other -> Icons.Default.MoreHoriz
     }
 }

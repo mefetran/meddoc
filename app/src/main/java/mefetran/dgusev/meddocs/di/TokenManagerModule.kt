@@ -8,7 +8,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import mefetran.dgusev.meddocs.data.api.TokenInvalidationEmitter
 import mefetran.dgusev.meddocs.data.api.TokenManager
-import mefetran.dgusev.meddocs.data.api.TokenRefresher
+import mefetran.dgusev.meddocs.data.api.TokenRefreshApi
 import mefetran.dgusev.meddocs.proto.Settings
 import javax.inject.Singleton
 
@@ -23,12 +23,12 @@ object TokenManagerModule {
     @Singleton
     fun provideTokenManagerModule(
         settingsDataStore: DataStore<Settings>,
-        tokenRefresher: TokenRefresher,
+        tokenRefreshApi: TokenRefreshApi,
         dispatcher: CoroutineDispatcher,
         tokenInvalidationEmitter: TokenInvalidationEmitter,
     ): TokenManager = TokenManager(
         settingsDataStore = settingsDataStore,
-        tokenRefresher = tokenRefresher,
+        tokenRefreshApi = tokenRefreshApi,
         dispatcher = dispatcher,
         tokenInvalidationEmitter = tokenInvalidationEmitter,
     )

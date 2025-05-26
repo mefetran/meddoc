@@ -12,12 +12,12 @@ open class Document(
     var id: String = "",
     @Required
     var title: String = "",
-    var content: RealmDictionary<String> = RealmDictionary(),
-    var date: String = "",
     var description: String = "",
-    var category: String = Category.Other.toString(),
+    var date: String = "",
     var file: String = "",
+    var category: String = Category.Other.name,
     var priority: Int = 0,
+    var content: RealmDictionary<String> = RealmDictionary(),
     var createdAt: String = "",
     var updatedAt: String = "",
 ) : RealmObject()

@@ -20,7 +20,7 @@ import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 @Composable
 fun BackToolbar(
     modifier: Modifier = Modifier,
-    onBackClicked: () -> Unit,
+    onBackClick: () -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -29,7 +29,7 @@ fun BackToolbar(
             .fillMaxWidth()
     ) {
         IconButton(
-            onClick = onBackClicked
+            onClick = onBackClick
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -47,7 +47,7 @@ fun BackToolbarPreview(modifier: Modifier = Modifier) {
     MeddocsTheme {
         BackToolbar(
             modifier = Modifier.padding(16.dp),
-            onBackClicked = {},
+            onBackClick = {},
         )
     }
 }

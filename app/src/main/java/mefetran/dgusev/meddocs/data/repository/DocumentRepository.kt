@@ -5,11 +5,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import mefetran.dgusev.meddocs.app.toRealmDictionary
 import mefetran.dgusev.meddocs.data.api.DocumentApi
-import mefetran.dgusev.meddocs.data.api.request.CreateDocumentRequestBody
-import mefetran.dgusev.meddocs.data.api.request.UpdateDocumentRequestBody
-import mefetran.dgusev.meddocs.data.api.response.toDocument
+import mefetran.dgusev.meddocs.data.api.request.document.CreateDocumentRequestBody
+import mefetran.dgusev.meddocs.data.api.request.document.UpdateDocumentRequestBody
+import mefetran.dgusev.meddocs.data.api.response.document.toDocument
 import mefetran.dgusev.meddocs.data.model.Category
 import mefetran.dgusev.meddocs.data.model.Document
+import mefetran.dgusev.meddocs.data.realm.DocumentRealmApi
 import java.time.LocalDate
 import javax.inject.Inject
 import kotlin.random.Random
@@ -27,10 +28,23 @@ interface DocumentRepository {
     ): Flow<Result<Document>>
 
     suspend fun deleteDocumentById(id: String): Flow<Result<String>>
+
+    suspend fun saveDocumentsListLocal(documentsList: List<Document>)
+
+    suspend fun getDocumentsListOrNullLocal(): List<Document>?
+
+    suspend fun deleteDocumentsListLocal()
+
+    suspend fun saveDocumentLocal(document: Document)
+
+    suspend fun getDocumentOrNullLocal(documentId: String): Document?
+
+    suspend fun deleteDocumentLocal(documentId: String)
 }
 
 class RealDocumentRepositoryImpl @Inject constructor(
     private val documentApi: DocumentApi,
+    private val documentRealmApi: DocumentRealmApi,
 ) : DocumentRepository {
     override suspend fun getDocuments(): Flow<Result<List<Document>>> =
         documentApi.getDocuments().map { result ->
@@ -60,9 +74,23 @@ class RealDocumentRepositoryImpl @Inject constructor(
 
     override suspend fun deleteDocumentById(id: String): Flow<Result<String>> =
         documentApi.deleteDocumentById(id)
+
+    override suspend fun saveDocumentsListLocal(documentsList: List<Document>) = documentRealmApi.saveDocumentsList(documentsList)
+
+    override suspend fun getDocumentsListOrNullLocal(): List<Document>? = documentRealmApi.getDocumentsListOrNull()
+
+    override suspend fun deleteDocumentsListLocal() = documentRealmApi.deleteDocumentsList()
+
+    override suspend fun saveDocumentLocal(document: Document) = documentRealmApi.saveDocument(document)
+
+    override suspend fun getDocumentOrNullLocal(documentId: String): Document? = documentRealmApi.getDocumentOrNull(documentId)
+
+    override suspend fun deleteDocumentLocal(documentId: String) = documentRealmApi.deleteDocument(documentId)
 }
 
-class FakeDocumentRepositoryImpl : DocumentRepository {
+class FakeDocumentRepositoryImpl @Inject constructor(
+    private val documentRealmApi: DocumentRealmApi,
+) : DocumentRepository {
     override suspend fun getDocuments(): Flow<Result<List<Document>>> = flow {
         runCatching {
             listOf(
@@ -103,11 +131,7 @@ class FakeDocumentRepositoryImpl : DocumentRepository {
     override suspend fun createDocument(requestBody: CreateDocumentRequestBody): Flow<Result<Document>> = flow {
         runCatching {
             Document(
-                id = requestBody.id,
                 title = requestBody.title,
-                content = requestBody.content.toRealmDictionary(),
-                createdAt = requestBody.createdAt,
-                updatedAt = requestBody.updatedAt,
             )
         }
     }
@@ -130,14 +154,23 @@ class FakeDocumentRepositoryImpl : DocumentRepository {
     ): Flow<Result<Document>> = flow {
         Document(
             id = id,
-            title = requestBody.title,
-            content = requestBody.content.toRealmDictionary(),
-            createdAt = requestBody.createdAt,
-            updatedAt = requestBody.updatedAt,
+            content = requestBody.content?.toRealmDictionary() ?: emptyMap<String, String>().toRealmDictionary(),
         )
     }
 
     override suspend fun deleteDocumentById(id: String): Flow<Result<String>> = flow {
         runCatching { "204" }
     }
+
+    override suspend fun saveDocumentsListLocal(documentsList: List<Document>) = documentRealmApi.saveDocumentsList(documentsList)
+
+    override suspend fun getDocumentsListOrNullLocal(): List<Document>? = documentRealmApi.getDocumentsListOrNull()
+
+    override suspend fun deleteDocumentsListLocal() = documentRealmApi.deleteDocumentsList()
+
+    override suspend fun saveDocumentLocal(document: Document) = documentRealmApi.saveDocument(document)
+
+    override suspend fun getDocumentOrNullLocal(documentId: String): Document? = documentRealmApi.getDocumentOrNull(documentId)
+
+    override suspend fun deleteDocumentLocal(documentId: String) = documentRealmApi.deleteDocument(documentId)
 }

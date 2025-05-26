@@ -17,6 +17,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import mefetran.dgusev.meddocs.app.datastore.isBlank
 import mefetran.dgusev.meddocs.ui.AppEvent
 import mefetran.dgusev.meddocs.ui.AppViewModel
+import mefetran.dgusev.meddocs.ui.screen.documentcreate.createDocumentDestination
+import mefetran.dgusev.meddocs.ui.screen.documentcreate.navigateToCreateDocument
 import mefetran.dgusev.meddocs.ui.screen.main.Main
 import mefetran.dgusev.meddocs.ui.screen.main.mainDestination
 import mefetran.dgusev.meddocs.ui.screen.main.navigateToMain
@@ -73,6 +75,12 @@ class MainActivity : AppCompatActivity() {
                     )
                     mainDestination(
                         onNavigateToSignIn = navController::navigateToSignIn,
+                        onNavigateToCreateDocument = navController::navigateToCreateDocument,
+                    )
+                    createDocumentDestination(
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
                     )
                 }
             }

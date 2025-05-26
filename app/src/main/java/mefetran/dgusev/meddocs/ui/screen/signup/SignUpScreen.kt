@@ -79,7 +79,7 @@ internal fun SignUpScreen(
                 .verticalScroll(scrollState)
                 .safeDrawingPadding(),
         ) {
-            BackToolbar(onBackClicked = onBackClicked)
+            BackToolbar(onBackClick = onBackClicked)
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
