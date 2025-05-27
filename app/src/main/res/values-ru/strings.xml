@@ -50,4 +50,6 @@
     <string name="cancel_button">Отмена</string>
     <string name="select_button">Выбрать</string>
     <string name="select_date">Выберите дату</string>
+    <string name="empty_documents_list">У вас ещё не добавлены медицинские документы</string>
+    <string name="create_button">Создать</string>
 </resources>

@@ -56,7 +56,7 @@ import mefetran.dgusev.meddocs.ui.components.ScreenTitle
 import mefetran.dgusev.meddocs.ui.components.formatDate
 
 @Composable
-fun CreateDocumentScreen(
+internal fun CreateDocumentScreen(
     title: TextFieldValue,
     description: TextFieldValue,
     date: TextFieldValue,
@@ -294,7 +294,7 @@ fun CreateDocumentScreen(
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, locale = "ru")
 @Composable
-fun CreateDocumentScreenPreview(modifier: Modifier = Modifier) {
+internal fun CreateDocumentScreenPreview(modifier: Modifier = Modifier) {
     var title by remember { mutableStateOf(TextFieldValue("")) }
     var description by remember { mutableStateOf(TextFieldValue("")) }
     var date by remember { mutableStateOf(TextFieldValue("")) }

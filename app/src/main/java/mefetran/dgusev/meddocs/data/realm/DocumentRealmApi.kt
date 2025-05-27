@@ -1,6 +1,11 @@
 package mefetran.dgusev.meddocs.data.realm
 
 import io.realm.Realm
+import io.realm.kotlin.toFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import mefetran.dgusev.meddocs.data.model.Document
 import javax.inject.Inject
 
@@ -16,9 +21,11 @@ interface DocumentRealmApi {
     suspend fun getDocumentOrNull(documentId: String): Document?
 
     suspend fun deleteDocument(documentId: String)
+
+    suspend fun observeDocuments(): Flow<List<Document>>
 }
 
-class DocumentRealmApiImpl @Inject constructor(): DocumentRealmApi {
+class DocumentRealmApiImpl @Inject constructor() : DocumentRealmApi {
     override suspend fun saveDocumentsList(documentsList: List<Document>) {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction { transactionRealm ->
@@ -44,7 +51,7 @@ class DocumentRealmApiImpl @Inject constructor(): DocumentRealmApi {
 
     override suspend fun saveDocument(document: Document) {
         Realm.getDefaultInstance().use { realm ->
-            realm.executeTransaction { transactionRealm->
+            realm.executeTransaction { transactionRealm ->
                 transactionRealm.insertOrUpdate(document)
             }
         }
@@ -61,9 +68,26 @@ class DocumentRealmApiImpl @Inject constructor(): DocumentRealmApi {
     override suspend fun deleteDocument(documentId: String) {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction { transactionRealm ->
-                val documentToDelete = transactionRealm.where(Document::class.java).equalTo("id", documentId).findFirst()
+                val documentToDelete =
+                    transactionRealm.where(Document::class.java).equalTo("id", documentId)
+                        .findFirst()
                 documentToDelete?.deleteFromRealm()
             }
         }
+    }
+
+    override suspend fun observeDocuments(): Flow<List<Document>> {
+        val realm = Realm.getDefaultInstance()
+
+        return realm
+            .where(Document::class.java)
+            .findAllAsync()
+            .toFlow()
+            .map { result ->
+                realm
+                    .copyFromRealm(result)
+                    .sortedByDescending { it.updatedAt }
+            }
+            .flowOn(Dispatchers.Main)
     }
 }
