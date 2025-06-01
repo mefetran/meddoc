@@ -2,7 +2,6 @@ package mefetran.dgusev.meddocs.ui.screen.main
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
@@ -28,7 +27,6 @@ import mefetran.dgusev.meddocs.R
 import mefetran.dgusev.meddocs.ui.components.model.BottomNavigationDataItem
 import mefetran.dgusev.meddocs.ui.screen.documents.Documents
 import mefetran.dgusev.meddocs.ui.screen.documents.documentsDestination
-import mefetran.dgusev.meddocs.ui.screen.home.Home
 import mefetran.dgusev.meddocs.ui.screen.home.homeDestination
 import mefetran.dgusev.meddocs.ui.screen.settings.Settings
 import mefetran.dgusev.meddocs.ui.screen.settings.settingsDestination
@@ -37,17 +35,18 @@ import mefetran.dgusev.meddocs.ui.screen.settings.settingsDestination
 internal fun MainNavHost(
     onNavigateToSignIn: () -> Unit,
     onNavigateToCreateDocument: () -> Unit,
+    onNavigateToOpenDocument: (String) -> Unit
 ) {
     val mainViewModel = hiltViewModel<MainViewModel>()
     val currentLanguageState by mainViewModel.currentLanguageState.collectAsStateWithLifecycle()
     val navController = rememberNavController()
     val bottomNavigationDataItems = remember {
         listOf(
-            BottomNavigationDataItem(
-                localizedName = R.string.nav_home,
-                route = Home,
-                icon = Icons.Default.Home,
-            ),
+//            BottomNavigationDataItem(
+//                localizedName = R.string.nav_home,
+//                route = Home,
+//                icon = Icons.Default.Home,
+//            ),
             BottomNavigationDataItem(
                 localizedName = R.string.nav_documents,
                 route = Documents,
@@ -100,13 +99,14 @@ internal fun MainNavHost(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Home,
+            startDestination = Documents,
             modifier = Modifier.padding(innerPadding)
         ) {
             homeDestination()
             settingsDestination(onNavigateToSignIn = onNavigateToSignIn)
             documentsDestination(
                 onNavigateToCreateDocument = onNavigateToCreateDocument,
+                onNavigateToOpenDocument = onNavigateToOpenDocument,
             )
         }
     }

@@ -52,4 +52,6 @@
     <string name="select_date">Выберите дату</string>
     <string name="empty_documents_list">У вас ещё не добавлены медицинские документы</string>
     <string name="create_button">Создать</string>
+    <string name="error_loading_document_title">Ошибка загрузки документа</string>
+    <string name="error_loading_document_description">Не удалось загрузить документ. Возможно, он был удалён или произошла ошибка.</string>
 </resources>

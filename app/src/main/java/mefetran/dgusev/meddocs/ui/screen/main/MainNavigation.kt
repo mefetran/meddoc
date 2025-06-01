@@ -14,6 +14,7 @@ internal data object Main
 fun NavGraphBuilder.mainDestination(
     onNavigateToSignIn: () -> Unit,
     onNavigateToCreateDocument: () -> Unit,
+    onNavigateToOpenDocument: (String) -> Unit
 ) {
     composable<Main>(
         enterTransition = {
@@ -31,7 +32,8 @@ fun NavGraphBuilder.mainDestination(
     ) {
         MainNavHost(
             onNavigateToSignIn = onNavigateToSignIn,
-            onNavigateToCreateDocument = onNavigateToCreateDocument
+            onNavigateToCreateDocument = onNavigateToCreateDocument,
+            onNavigateToOpenDocument = onNavigateToOpenDocument
         )
     }
 }

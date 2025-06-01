@@ -36,6 +36,7 @@ class DocumentsViewModel @Inject constructor(
             val resultDeferred = async { documentRepository.getDocuments().flowOn(dispatcher).first() }
             val documents = resultDeferred.await()
 
+            // TODO implement syncing documents from db to backend
             documents
                 .onSuccess { newList ->
                     documentRepository.saveDocumentsListLocal(newList)

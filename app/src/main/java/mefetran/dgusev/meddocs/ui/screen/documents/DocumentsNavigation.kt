@@ -12,6 +12,7 @@ internal data object Documents
 
 fun NavGraphBuilder.documentsDestination(
     onNavigateToCreateDocument: () -> Unit,
+    onNavigateToOpenDocument: (String) -> Unit
 ) {
     composable<Documents> {
         val documentsViewModel = hiltViewModel<DocumentsViewModel>()
@@ -20,6 +21,7 @@ fun NavGraphBuilder.documentsDestination(
         DocumentsScreen(
             state = state,
             onNavigateToCreateDocument = onNavigateToCreateDocument,
+            onNavigateToOpenDocument = onNavigateToOpenDocument,
         )
     }
 }

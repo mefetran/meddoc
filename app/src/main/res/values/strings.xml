@@ -53,4 +53,6 @@
     <string name="select_date">Select date</string>
     <string name="empty_documents_list">You haven\'t added any medical documents yet.</string>
     <string name="create_button">Create</string>
+    <string name="error_loading_document_title">Error loading document</string>
+    <string name="error_loading_document_description">Unable to load the document. It may have been deleted or an error occurred.</string>
 </resources>

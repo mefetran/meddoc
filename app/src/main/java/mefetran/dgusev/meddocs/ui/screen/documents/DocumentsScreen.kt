@@ -1,6 +1,5 @@
 package mefetran.dgusev.meddocs.ui.screen.documents
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,11 +8,9 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -29,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
 import mefetran.dgusev.meddocs.data.model.Category
 import mefetran.dgusev.meddocs.data.model.Document
+import mefetran.dgusev.meddocs.ui.components.LoadingScreen
 import mefetran.dgusev.meddocs.ui.components.ScreenTitle
 import mefetran.dgusev.meddocs.ui.screen.documents.model.DocumentsState
 import java.time.LocalDate
@@ -39,6 +37,7 @@ internal fun DocumentsScreen(
     state: DocumentsState,
     modifier: Modifier = Modifier,
     onNavigateToCreateDocument: () -> Unit,
+    onNavigateToOpenDocument: (String) -> Unit
 ) {
     val safePaddings = WindowInsets.safeDrawing.asPaddingValues()
     val lazyListState = rememberLazyListState()
@@ -77,7 +76,9 @@ internal fun DocumentsScreen(
                         category = Category.entries.firstOrNull { it.name == item.category }
                             ?: Category.Other,
                         description = item.description,
-                        onClick = {}
+                        onClick = {
+                            onNavigateToOpenDocument(item.id)
+                        }
                     )
                 }
             }
@@ -99,21 +100,13 @@ internal fun DocumentsScreen(
                 )
             }
             if (state.isLoading) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = MaterialTheme.colorScheme.surfaceDim.copy(alpha = 0.8f))
-                ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(72.dp)
-                    )
-                }
+                LoadingScreen()
             }
         }
     }
 }
+
+
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, locale = "ru")
 @Composable
@@ -156,8 +149,9 @@ internal fun DocumentsScreenPreview(modifier: Modifier = Modifier) {
     DocumentsScreen(
         state = DocumentsState(
             documents = documents,
-//            isLoading = true,
+            isLoading = false,
         ),
-        onNavigateToCreateDocument = {}
+        onNavigateToCreateDocument = {},
+        onNavigateToOpenDocument = {},
     )
 }

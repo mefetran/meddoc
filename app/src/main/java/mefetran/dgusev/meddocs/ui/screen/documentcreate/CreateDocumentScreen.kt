@@ -1,7 +1,6 @@
 package mefetran.dgusev.meddocs.ui.screen.documentcreate
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -21,16 +20,13 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -50,6 +46,7 @@ import mefetran.dgusev.meddocs.R
 import mefetran.dgusev.meddocs.data.model.Category
 import mefetran.dgusev.meddocs.data.model.icon
 import mefetran.dgusev.meddocs.ui.components.BackToolbar
+import mefetran.dgusev.meddocs.ui.components.DocumentContentItem
 import mefetran.dgusev.meddocs.ui.components.DocumentTextField
 import mefetran.dgusev.meddocs.ui.components.ModalDatePicker
 import mefetran.dgusev.meddocs.ui.components.ScreenTitle
@@ -170,7 +167,7 @@ internal fun CreateDocumentScreen(
                                 label = {
                                     Text(
                                         stringResource(id = item.labelRes),
-                                        style = MaterialTheme.typography.labelLarge.merge(color = if (category == item) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface)
+                                        style = MaterialTheme.typography.labelLarge.copy(color = if (category == item) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface)
                                     )
                                 },
                                 leadingIcon = {
@@ -194,38 +191,11 @@ internal fun CreateDocumentScreen(
                     )
                     Spacer(Modifier.height(8.dp))
                     contentMap.forEach { (field, value) ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = RoundedCornerShape(8.dp),
-                                )
-                                .padding(all = 8.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Text(
-                                    text = "$field:",
-                                    style = MaterialTheme.typography.labelLarge,
-                                )
-                                Spacer(Modifier.height(4.dp))
-                                Text(
-                                    text = value,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-                            IconButton(
-                                onClick = { onDeleteContentItemClick(field) },
-                            ) {
-                                Icon(
-                                    Icons.Default.Delete,
-                                    contentDescription = stringResource(id = R.string.delete_button)
-                                )
-                            }
-                        }
+                        DocumentContentItem(
+                            title = field,
+                            description = value,
+                            onDeleteClick = onDeleteContentItemClick
+                        )
                         Spacer(Modifier.height(8.dp))
                     }
                     DocumentTextField(

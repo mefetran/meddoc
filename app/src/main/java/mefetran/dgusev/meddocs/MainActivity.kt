@@ -19,6 +19,8 @@ import mefetran.dgusev.meddocs.ui.AppEvent
 import mefetran.dgusev.meddocs.ui.AppViewModel
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.createDocumentDestination
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.navigateToCreateDocument
+import mefetran.dgusev.meddocs.ui.screen.documentopen.navigateToOpenDocument
+import mefetran.dgusev.meddocs.ui.screen.documentopen.openDocumentDestination
 import mefetran.dgusev.meddocs.ui.screen.main.Main
 import mefetran.dgusev.meddocs.ui.screen.main.mainDestination
 import mefetran.dgusev.meddocs.ui.screen.main.navigateToMain
@@ -76,8 +78,14 @@ class MainActivity : AppCompatActivity() {
                     mainDestination(
                         onNavigateToSignIn = navController::navigateToSignIn,
                         onNavigateToCreateDocument = navController::navigateToCreateDocument,
+                        onNavigateToOpenDocument = navController::navigateToOpenDocument,
                     )
                     createDocumentDestination(
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                    openDocumentDestination(
                         onBackClick = {
                             navController.popBackStack()
                         }
