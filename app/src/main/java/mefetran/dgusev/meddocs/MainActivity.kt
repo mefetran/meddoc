@@ -10,7 +10,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,9 +30,6 @@ import mefetran.dgusev.meddocs.ui.screen.signup.navigateToSignUp
 import mefetran.dgusev.meddocs.ui.screen.signup.signUpDestination
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 
-// An extension function that returns route as it named inside navigation stack
-val NavDestination.shortRoute: String?
-    get() = route?.substringAfterLast('.')?.substringBefore('?')
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
