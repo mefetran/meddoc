@@ -55,4 +55,13 @@
     <string name="create_button">Create</string>
     <string name="error_loading_document_title">Error loading document</string>
     <string name="error_loading_document_description">Unable to load the document. It may have been deleted or an error occurred.</string>
+    <string name="error_invalid_credentials">Invalid username or password</string>
+    <string name="error_invalid_input">Invalid input</string>
+    <string name="error_user_exists">User already exists</string>
+    <string name="error_unauthorized">Unauthorized access</string>
+    <string name="error_forbidden">Access denied</string>
+    <string name="error_client">Client error: %1$s</string>
+    <string name="error_server">Server error. Please try again later. (%1$s)</string>
+    <string name="error_network">Network issue. Check your internet connection.</string>
+    <string name="error_unknown">Unknown error: %1$s</string>
 </resources>

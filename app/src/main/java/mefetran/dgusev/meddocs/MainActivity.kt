@@ -6,16 +6,33 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import mefetran.dgusev.meddocs.app.datastore.isBlank
 import mefetran.dgusev.meddocs.ui.AppEvent
 import mefetran.dgusev.meddocs.ui.AppViewModel
+import mefetran.dgusev.meddocs.ui.components.ObserveAsEvents
+import mefetran.dgusev.meddocs.ui.components.SnackbarController
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.createDocumentDestination
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.navigateToCreateDocument
 import mefetran.dgusev.meddocs.ui.screen.documentopen.navigateToOpenDocument
@@ -45,6 +62,8 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val state by appViewModel.state.collectAsStateWithLifecycle()
             val navController = rememberNavController()
+            val snackbarHostState = remember { SnackbarHostState() }
+            val scope = rememberCoroutineScope()
 
             LaunchedEffect(Unit) {
                 appViewModel.event.collect { event ->
@@ -54,37 +73,67 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            ObserveAsEvents(
+                flow = SnackbarController.events,
+                key1 = snackbarHostState,
+            ) { event ->
+                scope.launch {
+                    snackbarHostState.currentSnackbarData?.dismiss()
+
+                    val result = snackbarHostState.showSnackbar(
+                        message = event.message,
+                        actionLabel = event.action?.name,
+                        duration = event.duration,
+                    )
+
+                    if (result == SnackbarResult.ActionPerformed) {
+                        event.action?.action?.invoke()
+                    }
+                }
+            }
+
             MeddocsTheme(
                 darkTheme = if (state.darkThemeSettings.useSystemSettings) isSystemInDarkTheme() else state.darkThemeSettings.useDarkTheme
             ) {
-                NavHost(
-                    navController = navController,
-                    startDestination = if(state.bearerTokens.isBlank() && state.user == null) SignIn else Main
-                ) {
-                    signInDestination(
-                        onNavigateToMain = navController::navigateToMain,
-                        onNavigateToSignUp = navController::navigateToSignUp,
-                    )
-                    signUpDestination(
-                        onNavigateToMain = navController::navigateToMain,
-                        onBackClicked = {
-                            navController.popBackStack()
-                        },
-                    )
-                    mainDestination(
-                        onNavigateToSignIn = navController::navigateToSignIn,
-                        onNavigateToCreateDocument = navController::navigateToCreateDocument,
-                        onNavigateToOpenDocument = navController::navigateToOpenDocument,
-                    )
-                    createDocumentDestination(
-                        onBackClick = {
-                            navController.popBackStack()
-                        }
-                    )
-                    openDocumentDestination(
-                        onBackClick = {
-                            navController.popBackStack()
-                        }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    NavHost(
+                        navController = navController,
+                        startDestination = if (state.bearerTokens.isBlank() && state.user == null) SignIn else Main
+                    ) {
+                        signInDestination(
+                            onNavigateToMain = navController::navigateToMain,
+                            onNavigateToSignUp = navController::navigateToSignUp,
+                        )
+                        signUpDestination(
+                            onNavigateToMain = navController::navigateToMain,
+                            onBackClicked = {
+                                navController.popBackStack()
+                            },
+                        )
+                        mainDestination(
+                            onNavigateToSignIn = navController::navigateToSignIn,
+                            onNavigateToCreateDocument = navController::navigateToCreateDocument,
+                            onNavigateToOpenDocument = navController::navigateToOpenDocument,
+                        )
+                        createDocumentDestination(
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
+                        )
+                        openDocumentDestination(
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
+                    SnackbarHost(
+                        hostState = snackbarHostState,
+                        modifier = Modifier
+                            .padding(
+                                bottom = WindowInsets.safeDrawing.asPaddingValues()
+                                    .calculateBottomPadding() + 16.dp
+                            )
+                            .align(Alignment.BottomCenter)
                     )
                 }
             }

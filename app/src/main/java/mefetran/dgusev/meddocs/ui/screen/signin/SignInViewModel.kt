@@ -9,6 +9,8 @@ import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ServerResponseException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,6 +21,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.io.IOException
+import mefetran.dgusev.meddocs.R
 import mefetran.dgusev.meddocs.app.EMAIL_LENGTH
 import mefetran.dgusev.meddocs.app.PASSWORD_MAX_LENGTH
 import mefetran.dgusev.meddocs.app.datastore.withBearerToken
@@ -26,8 +30,8 @@ import mefetran.dgusev.meddocs.data.api.request.user.UserSignInRequestBody
 import mefetran.dgusev.meddocs.data.repository.UserRepository
 import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.proto.Settings
-import mefetran.dgusev.meddocs.ui.screen.signin.model.SignInEvent
 import mefetran.dgusev.meddocs.ui.screen.signin.model.SignInState
+import mefetran.dgusev.meddocs.ui.screen.signin.model.SignInUiEvent
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,9 +49,9 @@ class SignInViewModel @Inject constructor(
     private val _state = MutableStateFlow(SignInState())
     val state = _state.asStateFlow()
 
-    private val _event =
-        MutableSharedFlow<SignInEvent>()
-    val event = _event.asSharedFlow()
+    private val _uiEvent =
+        MutableSharedFlow<SignInUiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
 
     fun updateEmailValue(newValue: TextFieldValue) {
         viewModelScope.launch {
@@ -132,30 +136,54 @@ class SignInViewModel @Inject constructor(
     }
 
     fun signIn() {
-        if (isInputValid()) {
-            startLoading()
-            viewModelScope.launch {
-                val userSignInCredentials = UserSignInRequestBody(
-                    email = _emailValue.value.text,
-                    password = _passwordValue.value.text
-                )
+        if (!isInputValid()) {
+            return
+        }
+        startLoading()
+        viewModelScope.launch {
+            val userSignInCredentials = UserSignInRequestBody(
+                email = _emailValue.value.text,
+                password = _passwordValue.value.text
+            )
 
-                val signInDeferred = async {
-                    userRepository.signInUser(userSignInCredentials).flowOn(dispatcher).first()
-                }
-                val signInResult = signInDeferred.await()
-                signInResult
-                    .onSuccess { bearerTokens ->
-                        settingsDataStore.updateData { settings ->
-                            settings.withBearerToken(tokenPairResponse = bearerTokens)
-                        }.also { _event.tryEmit(SignInEvent.SignIn) }
-                        stopLoading()
-                    }
-                    .onFailure { singInException ->
-                        Log.e("SignIn", "${singInException.message}")
-                        stopLoading()
-                    }
+            val signInDeferred = async {
+                userRepository.signInUser(userSignInCredentials).flowOn(dispatcher).first()
             }
+            val signInResult = signInDeferred.await()
+            signInResult
+                .onSuccess { bearerTokens ->
+                    settingsDataStore.updateData { settings ->
+                        settings.withBearerToken(tokenPairResponse = bearerTokens)
+                    }.also { _uiEvent.emit(SignInUiEvent.SignIn) }
+                    stopLoading()
+                }
+                .onFailure { singInException ->
+                    Log.e("SignIn", "${singInException.message}")
+                    handleSignInError(singInException)
+                    stopLoading()
+                }
+        }
+    }
+
+    private fun handleSignInError(singInException: Throwable) {
+        viewModelScope.launch {
+            val (messageResId, errorDescription) = when (singInException) {
+                is ClientRequestException -> when (singInException.response.status.value) {
+                    400 -> R.string.error_invalid_input to null
+                    401 -> R.string.error_invalid_credentials to null
+                    403 -> R.string.error_forbidden to null
+                    else -> R.string.error_client to singInException.response.status.description
+                }
+
+                is ServerResponseException ->
+                    R.string.error_server to singInException.response.status.description
+
+                is IOException -> R.string.error_network to null
+
+                else -> R.string.error_unknown to singInException.message
+            }
+
+            _uiEvent.emit(SignInUiEvent.ShowSnackbar(messageResId, errorDescription))
         }
     }
 }

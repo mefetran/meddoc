@@ -4,13 +4,16 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
-import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpEvent
+import mefetran.dgusev.meddocs.ui.components.SnackbarController
+import mefetran.dgusev.meddocs.ui.components.SnackbarEvent
+import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpUiEvent
 
 @Serializable
 internal data object SignUp
@@ -38,12 +41,18 @@ fun NavGraphBuilder.signUpDestination(
         val emailValue by signUpViewModel.emailValue.collectAsStateWithLifecycle()
         val passwordValue by signUpViewModel.passwordValue.collectAsStateWithLifecycle()
         val nameValue by signUpViewModel.nameValue.collectAsStateWithLifecycle()
+        val context = LocalContext.current
 
         LaunchedEffect(Unit) {
-            signUpViewModel.event.collect { event ->
+            signUpViewModel.uiEvent.collect { event ->
                 when (event) {
-                    SignUpEvent.SignUp -> {
+                    SignUpUiEvent.SignUp -> {
                         onNavigateToMain()
+                    }
+
+                    is SignUpUiEvent.ShowSnackbar -> {
+                        val message = context.getString(event.messageResId, event.errorDescription)
+                        SnackbarController.sendEvent(SnackbarEvent(message = message))
                     }
                 }
             }

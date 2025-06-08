@@ -54,4 +54,13 @@
     <string name="create_button">Создать</string>
     <string name="error_loading_document_title">Ошибка загрузки документа</string>
     <string name="error_loading_document_description">Не удалось загрузить документ. Возможно, он был удалён или произошла ошибка.</string>
+    <string name="error_invalid_credentials">Неверный логин или пароль</string>
+    <string name="error_invalid_input">Указаны неверные данные</string>
+    <string name="error_user_exists">Пользователь уже существует</string>
+    <string name="error_unauthorized">Неавторизованный доступ</string>
+    <string name="error_forbidden">Доступ запрещён</string>
+    <string name="error_client">Ошибка клиента: %1$s</string>
+    <string name="error_server">Ошибка сервера. Попробуйте позже. (%1$s)</string>
+    <string name="error_network">Проблема с соединением. Проверьте интернет.</string>
+    <string name="error_unknown">Неизвестная ошибка: %1$s</string>
 </resources>

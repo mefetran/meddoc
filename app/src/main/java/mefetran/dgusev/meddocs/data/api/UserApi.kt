@@ -1,9 +1,12 @@
 package mefetran.dgusev.meddocs.data.api
 
 import io.ktor.client.HttpClient
+import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import mefetran.dgusev.meddocs.data.api.request.user.UserRegistrationRequestBody
@@ -21,13 +24,13 @@ interface UserApi {
 
 class UserApiImpl @Inject constructor(
     @AuthClient private val httpClient: HttpClient,
-) : UserApi{
+) : UserApi {
     override suspend fun signUpUser(userSignUpCredentials: UserRegistrationRequestBody): Flow<Result<User>> =
         flow {
             emit(kotlin.runCatching {
                 httpClient.post("register") {
                     setBody(userSignUpCredentials)
-                }.body()
+                }.bodyOrThrow()
             })
         }
 
@@ -36,7 +39,15 @@ class UserApiImpl @Inject constructor(
             emit(kotlin.runCatching {
                 httpClient.post("login") {
                     setBody(userSignInCredentials)
-                }.body()
+                }.bodyOrThrow()
             })
         }
+}
+
+suspend inline fun <reified T> HttpResponse.bodyOrThrow(): T {
+    try {
+        return this.body<T>()
+    } catch (exception: NoTransformationFoundException) {
+        throw ClientRequestException(this, exception.message)
+    }
 }
