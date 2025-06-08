@@ -25,8 +25,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
@@ -55,6 +57,7 @@ internal fun SignInScreen(
     onShowPasswordClicked: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    val keyboardController = LocalSoftwareKeyboardController.current
     
     Surface(
         color = MaterialTheme.colorScheme.surface,
@@ -171,7 +174,10 @@ internal fun SignInScreen(
             )
             Spacer(Modifier.height(16.dp))
             Button(
-                onClick = onSignIn,
+                onClick = {
+                    keyboardController?.hide()
+                    onSignIn()
+                },
                 modifier = Modifier.fillMaxWidth().height(48.dp)
             ) {
                 Text(
@@ -187,7 +193,10 @@ internal fun SignInScreen(
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             Button(
-                onClick = navigateToRegistrationScreen,
+                onClick = {
+                    keyboardController?.hide()
+                    navigateToRegistrationScreen()
+                },
                 modifier = Modifier.height(48.dp),
             ) {
                 Text(
@@ -206,8 +215,8 @@ internal fun SignInScreen(
 @Preview(showBackground = true, locale = "ru")
 @Composable
 internal fun SignInScreenPreview(modifier: Modifier = Modifier) {
-    val emailValue by remember { mutableStateOf(TextFieldValue("")) }
-    val passwordValue by remember { mutableStateOf(TextFieldValue("")) }
+    var emailValue by remember { mutableStateOf(TextFieldValue("")) }
+    var passwordValue by remember { mutableStateOf(TextFieldValue("")) }
 
     MeddocsTheme {
         SignInScreen(
@@ -216,8 +225,8 @@ internal fun SignInScreenPreview(modifier: Modifier = Modifier) {
             passwordValue = passwordValue,
             onSignIn = {},
             navigateToRegistrationScreen = {},
-            onNewPasswordValue = {},
-            onNewEmailValue = {},
+            onNewPasswordValue = { passwordValue = it },
+            onNewEmailValue = { emailValue = it },
             onShowPasswordClicked = {},
         )
     }

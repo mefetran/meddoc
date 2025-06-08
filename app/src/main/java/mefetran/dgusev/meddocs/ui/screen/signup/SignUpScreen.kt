@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
@@ -61,6 +62,7 @@ internal fun SignUpScreen(
     onBackClicked: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     BackHandler {
         onBackClicked()
@@ -75,7 +77,11 @@ internal fun SignUpScreen(
                 .verticalScroll(scrollState)
                 .safeDrawingPadding(),
         ) {
-            BackToolbar(onBackClick = onBackClicked)
+            BackToolbar(onBackClick = {
+                keyboardController?.hide()
+                onBackClicked()
+            }
+            )
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
@@ -196,7 +202,10 @@ internal fun SignUpScreen(
             }
             Spacer(Modifier.weight(1f))
             Button(
-                onClick = onSignUp,
+                onClick = {
+                    keyboardController?.hide()
+                    onSignUp()
+                },
                 modifier = Modifier
                     .padding(all = 16.dp)
                     .fillMaxWidth()
