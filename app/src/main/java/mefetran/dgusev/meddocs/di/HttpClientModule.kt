@@ -27,6 +27,8 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 const val LOGGER_TAG = "LoggerKtor"
+const val HOST_IP = "192.168.0.111"
+const val HOST_PORT = 8080
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -66,8 +68,8 @@ object HttpClientModule {
         install(DefaultRequest) {
             url {
                 protocol = URLProtocol.HTTP
-                host = "192.168.0.108"
-                port = 8080
+                host = HOST_IP
+                port = HOST_PORT
                 encodedPath = "/api/v1/"
             }
             header(HttpHeaders.ContentType, ContentType.Application.Json)
@@ -118,8 +120,8 @@ object HttpClientModule {
         install(DefaultRequest) {
             url {
                 protocol = URLProtocol.HTTP
-                host = "192.168.0.108"
-                port = 8080
+                host = HOST_IP
+                port = HOST_PORT
                 encodedPath = "/api/v1/auth/"
             }
             header(HttpHeaders.ContentType, ContentType.Application.Json)
