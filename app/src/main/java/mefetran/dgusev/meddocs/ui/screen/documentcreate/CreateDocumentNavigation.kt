@@ -19,11 +19,11 @@ fun NavGraphBuilder.createDocumentDestination(
     composable<CreateDocument> {
         val createDocumentViewModel = hiltViewModel<CreateDocumentViewModel>()
         val state by createDocumentViewModel.state.collectAsStateWithLifecycle()
-        val title by createDocumentViewModel.title.collectAsStateWithLifecycle()
-        val description by createDocumentViewModel.description.collectAsStateWithLifecycle()
+        val title by createDocumentViewModel.documentTitle.collectAsStateWithLifecycle()
+        val description by createDocumentViewModel.documentDescription.collectAsStateWithLifecycle()
         val date by createDocumentViewModel.date.collectAsStateWithLifecycle()
-        val newField by createDocumentViewModel.newField.collectAsStateWithLifecycle()
-        val newFieldValue by createDocumentViewModel.newFieldValue.collectAsStateWithLifecycle()
+        val newField by createDocumentViewModel.contentItemTitle.collectAsStateWithLifecycle()
+        val newFieldValue by createDocumentViewModel.contentItemDescription.collectAsStateWithLifecycle()
 
         LaunchedEffect(Unit) {
             createDocumentViewModel.event.collect { event ->
@@ -42,14 +42,14 @@ fun NavGraphBuilder.createDocumentDestination(
             newField = newField,
             newFieldValue = newFieldValue,
             onCreateDocument = createDocumentViewModel::createDocument,
-            onTitleChange = createDocumentViewModel::changeTitle,
-            onDescriptionChange = createDocumentViewModel::changeDescription,
+            onTitleChange = createDocumentViewModel::changeDocumentTitle,
+            onDescriptionChange = createDocumentViewModel::changeDocumentDescription,
             onDateChange = createDocumentViewModel::changeDate,
             onCategoryChange = createDocumentViewModel::changeCategory,
-            onNewFieldChange = createDocumentViewModel::changeNewField,
-            onNewFieldValueChange = createDocumentViewModel::changeNewFieldValue,
+            onNewFieldChange = createDocumentViewModel::changeContentItemTitle,
+            onNewFieldValueChange = createDocumentViewModel::changeContentItemDescription,
             onBackClick = onBackClick,
-            onAddContentClick = createDocumentViewModel::addContent,
+            onAddContentClick = createDocumentViewModel::addContentItem,
             onDeleteContentItemClick = createDocumentViewModel::deleteContentItem,
         )
     }
