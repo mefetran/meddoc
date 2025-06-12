@@ -22,7 +22,7 @@ interface UserApi {
     suspend fun signInUser(userSignInCredentials: UserSignInRequestBody): Flow<Result<TokenPairResponse>>
 }
 
-class UserApiImpl @Inject constructor(
+class UserKtorApiImpl @Inject constructor(
     @AuthClient private val httpClient: HttpClient,
 ) : UserApi {
     override suspend fun signUpUser(userSignUpCredentials: UserRegistrationRequestBody): Flow<Result<User>> =

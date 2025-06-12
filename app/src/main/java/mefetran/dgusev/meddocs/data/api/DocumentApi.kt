@@ -30,7 +30,7 @@ interface DocumentApi {
     suspend fun deleteDocumentById(id: String): Flow<Result<String>>
 }
 
-class DocumentApiImpl @Inject constructor(
+class DocumentKtorApiImpl @Inject constructor(
     @DefaultClient private val httpClient: HttpClient
 ) :
     DocumentApi {

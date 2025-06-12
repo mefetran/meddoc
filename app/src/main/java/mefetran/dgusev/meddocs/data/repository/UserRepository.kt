@@ -4,7 +4,7 @@ import android.util.Base64
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import mefetran.dgusev.meddocs.data.api.UserApi
-import mefetran.dgusev.meddocs.data.realm.UserRealmApi
+import mefetran.dgusev.meddocs.data.db.UserDatabaseApi
 import mefetran.dgusev.meddocs.data.api.request.user.UserRegistrationRequestBody
 import mefetran.dgusev.meddocs.data.api.request.user.UserSignInRequestBody
 import mefetran.dgusev.meddocs.data.api.response.user.TokenPairResponse
@@ -24,7 +24,7 @@ interface UserRepository {
 
 class RealUserRepositoryImpl @Inject constructor(
     private val userApi: UserApi,
-    private val userRealmApi: UserRealmApi,
+    private val userDatabaseApi: UserDatabaseApi,
 ) : UserRepository {
     override suspend fun signUpUser(userSignUpCredentials: UserRegistrationRequestBody): Flow<Result<User>> =
         userApi.signUpUser(userSignUpCredentials)
@@ -32,15 +32,15 @@ class RealUserRepositoryImpl @Inject constructor(
     override suspend fun signInUser(userSignInCredentials: UserSignInRequestBody): Flow<Result<TokenPairResponse>> =
         userApi.signInUser(userSignInCredentials)
 
-    override suspend fun getUserOrNull(): User? = userRealmApi.getUserOrNull()
+    override suspend fun getUserOrNull(): User? = userDatabaseApi.getUserOrNull()
 
-    override suspend fun saveUser(user: User) = userRealmApi.saveUser(user)
+    override suspend fun saveUser(user: User) = userDatabaseApi.saveUser(user)
 
-    override suspend fun deleteUser() = userRealmApi.deleteUser()
+    override suspend fun deleteUser() = userDatabaseApi.deleteUser()
 }
 
 class FakeUserRepositoryImpl @Inject constructor(
-    private val userRealmApi: UserRealmApi,
+    private val userDatabaseApi: UserDatabaseApi,
 ) : UserRepository {
     override suspend fun signUpUser(userSignUpCredentials: UserRegistrationRequestBody): Flow<Result<User>> =
         flow {
@@ -73,9 +73,9 @@ class FakeUserRepositoryImpl @Inject constructor(
             })
         }
 
-    override suspend fun getUserOrNull(): User? = userRealmApi.getUserOrNull()
+    override suspend fun getUserOrNull(): User? = userDatabaseApi.getUserOrNull()
 
-    override suspend fun saveUser(user: User) = userRealmApi.saveUser(user)
+    override suspend fun saveUser(user: User) = userDatabaseApi.saveUser(user)
 
-    override suspend fun deleteUser() = userRealmApi.deleteUser()
+    override suspend fun deleteUser() = userDatabaseApi.deleteUser()
 }

@@ -1,4 +1,4 @@
-package mefetran.dgusev.meddocs.data.realm
+package mefetran.dgusev.meddocs.data.db
 
 import io.realm.Realm
 import io.realm.kotlin.toFlow
@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 import mefetran.dgusev.meddocs.data.model.Document
 import javax.inject.Inject
 
-interface DocumentRealmApi {
+interface DocumentDatabaseApi {
     suspend fun saveDocumentsList(documentsList: List<Document>)
 
     suspend fun getDocumentsListOrNull(): List<Document>?
@@ -25,7 +25,7 @@ interface DocumentRealmApi {
     suspend fun observeDocuments(): Flow<List<Document>>
 }
 
-class DocumentRealmApiImpl @Inject constructor() : DocumentRealmApi {
+class DocumentRealmDatabase @Inject constructor() : DocumentDatabaseApi {
     override suspend fun saveDocumentsList(documentsList: List<Document>) {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction { transactionRealm ->

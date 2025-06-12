@@ -44,7 +44,7 @@ object HttpClientModule {
     @Provides
     @Singleton
     @DefaultClient
-    fun provideDefaultHttpClient(tokenManager: TokenManager): HttpClient = HttpClient(Android) {
+    fun provideDefaultKtorHttpClient(tokenManager: TokenManager): HttpClient = HttpClient(Android) {
         install(ContentNegotiation) {
             json(
                 Json {
@@ -96,7 +96,7 @@ object HttpClientModule {
     @Provides
     @Singleton
     @AuthClient
-    fun provideAuthHttpClient(): HttpClient = HttpClient(Android) {
+    fun provideAuthKtorHttpClient(): HttpClient = HttpClient(Android) {
         install(ContentNegotiation) {
             json(
                 Json {
