@@ -2,15 +2,17 @@ package mefetran.dgusev.meddocs.ui.screen.signup
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import mefetran.dgusev.meddocs.ui.components.ObserveAsEvents
 import mefetran.dgusev.meddocs.ui.components.SnackbarController
 import mefetran.dgusev.meddocs.ui.components.SnackbarEvent
 import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpUiEvent
@@ -42,15 +44,16 @@ fun NavGraphBuilder.signUpDestination(
         val passwordValue by signUpViewModel.passwordValue.collectAsStateWithLifecycle()
         val nameValue by signUpViewModel.nameValue.collectAsStateWithLifecycle()
         val context = LocalContext.current
+        val scope = rememberCoroutineScope()
 
-        LaunchedEffect(Unit) {
-            signUpViewModel.uiEvent.collect { event ->
-                when (event) {
-                    SignUpUiEvent.SignUp -> {
-                        onNavigateToMain()
-                    }
+        ObserveAsEvents(flow = signUpViewModel.uiEvents) { event ->
+            when (event) {
+                SignUpUiEvent.SignUp -> {
+                    onNavigateToMain()
+                }
 
-                    is SignUpUiEvent.ShowSnackbar -> {
+                is SignUpUiEvent.ShowSnackbar -> {
+                    scope.launch {
                         val message = context.getString(event.messageResId, event.errorDescription)
                         SnackbarController.sendEvent(SnackbarEvent(message = message))
                     }

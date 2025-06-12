@@ -49,9 +49,9 @@ class SignInViewModel @Inject constructor(
     private val _state = MutableStateFlow(SignInState())
     val state = _state.asStateFlow()
 
-    private val _uiEvent =
+    private val _uiEvents =
         MutableSharedFlow<SignInUiEvent>()
-    val uiEvent = _uiEvent.asSharedFlow()
+    val uiEvents = _uiEvents.asSharedFlow()
 
     fun updateEmailValue(newValue: TextFieldValue) {
         viewModelScope.launch {
@@ -154,7 +154,7 @@ class SignInViewModel @Inject constructor(
                 .onSuccess { bearerTokens ->
                     settingsDataStore.updateData { settings ->
                         settings.withBearerToken(tokenPairResponse = bearerTokens)
-                    }.also { _uiEvent.emit(SignInUiEvent.SignIn) }
+                    }.also { _uiEvents.emit(SignInUiEvent.SignIn) }
                     stopLoading()
                 }
                 .onFailure { singInException ->
@@ -183,7 +183,7 @@ class SignInViewModel @Inject constructor(
                 else -> R.string.error_unknown to singInException.message
             }
 
-            _uiEvent.emit(SignInUiEvent.ShowSnackbar(messageResId, errorDescription))
+            _uiEvents.emit(SignInUiEvent.ShowSnackbar(messageResId, errorDescription))
         }
     }
 }

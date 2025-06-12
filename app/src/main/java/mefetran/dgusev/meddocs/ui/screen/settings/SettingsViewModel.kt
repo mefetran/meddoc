@@ -32,8 +32,8 @@ class SettingsViewModel @Inject constructor(
     private val _state = MutableStateFlow(SettingsState())
     val state = _state.asStateFlow()
 
-    private val _event = MutableSharedFlow<SettingsEvent>()
-    val event = _event.asSharedFlow()
+    private val _uiEvents = MutableSharedFlow<SettingsEvent>()
+    val uiEvents = _uiEvents.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -77,7 +77,7 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             userRepository.deleteUser()
             settingsDataStore.updateData { defaultSettings() }
-            _event.emit(SettingsEvent.SignIn)
+            _uiEvents.emit(SettingsEvent.SignIn)
         }
     }
 }

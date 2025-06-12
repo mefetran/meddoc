@@ -2,15 +2,17 @@ package mefetran.dgusev.meddocs.ui.screen.signin
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import mefetran.dgusev.meddocs.ui.components.ObserveAsEvents
 import mefetran.dgusev.meddocs.ui.components.SnackbarController
 import mefetran.dgusev.meddocs.ui.components.SnackbarEvent
 import mefetran.dgusev.meddocs.ui.components.model.RouteName
@@ -51,15 +53,16 @@ fun NavGraphBuilder.signInDestination(
         val emailValue by signInViewModel.emailValue.collectAsStateWithLifecycle()
         val passwordValue by signInViewModel.passwordValue.collectAsStateWithLifecycle()
         val context = LocalContext.current
+        val scope = rememberCoroutineScope()
 
-        LaunchedEffect(Unit) {
-            signInViewModel.uiEvent.collect { event ->
-                when (event) {
-                    SignInUiEvent.SignIn -> {
-                        onNavigateToMain()
-                    }
+        ObserveAsEvents(flow = signInViewModel.uiEvents) { event ->
+            when (event) {
+                SignInUiEvent.SignIn -> {
+                    onNavigateToMain()
+                }
 
-                    is SignInUiEvent.ShowSnackbar -> {
+                is SignInUiEvent.ShowSnackbar -> {
+                    scope.launch {
                         val message = context.getString(event.messageResId, event.errorDescription)
                         SnackbarController.sendEvent(SnackbarEvent(message = message))
                     }

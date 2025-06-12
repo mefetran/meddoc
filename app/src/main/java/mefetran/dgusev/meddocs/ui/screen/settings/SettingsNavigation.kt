@@ -2,15 +2,14 @@ package mefetran.dgusev.meddocs.ui.screen.settings
 
 import androidx.activity.compose.LocalActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
+import mefetran.dgusev.meddocs.ui.components.ObserveAsEvents
 import mefetran.dgusev.meddocs.ui.components.model.ThemeOption
 import mefetran.dgusev.meddocs.ui.screen.settings.model.SettingsEvent
 
@@ -25,11 +24,9 @@ fun NavGraphBuilder.settingsDestination(
         val state by settingsViewModel.state.collectAsStateWithLifecycle()
         val activity = LocalActivity.current
 
-        LaunchedEffect(Unit) {
-            settingsViewModel.event.collect { event ->
-                when (event) {
-                    SettingsEvent.SignIn -> onNavigateToSignIn()
-                }
+        ObserveAsEvents(flow = settingsViewModel.uiEvents) { event ->
+            when (event) {
+                SettingsEvent.SignIn -> onNavigateToSignIn()
             }
         }
 
@@ -56,7 +53,8 @@ fun NavGraphBuilder.settingsDestination(
             onLanguageOptionClick = { languageOption ->
                 activity?.let {
                     activity.runOnUiThread {
-                        val appLocale = LocaleListCompat.forLanguageTags(languageOption.languageCode)
+                        val appLocale =
+                            LocaleListCompat.forLanguageTags(languageOption.languageCode)
                         AppCompatDelegate.setApplicationLocales(appLocale)
                     }
                     settingsViewModel.selectLanguage(languageOption.languageCode)
@@ -65,8 +63,4 @@ fun NavGraphBuilder.settingsDestination(
             onLogoutClick = settingsViewModel::logout
         )
     }
-}
-
-fun NavController.navigateToSettings() {
-    navigate(Settings)
 }

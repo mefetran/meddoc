@@ -34,9 +34,9 @@ class AppViewModel @Inject constructor(
     private val _state = MutableStateFlow(AppState())
     val state = _state.asStateFlow()
 
-    private val _event =
+    private val _uiEvents =
         MutableSharedFlow<AppEvent>()
-    val event = _event.asSharedFlow()
+    val uiEvents = _uiEvents.asSharedFlow()
 
     init {
         observeTokenInvalidation()
@@ -65,7 +65,7 @@ class AppViewModel @Inject constructor(
     private fun observeTokenInvalidation() {
         viewModelScope.launch {
             tokenManager.getTokenInvalidationEmitterFlow().collect {
-                _event.emit(AppEvent.SignIn)
+                _uiEvents.emit(AppEvent.SignIn)
             }
         }
     }

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -65,11 +64,9 @@ class MainActivity : AppCompatActivity() {
             val snackbarHostState = remember { SnackbarHostState() }
             val scope = rememberCoroutineScope()
 
-            LaunchedEffect(Unit) {
-                appViewModel.event.collect { event ->
-                    when (event) {
-                        AppEvent.SignIn -> navController.navigateToSignIn()
-                    }
+            ObserveAsEvents(flow = appViewModel.uiEvents) { event ->
+                when (event) {
+                    AppEvent.SignIn -> navController.navigateToSignIn()
                 }
             }
 

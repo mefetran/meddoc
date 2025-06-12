@@ -52,8 +52,8 @@ class CreateDocumentViewModel @Inject constructor(
     private val _contentItemDescription = MutableStateFlow(TextFieldValue(""))
     val contentItemDescription = _contentItemDescription.asStateFlow()
 
-    private val _event = MutableSharedFlow<CreateDocumentEvent>()
-    val event = _event.asSharedFlow()
+    private val _uiEvents = MutableSharedFlow<CreateDocumentEvent>()
+    val uiEvents = _uiEvents.asSharedFlow()
 
     fun createDocument() {
         viewModelScope.launch {
@@ -74,11 +74,11 @@ class CreateDocumentViewModel @Inject constructor(
             newDocument
                 .onSuccess { document ->
                     documentRepository.saveDocumentLocal(document)
-                    _event.emit(CreateDocumentEvent.Back)
+                    _uiEvents.emit(CreateDocumentEvent.Back)
                 }
                 .onFailure { throwable ->
                     Log.e("DocumentRepository", throwable.stackTraceToString())
-                    _event.emit(CreateDocumentEvent.Back)
+                    _uiEvents.emit(CreateDocumentEvent.Back)
                 }
         }
     }

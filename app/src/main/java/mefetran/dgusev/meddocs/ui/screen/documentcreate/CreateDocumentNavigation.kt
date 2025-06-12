@@ -1,6 +1,5 @@
 package mefetran.dgusev.meddocs.ui.screen.documentcreate
 
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -8,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
+import mefetran.dgusev.meddocs.ui.components.ObserveAsEvents
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.model.CreateDocumentEvent
 
 @Serializable
@@ -25,11 +25,9 @@ fun NavGraphBuilder.createDocumentDestination(
         val newField by createDocumentViewModel.contentItemTitle.collectAsStateWithLifecycle()
         val newFieldValue by createDocumentViewModel.contentItemDescription.collectAsStateWithLifecycle()
 
-        LaunchedEffect(Unit) {
-            createDocumentViewModel.event.collect { event ->
-                when (event) {
-                    CreateDocumentEvent.Back -> onBackClick()
-                }
+        ObserveAsEvents(flow = createDocumentViewModel.uiEvents) { event ->
+            when (event) {
+                CreateDocumentEvent.Back -> onBackClick()
             }
         }
 
