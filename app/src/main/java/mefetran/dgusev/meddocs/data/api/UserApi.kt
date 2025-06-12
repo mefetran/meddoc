@@ -44,6 +44,12 @@ class UserKtorApiImpl @Inject constructor(
         }
 }
 
+/*
+ * The backend returns only a plain string when signIn/signUp fails.
+ * To avoid NoTransformationFoundException, which discards the response's status code,
+ * we throw a ClientRequestException with the current HttpResponse.
+ * This allows us to properly handle such HTTP client errors.
+ */
 suspend inline fun <reified T> HttpResponse.bodyOrThrow(): T {
     try {
         return this.body<T>()
