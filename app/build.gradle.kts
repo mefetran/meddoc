@@ -67,8 +67,9 @@ protobuf {
 }
 
 dependencies {
-    // Domain module
+    // Domain and Data module
     implementation(project(":domain"))
+    implementation(project(":data"))
 
     // SplashScreen
     implementation(libs.androidx.core.splashscreen)

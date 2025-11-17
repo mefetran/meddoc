@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mefetran.dgusev.meddocs.domain.repository.user.UserRepository
-import mefetran.dgusev.meddocs.data.api.token.TokenManager
+import mefetran.dgusev.meddocs.token.TokenManager
 import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.proto.Settings
 import javax.inject.Inject

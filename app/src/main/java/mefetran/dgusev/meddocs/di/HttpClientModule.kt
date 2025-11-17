@@ -22,21 +22,14 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import mefetran.dgusev.meddocs.data.api.token.TokenManager
-import javax.inject.Qualifier
+import mefetran.dgusev.meddocs.data.api.ktor.AuthClient
+import mefetran.dgusev.meddocs.data.api.ktor.DefaultClient
+import mefetran.dgusev.meddocs.token.TokenManager
 import javax.inject.Singleton
 
 const val LOGGER_TAG = "LoggerKtor"
 const val HOST_IP = "192.168.0.109"
 const val HOST_PORT = 8080
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class AuthClient
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class DefaultClient
 
 @Module
 @InstallIn(SingletonComponent::class)

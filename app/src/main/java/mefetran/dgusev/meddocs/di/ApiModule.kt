@@ -16,7 +16,6 @@ import mefetran.dgusev.meddocs.data.db.realm.DocumentRealmDatabase
 import mefetran.dgusev.meddocs.data.db.realm.UserRealmDatabase
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class ApiModule {

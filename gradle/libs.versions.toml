@@ -23,6 +23,8 @@ kotlinxSerializaton = "1.9.0"
 splashScreen = "1.0.1"
 appCompat = "1.7.1"
 jetbrainsKotlinJvm = "2.2.10"
+material = "1.13.0"
+inject = "1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -88,6 +90,10 @@ google-protobuf-protoc = { group = "com.google.protobuf", name = "protoc", versi
 
 # KotlinX serialization
 org-jetbrains-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializaton" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# Javax Inject
+javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "inject"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -102,3 +108,4 @@ hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 # Protobuf plugin
 google-protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+android-library = { id = "com.android.library", version.ref = "agp" }

@@ -11,7 +11,6 @@ import mefetran.dgusev.meddocs.app.datastore.settingsDataStore
 import mefetran.dgusev.meddocs.proto.Settings
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object DataStoreSettingsModule {
