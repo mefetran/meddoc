@@ -3,7 +3,8 @@ package mefetran.dgusev.meddocs.data.api.response.document
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import mefetran.dgusev.meddocs.app.toRealmDictionary
-import mefetran.dgusev.meddocs.data.model.Document
+import mefetran.dgusev.meddocs.domain.model.Category
+import mefetran.dgusev.meddocs.data.model.DocumentEntity
 
 @Serializable
 data class DocumentResponse(
@@ -21,7 +22,7 @@ data class DocumentResponse(
     val updatedAt: String = "",
 )
 
-fun DocumentResponse.toDocument() = Document(
+fun DocumentResponse.toDocumentEntity() = DocumentEntity(
     id = this.id,
     title = this.title,
     content = this.content.toRealmDictionary(),
@@ -30,6 +31,6 @@ fun DocumentResponse.toDocument() = Document(
     description = this.description,
     date = this.date,
     file = this.file,
-    category = this.category,
+    category = Category.valueOf(this.category),
     priority = this.priority,
 )

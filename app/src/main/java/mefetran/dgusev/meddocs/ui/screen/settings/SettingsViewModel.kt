@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import mefetran.dgusev.meddocs.app.datastore.defaultSettings
 import mefetran.dgusev.meddocs.app.datastore.withLanguage
 import mefetran.dgusev.meddocs.app.datastore.withTheme
-import mefetran.dgusev.meddocs.data.repository.UserRepository
+import mefetran.dgusev.meddocs.domain.repository.user.UserRepository
 import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.proto.Settings
 import mefetran.dgusev.meddocs.ui.screen.settings.model.SettingsEvent

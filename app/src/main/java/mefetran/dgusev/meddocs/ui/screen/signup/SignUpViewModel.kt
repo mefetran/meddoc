@@ -28,13 +28,11 @@ import mefetran.dgusev.meddocs.app.NAME_LENGTH
 import mefetran.dgusev.meddocs.app.PASSWORD_MAX_LENGTH
 import mefetran.dgusev.meddocs.app.PASSWORD_MIN_LENGTH
 import mefetran.dgusev.meddocs.app.datastore.withBearerToken
-import mefetran.dgusev.meddocs.data.api.request.user.UserRegistrationRequestBody
-import mefetran.dgusev.meddocs.data.api.request.user.UserSignInRequestBody
-import mefetran.dgusev.meddocs.data.repository.UserRepository
+import mefetran.dgusev.meddocs.domain.repository.user.UserRepository
 import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.proto.Settings
-import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpUiEvent
 import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpState
+import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpUiEvent
 import javax.inject.Inject
 
 @HiltViewModel
@@ -166,33 +164,30 @@ class SignUpViewModel @Inject constructor(
         }
         startLoading()
         viewModelScope.launch {
-            val userSignUpCredentials = UserRegistrationRequestBody(
-                email = _emailValue.value.text,
-                password = _passwordValue.value.text,
-                name = _nameValue.value.text.ifBlank { null }
-            )
-
             val signUpDeferred = async {
-                userRepository.signUpUser(userSignUpCredentials).flowOn(dispatcher).first()
+                userRepository.signUpUser(
+                    email = _emailValue.value.text,
+                    password = _passwordValue.value.text,
+                    name = _nameValue.value.text.ifBlank { null }
+                ).flowOn(dispatcher).first()
             }
             val signUpResult = signUpDeferred.await()
 
             signUpResult
                 .onSuccess { user ->
                     userRepository.saveUser(user)
-                    val userSignInCredentials = UserSignInRequestBody(
-                        email = _emailValue.value.text,
-                        password = _passwordValue.value.text
-                    )
                     val signInDeferred = async {
-                        userRepository.signInUser(userSignInCredentials).flowOn(dispatcher)
+                        userRepository.signInUser(
+                            email = _emailValue.value.text,
+                            password = _passwordValue.value.text
+                        ).flowOn(dispatcher)
                             .first()
                     }
                     val signInResult = signInDeferred.await()
                     signInResult
                         .onSuccess { bearerTokens ->
                             settingsDataStore.updateData { settings ->
-                                settings.withBearerToken(tokenPairResponse = bearerTokens)
+                                settings.withBearerToken(tokenPair = bearerTokens)
                             }.also { _uiEvents.tryEmit(SignUpUiEvent.SignUp) }
                             stopLoading()
                         }

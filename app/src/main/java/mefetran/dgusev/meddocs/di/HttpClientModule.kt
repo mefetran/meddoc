@@ -27,7 +27,7 @@ import javax.inject.Qualifier
 import javax.inject.Singleton
 
 const val LOGGER_TAG = "LoggerKtor"
-const val HOST_IP = "192.168.0.111"
+const val HOST_IP = "192.168.0.109"
 const val HOST_PORT = 8080
 
 @Qualifier

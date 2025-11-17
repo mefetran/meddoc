@@ -1,6 +1,6 @@
 package mefetran.dgusev.meddocs.ui
 
-import mefetran.dgusev.meddocs.data.model.User
+import mefetran.dgusev.meddocs.domain.model.User
 import mefetran.dgusev.meddocs.proto.BearerTokens
 import mefetran.dgusev.meddocs.proto.DarkThemeSettings
 

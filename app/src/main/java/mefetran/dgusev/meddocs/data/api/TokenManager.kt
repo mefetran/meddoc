@@ -12,6 +12,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.io.IOException
 import mefetran.dgusev.meddocs.app.datastore.withBearerToken
 import mefetran.dgusev.meddocs.data.api.request.user.RefreshTokenRequestBody
+import mefetran.dgusev.meddocs.data.api.response.user.toTokenPair
 import mefetran.dgusev.meddocs.proto.Settings
 import javax.inject.Inject
 
@@ -57,8 +58,8 @@ class TokenManager @Inject constructor(
                 .flowOn(dispatcher)
                 .first()
 
-            result.getOrNull()?.also { newTokens ->
-                settingsDataStore.updateData { it.withBearerToken(newTokens) }
+            result.getOrNull()?.also { tokenPairResponse ->
+                settingsDataStore.updateData { it.withBearerToken(tokenPairResponse.toTokenPair()) }
             }?.accessToken
         } catch (clientRequestException: ClientRequestException) {
             if (clientRequestException.response.status == HttpStatusCode.Unauthorized

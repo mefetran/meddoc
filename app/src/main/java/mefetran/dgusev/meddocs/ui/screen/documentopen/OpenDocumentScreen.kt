@@ -24,20 +24,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
-import mefetran.dgusev.meddocs.app.toRealmDictionary
-import mefetran.dgusev.meddocs.data.model.Category
-import mefetran.dgusev.meddocs.data.model.Document
-import mefetran.dgusev.meddocs.data.model.icon
+import mefetran.dgusev.meddocs.domain.model.Category
+import mefetran.dgusev.meddocs.domain.model.Document
 import mefetran.dgusev.meddocs.ui.components.AppToolbar
 import mefetran.dgusev.meddocs.ui.components.DocumentContentItem
 import mefetran.dgusev.meddocs.ui.components.LoadingScreen
 import mefetran.dgusev.meddocs.ui.components.ScreenTitle
+import mefetran.dgusev.meddocs.ui.components.getLabelRes
+import mefetran.dgusev.meddocs.ui.components.icon
 import mefetran.dgusev.meddocs.ui.screen.documentopen.model.OpenDocumentState
 import java.time.LocalDate
 import kotlin.random.Random
@@ -49,11 +48,6 @@ internal fun OpenDocumentScreen(
     onBackClick: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
-    val category = remember(state.document.category) {
-        runCatching {
-            Category.valueOf(state.document.category)
-        }.getOrDefault(Category.Other)
-    }
 
     BackHandler { onBackClick() }
 
@@ -119,13 +113,13 @@ internal fun OpenDocumentScreen(
                             onClick = {},
                             label = {
                                 Text(
-                                    stringResource(id = category.labelRes),
+                                    stringResource(id = state.document.category.getLabelRes()),
                                     style = MaterialTheme.typography.labelLarge.copy(color = MaterialTheme.colorScheme.onPrimary)
                                 )
                             },
                             leadingIcon = {
                                 Icon(
-                                    category.icon(),
+                                    state.document.category.icon(),
                                     null,
                                     tint = MaterialTheme.colorScheme.onPrimary,
                                     modifier = Modifier.size(24.dp)
@@ -183,7 +177,7 @@ internal fun OpenDocumentScreenPreview() {
                 title = "Эндоскопия желудка (ФГДС)",
                 date = LocalDate.now().minusDays(Random.nextLong(61, 100)).toString(),
                 description = "Выявлен поверхностный гастрит, биопсия не проводилась.",
-                category = Category.Endoscopy.toString(),
+                category = Category.Endoscopy,
                 content = mapOf(
                     "Состояние слизистой" to "Гиперемирована, очаговая эрозия в антральном отделе",
                     "Кардиальный жом" to "Закрывается неполностью",
@@ -192,7 +186,12 @@ internal fun OpenDocumentScreenPreview() {
                     "Двенадцатиперстная кишка" to "Без видимых патологий",
                     "Наличие желчи" to "Присутствует в просвете желудка",
                     "Биопсия" to "Не проводилась"
-                ).toRealmDictionary(),
+                ),
+                id = "0",
+                file = "",
+                priority = 0,
+                createdAt = "",
+                updatedAt = "",
             ),
             isLoading = false,
         ),

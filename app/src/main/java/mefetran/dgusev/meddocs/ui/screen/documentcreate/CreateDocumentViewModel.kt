@@ -20,9 +20,8 @@ import mefetran.dgusev.meddocs.app.DOCUMENT_DESCRIPTION_LENGTH
 import mefetran.dgusev.meddocs.app.DOCUMENT_CONTENT_ITEM_TITLE_LENGTH
 import mefetran.dgusev.meddocs.app.DOCUMENT_TITLE_LENGTH
 import mefetran.dgusev.meddocs.app.DOCUMENT_CONTENT_ITEM_DESC_LENGTH
-import mefetran.dgusev.meddocs.data.api.request.document.CreateDocumentRequestBody
-import mefetran.dgusev.meddocs.data.model.Category
-import mefetran.dgusev.meddocs.data.repository.DocumentRepository
+import mefetran.dgusev.meddocs.domain.model.Category
+import mefetran.dgusev.meddocs.domain.repository.document.DocumentRepository
 import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.ui.components.formatDate
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.model.CreateDocumentEvent
@@ -57,16 +56,15 @@ class CreateDocumentViewModel @Inject constructor(
 
     fun createDocument() {
         viewModelScope.launch {
-            val createDocumentRequestBody = CreateDocumentRequestBody(
-                title = _documentTitle.value.text,
-                description = _documentDescription.value.text.ifBlank { null },
-                date = _date.value.text.ifBlank { null },
-                category = state.value.category.name.ifBlank { null },
-                content = state.value.contentMap.ifEmpty { null }
-            )
-
             val createDocumentResult = async {
-                documentRepository.createDocument(createDocumentRequestBody).flowOn(dispatcher)
+                documentRepository.createDocument(
+                    title = _documentTitle.value.text,
+                    description = _documentDescription.value.text.ifBlank { null },
+                    date = _date.value.text.ifBlank { null },
+                    category = state.value.category,
+                    content = state.value.contentMap.ifEmpty { null },
+                    file = null,
+                ).flowOn(dispatcher)
                     .first()
             }
             val newDocument = createDocumentResult.await()

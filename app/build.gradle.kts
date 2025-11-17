@@ -68,6 +68,9 @@ protobuf {
 }
 
 dependencies {
+    // Domain module
+    implementation(project(":domain"))
+
     // SplashScreen
     implementation(libs.androidx.core.splashscreen)
 
@@ -75,7 +78,7 @@ dependencies {
     implementation(libs.org.jetbrains.kotlinx.serialization.json)
 
     // KotlinX coroutines
-    implementation(libs.org.jetbrains.kotlinx.coroutines)
+    implementation(libs.kotlinx.coroutines.android)
 
     // Google Font Provider
     implementation(libs.androidx.compose.ui.google.fonts)

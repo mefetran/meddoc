@@ -7,7 +7,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
 import com.google.protobuf.InvalidProtocolBufferException
-import mefetran.dgusev.meddocs.data.api.response.user.TokenPairResponse
+import mefetran.dgusev.meddocs.domain.model.TokenPair
 import mefetran.dgusev.meddocs.proto.BearerTokens
 import mefetran.dgusev.meddocs.proto.DarkThemeSettings
 import mefetran.dgusev.meddocs.proto.Settings
@@ -55,13 +55,13 @@ fun Settings.withLanguage(languageCode: String): Settings = this
     .setCurrentLanguageCode(languageCode)
     .build()
 
-fun Settings.withBearerToken(tokenPairResponse: TokenPairResponse): Settings = this
+fun Settings.withBearerToken(tokenPair: TokenPair): Settings = this
     .toBuilder()
     .setBearerTokens(
         this.bearerTokens.toBuilder()
-            .setAccessToken(tokenPairResponse.accessToken)
-            .setRefreshToken(tokenPairResponse.refreshToken)
-            .setTimestampSec(System.currentTimeMillis() / 1000 + (tokenPairResponse.expiresIn - 60).coerceAtLeast(0))
+            .setAccessToken(tokenPair.accessToken)
+            .setRefreshToken(tokenPair.refreshToken)
+            .setTimestampSec(System.currentTimeMillis() / 1000 + (tokenPair.expiresInSec - 60).coerceAtLeast(0))
             .build()
     )
     .build()

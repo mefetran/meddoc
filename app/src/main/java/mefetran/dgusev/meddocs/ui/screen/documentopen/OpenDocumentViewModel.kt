@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import mefetran.dgusev.meddocs.data.repository.DocumentRepository
+import mefetran.dgusev.meddocs.domain.repository.document.DocumentRepository
 import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.ui.screen.documentopen.model.OpenDocumentEvent
 import mefetran.dgusev.meddocs.ui.screen.documentopen.model.OpenDocumentState

@@ -27,9 +27,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
-import mefetran.dgusev.meddocs.data.model.Category
-import mefetran.dgusev.meddocs.data.model.Document
-import mefetran.dgusev.meddocs.data.model.icon
+import mefetran.dgusev.meddocs.domain.model.Category
+import mefetran.dgusev.meddocs.data.db.realm.DocumentRealmEntity
+import mefetran.dgusev.meddocs.ui.components.getLabelRes
+import mefetran.dgusev.meddocs.ui.components.icon
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 import java.time.LocalDate
 
@@ -76,7 +77,7 @@ fun DocumentsItem(
                 )
                 Spacer(Modifier.width(4.dp))
                 Text(
-                    text = stringResource(id = category.labelRes),
+                    text = stringResource(id = category.getLabelRes()),
                     style = MaterialTheme.typography.labelLarge,
                     maxLines = 1,
                 )
@@ -127,9 +128,9 @@ fun DocumentsEmptyListItemPreview(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF, locale = "ru")
 @Composable
-fun DocumentsItemPreview(modifier: Modifier = Modifier) {
+fun DocumentsItemPreview() {
     val document = remember {
-        Document(
+        DocumentRealmEntity(
             title = "Общий анализ крови",
             date = LocalDate.now().toString(),
             description = "Показатели общего анализа крови в норме, без признаков воспаления или инфекции.",

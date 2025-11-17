@@ -43,14 +43,15 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
-import mefetran.dgusev.meddocs.data.model.Category
-import mefetran.dgusev.meddocs.data.model.icon
+import mefetran.dgusev.meddocs.domain.model.Category
 import mefetran.dgusev.meddocs.ui.components.AppToolbar
 import mefetran.dgusev.meddocs.ui.components.DocumentContentItem
 import mefetran.dgusev.meddocs.ui.components.DocumentTextField
 import mefetran.dgusev.meddocs.ui.components.ModalDatePicker
 import mefetran.dgusev.meddocs.ui.components.ScreenTitle
 import mefetran.dgusev.meddocs.ui.components.formatDate
+import mefetran.dgusev.meddocs.ui.components.getLabelRes
+import mefetran.dgusev.meddocs.ui.components.icon
 
 @Composable
 internal fun CreateDocumentScreen(
@@ -159,27 +160,27 @@ internal fun CreateDocumentScreen(
                     FlowRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        Category.entries.forEach { item ->
+                        Category.entries.forEach { currentCategory ->
                             AssistChip(
                                 onClick = {
-                                    onCategoryChange(item)
+                                    onCategoryChange(currentCategory)
                                 },
                                 label = {
                                     Text(
-                                        stringResource(id = item.labelRes),
-                                        style = MaterialTheme.typography.labelLarge.copy(color = if (category == item) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface)
+                                        stringResource(id = currentCategory.getLabelRes()),
+                                        style = MaterialTheme.typography.labelLarge.copy(color = if (category == currentCategory) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface)
                                     )
                                 },
                                 leadingIcon = {
                                     Icon(
-                                        item.icon(),
+                                        currentCategory.icon(),
                                         null,
-                                        tint = if (category == item) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                                        tint = if (category == currentCategory) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                                         modifier = Modifier.size(24.dp)
                                     )
                                 },
                                 colors = AssistChipDefaults.assistChipColors(
-                                    containerColor = if (category == item) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+                                    containerColor = if (category == currentCategory) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
                                 ),
                             )
                         }

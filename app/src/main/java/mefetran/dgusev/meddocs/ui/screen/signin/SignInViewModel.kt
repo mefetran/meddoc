@@ -26,8 +26,7 @@ import mefetran.dgusev.meddocs.R
 import mefetran.dgusev.meddocs.app.EMAIL_LENGTH
 import mefetran.dgusev.meddocs.app.PASSWORD_MAX_LENGTH
 import mefetran.dgusev.meddocs.app.datastore.withBearerToken
-import mefetran.dgusev.meddocs.data.api.request.user.UserSignInRequestBody
-import mefetran.dgusev.meddocs.data.repository.UserRepository
+import mefetran.dgusev.meddocs.domain.repository.user.UserRepository
 import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.proto.Settings
 import mefetran.dgusev.meddocs.ui.screen.signin.model.SignInState
@@ -141,19 +140,17 @@ class SignInViewModel @Inject constructor(
         }
         startLoading()
         viewModelScope.launch {
-            val userSignInCredentials = UserSignInRequestBody(
-                email = _emailValue.value.text,
-                password = _passwordValue.value.text
-            )
-
             val signInDeferred = async {
-                userRepository.signInUser(userSignInCredentials).flowOn(dispatcher).first()
+                userRepository.signInUser(
+                    email = _emailValue.value.text,
+                    password = _passwordValue.value.text,
+                ).flowOn(dispatcher).first()
             }
             val signInResult = signInDeferred.await()
             signInResult
                 .onSuccess { bearerTokens ->
                     settingsDataStore.updateData { settings ->
-                        settings.withBearerToken(tokenPairResponse = bearerTokens)
+                        settings.withBearerToken(tokenPair = bearerTokens)
                     }.also { _uiEvents.emit(SignInUiEvent.SignIn) }
                     stopLoading()
                 }
