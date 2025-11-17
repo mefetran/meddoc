@@ -50,7 +50,6 @@ android {
     }
 }
 
-
 protobuf {
     protoc {
         artifact = libs.google.protobuf.protoc.get().toString()

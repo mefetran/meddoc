@@ -1,4 +1,4 @@
-package mefetran.dgusev.meddocs.data.api
+package mefetran.dgusev.meddocs.data.api.token
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -20,7 +20,7 @@ class TokenRefreshApiImpl @Inject constructor(
 ) : TokenRefreshApi {
     override suspend fun refreshToken(refreshTokenBody: RefreshTokenRequestBody): Flow<Result<TokenPairResponse>> =
         flow {
-            emit(kotlin.runCatching {
+            emit(runCatching {
                 httpClient.post("refresh") {
                     setBody(refreshTokenBody)
                 }.body()

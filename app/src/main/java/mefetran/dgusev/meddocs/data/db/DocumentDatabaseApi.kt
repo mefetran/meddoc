@@ -1,16 +1,7 @@
 package mefetran.dgusev.meddocs.data.db
 
-import io.realm.Realm
-import io.realm.kotlin.toFlow
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import mefetran.dgusev.meddocs.data.model.DocumentEntity
-import mefetran.dgusev.meddocs.data.db.realm.DocumentRealmEntity
-import mefetran.dgusev.meddocs.data.db.realm.toDocumentEntity
-import mefetran.dgusev.meddocs.data.db.realm.toDocumentRealmEntity
-import javax.inject.Inject
 
 interface DocumentDatabaseApi {
     suspend fun saveDocumentsList(documentsList: List<DocumentEntity>)
@@ -20,72 +11,4 @@ interface DocumentDatabaseApi {
     suspend fun getDocumentOrNull(documentId: String): DocumentEntity?
     suspend fun deleteDocument(documentId: String)
     suspend fun observeDocuments(): Flow<List<DocumentEntity>>
-}
-
-class DocumentRealmDatabase @Inject constructor() : DocumentDatabaseApi {
-    override suspend fun saveDocumentsList(documentsList: List<DocumentEntity>) {
-        Realm.getDefaultInstance().use { realm ->
-            realm.executeTransaction { transactionRealm ->
-                transactionRealm.insertOrUpdate(documentsList.map { it.toDocumentRealmEntity() })
-            }
-        }
-    }
-
-    override suspend fun getDocumentsListOrNull(): List<DocumentEntity>? {
-        Realm.getDefaultInstance().use { realm ->
-            val result = realm.where(DocumentRealmEntity::class.java).findAll()
-            return realm.copyFromRealm(result)?.map { it.toDocumentEntity() }
-        }
-    }
-
-    override suspend fun deleteDocumentsList() {
-        Realm.getDefaultInstance().use { realm ->
-            realm.executeTransaction { transactionRealm ->
-                transactionRealm.delete(DocumentRealmEntity::class.java)
-            }
-        }
-    }
-
-    override suspend fun saveDocument(document: DocumentEntity) {
-        Realm.getDefaultInstance().use { realm ->
-            realm.executeTransaction { transactionRealm ->
-                transactionRealm.insertOrUpdate(document.toDocumentRealmEntity())
-            }
-        }
-    }
-
-    override suspend fun getDocumentOrNull(documentId: String): DocumentEntity? {
-        Realm.getDefaultInstance().use { realm ->
-            return realm.where(DocumentRealmEntity::class.java)
-                .equalTo("id", documentId)
-                .findFirst()?.let { realm.copyFromRealm(it) }?.toDocumentEntity()
-        }
-    }
-
-    override suspend fun deleteDocument(documentId: String) {
-        Realm.getDefaultInstance().use { realm ->
-            realm.executeTransaction { transactionRealm ->
-                val documentToDelete =
-                    transactionRealm.where(DocumentRealmEntity::class.java).equalTo("id", documentId)
-                        .findFirst()
-                documentToDelete?.deleteFromRealm()
-            }
-        }
-    }
-
-    override suspend fun observeDocuments(): Flow<List<DocumentEntity>> {
-        val realm = Realm.getDefaultInstance()
-
-        return realm
-            .where(DocumentRealmEntity::class.java)
-            .findAllAsync()
-            .toFlow()
-            .map { result ->
-                realm
-                    .copyFromRealm(result)
-                    .map { it.toDocumentEntity() }
-                    .sortedByDescending { it.updatedAt }
-            }
-            .flowOn(Dispatchers.Main)
-    }
 }

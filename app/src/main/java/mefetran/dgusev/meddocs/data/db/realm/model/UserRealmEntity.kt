@@ -1,4 +1,4 @@
-package mefetran.dgusev.meddocs.data.db.realm
+package mefetran.dgusev.meddocs.data.db.realm.model
 
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey

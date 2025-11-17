@@ -5,15 +5,15 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import mefetran.dgusev.meddocs.data.api.DocumentApi
-import mefetran.dgusev.meddocs.data.api.DocumentKtorApiImpl
-import mefetran.dgusev.meddocs.data.api.TokenRefreshApi
-import mefetran.dgusev.meddocs.data.api.TokenRefreshApiImpl
+import mefetran.dgusev.meddocs.data.api.token.TokenRefreshApi
+import mefetran.dgusev.meddocs.data.api.token.TokenRefreshApiImpl
 import mefetran.dgusev.meddocs.data.api.UserApi
-import mefetran.dgusev.meddocs.data.api.UserKtorApiImpl
+import mefetran.dgusev.meddocs.data.api.ktor.DocumentKtorApiImpl
+import mefetran.dgusev.meddocs.data.api.ktor.UserKtorApiImpl
 import mefetran.dgusev.meddocs.data.db.DocumentDatabaseApi
-import mefetran.dgusev.meddocs.data.db.DocumentRealmDatabase
 import mefetran.dgusev.meddocs.data.db.UserDatabaseApi
-import mefetran.dgusev.meddocs.data.db.UserRealmDatabase
+import mefetran.dgusev.meddocs.data.db.realm.DocumentRealmDatabase
+import mefetran.dgusev.meddocs.data.db.realm.UserRealmDatabase
 import javax.inject.Singleton
 
 

@@ -1,4 +1,4 @@
-package mefetran.dgusev.meddocs.data.api
+package mefetran.dgusev.meddocs.data.api.token
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow

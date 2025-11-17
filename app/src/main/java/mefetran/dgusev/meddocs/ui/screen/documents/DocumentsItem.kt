@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
 import mefetran.dgusev.meddocs.domain.model.Category
-import mefetran.dgusev.meddocs.data.db.realm.DocumentRealmEntity
+import mefetran.dgusev.meddocs.data.db.realm.model.DocumentRealmEntity
 import mefetran.dgusev.meddocs.ui.components.getLabelRes
 import mefetran.dgusev.meddocs.ui.components.icon
 import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme

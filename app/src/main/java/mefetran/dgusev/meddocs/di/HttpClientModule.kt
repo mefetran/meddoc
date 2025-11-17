@@ -22,7 +22,7 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import mefetran.dgusev.meddocs.data.api.TokenManager
+import mefetran.dgusev.meddocs.data.api.token.TokenManager
 import javax.inject.Qualifier
 import javax.inject.Singleton
 

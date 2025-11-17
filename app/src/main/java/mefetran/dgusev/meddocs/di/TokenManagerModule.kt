@@ -6,9 +6,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
-import mefetran.dgusev.meddocs.data.api.TokenInvalidationEmitter
-import mefetran.dgusev.meddocs.data.api.TokenManager
-import mefetran.dgusev.meddocs.data.api.TokenRefreshApi
+import mefetran.dgusev.meddocs.data.api.token.TokenInvalidationEmitter
+import mefetran.dgusev.meddocs.data.api.token.TokenManager
+import mefetran.dgusev.meddocs.data.api.token.TokenRefreshApi
 import mefetran.dgusev.meddocs.proto.Settings
 import javax.inject.Singleton
 

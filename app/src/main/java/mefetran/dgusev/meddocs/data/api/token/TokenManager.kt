@@ -1,4 +1,4 @@
-package mefetran.dgusev.meddocs.data.api
+package mefetran.dgusev.meddocs.data.api.token
 
 import androidx.datastore.core.DataStore
 import io.ktor.client.plugins.ClientRequestException
