@@ -214,13 +214,13 @@ internal fun SignInScreen(
 
 @Preview(showBackground = true, locale = "ru")
 @Composable
-internal fun SignInScreenPreview(modifier: Modifier = Modifier) {
+internal fun SignInScreenPreview() {
     var emailValue by remember { mutableStateOf(TextFieldValue("")) }
     var passwordValue by remember { mutableStateOf(TextFieldValue("")) }
 
     MeddocsTheme {
         SignInScreen(
-            state = SignInState(isEmailError = true, isPasswordEmptyError = true),
+            state = SignInState(isEmailError = false, isPasswordEmptyError = false, isLoading = true),
             emailValue = emailValue,
             passwordValue = passwordValue,
             onSignIn = {},

@@ -154,8 +154,14 @@ class CreateDocumentViewModel @Inject constructor(
     }
 
     fun addContentItem() {
-        if (!state.value.contentMap.containsKey(contentItemTitle.value.text)) {
-            state.value.contentMap[contentItemTitle.value.text] = contentItemDescription.value.text
+        state.value.contentMap.putIfAbsent(
+            contentItemTitle.value.text,
+            contentItemDescription.value.text
+        ).let {
+            if (it == null) {
+                _contentItemTitle.value = TextFieldValue("")
+                _contentItemDescription.value = TextFieldValue("")
+            }
         }
     }
 

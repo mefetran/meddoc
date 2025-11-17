@@ -69,7 +69,7 @@ internal fun DocumentsScreen(
                         DocumentsEmptyListItem()
                     }
                 }
-                items(state.documents) { item ->
+                items(state.documents.sortedByDescending { it.date }) { item ->
                     DocumentsItem(
                         title = item.title,
                         date = item.date,

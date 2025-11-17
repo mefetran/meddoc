@@ -41,7 +41,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
-import mefetran.dgusev.meddocs.ui.components.BackToolbar
+import mefetran.dgusev.meddocs.ui.components.AppToolbar
 import mefetran.dgusev.meddocs.ui.components.LoadingScreen
 import mefetran.dgusev.meddocs.ui.components.ScreenTitle
 import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpState
@@ -77,11 +77,10 @@ internal fun SignUpScreen(
                 .verticalScroll(scrollState)
                 .safeDrawingPadding(),
         ) {
-            BackToolbar(onBackClick = {
+            AppToolbar(onBackClick = {
                 keyboardController?.hide()
                 onBackClicked()
-            }
-            )
+            })
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
@@ -228,7 +227,7 @@ internal fun SignUpScreen(
 
 @Preview(showBackground = true, locale = "ru")
 @Composable
-internal fun SignUpPreview(modifier: Modifier = Modifier) {
+internal fun SignUpPreview() {
     val emailValue by remember { mutableStateOf(TextFieldValue("")) }
     val passwordValue by remember { mutableStateOf(TextFieldValue("")) }
     val nameValue by remember { mutableStateOf(TextFieldValue("")) }

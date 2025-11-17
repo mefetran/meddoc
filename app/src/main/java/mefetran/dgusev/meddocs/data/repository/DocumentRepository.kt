@@ -27,7 +27,7 @@ interface DocumentRepository {
         requestBody: UpdateDocumentRequestBody
     ): Flow<Result<Document>>
 
-    suspend fun deleteDocumentById(id: String): Flow<Result<String>>
+    suspend fun deleteDocumentById(id: String): Result<Int>
 
     suspend fun saveDocumentsListLocal(documentsList: List<Document>)
 
@@ -74,7 +74,7 @@ class RealDocumentRepositoryImpl @Inject constructor(
         result.mapCatching { documentResponse -> documentResponse.toDocument() }
     }
 
-    override suspend fun deleteDocumentById(id: String): Flow<Result<String>> =
+    override suspend fun deleteDocumentById(id: String): Result<Int> =
         documentApi.deleteDocumentById(id)
 
     override suspend fun saveDocumentsListLocal(documentsList: List<Document>) =
@@ -170,9 +170,7 @@ class FakeDocumentRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun deleteDocumentById(id: String): Flow<Result<String>> = flow {
-        runCatching { "204" }
-    }
+    override suspend fun deleteDocumentById(id: String): Result<Int> = runCatching { 204 }
 
     override suspend fun saveDocumentsListLocal(documentsList: List<Document>) =
         documentDatabaseApi.saveDocumentsList(documentsList)

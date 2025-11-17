@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import mefetran.dgusev.meddocs.R
 import mefetran.dgusev.meddocs.data.model.Category
 import mefetran.dgusev.meddocs.data.model.icon
-import mefetran.dgusev.meddocs.ui.components.BackToolbar
+import mefetran.dgusev.meddocs.ui.components.AppToolbar
 import mefetran.dgusev.meddocs.ui.components.DocumentContentItem
 import mefetran.dgusev.meddocs.ui.components.DocumentTextField
 import mefetran.dgusev.meddocs.ui.components.ModalDatePicker
@@ -88,7 +88,7 @@ internal fun CreateDocumentScreen(
                     .weight(1f)
                     .verticalScroll(rememberScrollState()),
             ) {
-                BackToolbar(
+                AppToolbar(
                     onBackClick = onBackClick,
                     modifier = Modifier.padding(
                         top = WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding()
@@ -264,7 +264,7 @@ internal fun CreateDocumentScreen(
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, locale = "ru")
 @Composable
-internal fun CreateDocumentScreenPreview(modifier: Modifier = Modifier) {
+internal fun CreateDocumentScreenPreview() {
     var title by remember { mutableStateOf(TextFieldValue("")) }
     var description by remember { mutableStateOf(TextFieldValue("")) }
     var date by remember { mutableStateOf(TextFieldValue("")) }

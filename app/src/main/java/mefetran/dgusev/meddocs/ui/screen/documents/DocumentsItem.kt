@@ -71,7 +71,7 @@ fun DocumentsItem(
                 Icon(
                     imageVector = category.icon(),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurface,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(Modifier.width(4.dp))

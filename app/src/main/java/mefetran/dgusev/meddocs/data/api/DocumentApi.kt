@@ -27,7 +27,7 @@ interface DocumentApi {
         requestBody: UpdateDocumentRequestBody
     ): Flow<Result<DocumentResponse>>
 
-    suspend fun deleteDocumentById(id: String): Flow<Result<String>>
+    suspend fun deleteDocumentById(id: String): Result<Int>
 }
 
 class DocumentKtorApiImpl @Inject constructor(
@@ -66,9 +66,9 @@ class DocumentKtorApiImpl @Inject constructor(
         })
     }
 
-    override suspend fun deleteDocumentById(id: String): Flow<Result<String>> = flow {
-        emit(kotlin.runCatching {
-            httpClient.delete("documents/$id").body()
-        })
+    override suspend fun deleteDocumentById(id: String): Result<Int> {
+        return kotlin.runCatching {
+            httpClient.delete("documents/$id").status.value
+        }
     }
 }

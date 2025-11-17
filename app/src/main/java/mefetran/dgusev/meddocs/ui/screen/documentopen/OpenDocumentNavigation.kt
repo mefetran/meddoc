@@ -9,6 +9,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
+import mefetran.dgusev.meddocs.ui.components.ObserveAsEvents
+import mefetran.dgusev.meddocs.ui.screen.documentopen.model.OpenDocumentEvent
 
 @Serializable
 internal data class OpenDocument(val documentId: String)
@@ -25,9 +27,18 @@ fun NavGraphBuilder.openDocumentDestination(
             openDocumentViewModel.loadDocument(documentId)
         }
 
+        ObserveAsEvents(flow = openDocumentViewModel.uiEvent) { event ->
+            when(event) {
+                OpenDocumentEvent.CloseScreen -> onBackClick()
+            }
+        }
+
         OpenDocumentScreen(
             state = state,
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            onDeleteClick = {
+                openDocumentViewModel.deleteDocument(state.document.id)
+            }
         )
     }
 }

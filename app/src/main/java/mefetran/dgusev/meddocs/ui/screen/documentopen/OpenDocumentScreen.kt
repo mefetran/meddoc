@@ -1,7 +1,9 @@
 package mefetran.dgusev.meddocs.ui.screen.documentopen
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -12,9 +14,12 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,7 +34,7 @@ import mefetran.dgusev.meddocs.app.toRealmDictionary
 import mefetran.dgusev.meddocs.data.model.Category
 import mefetran.dgusev.meddocs.data.model.Document
 import mefetran.dgusev.meddocs.data.model.icon
-import mefetran.dgusev.meddocs.ui.components.BackToolbar
+import mefetran.dgusev.meddocs.ui.components.AppToolbar
 import mefetran.dgusev.meddocs.ui.components.DocumentContentItem
 import mefetran.dgusev.meddocs.ui.components.LoadingScreen
 import mefetran.dgusev.meddocs.ui.components.ScreenTitle
@@ -42,6 +47,7 @@ internal fun OpenDocumentScreen(
     state: OpenDocumentState,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
+    onDeleteClick: () -> Unit,
 ) {
     val category = remember(state.document.category) {
         runCatching {
@@ -62,7 +68,7 @@ internal fun OpenDocumentScreen(
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState()),
                 ) {
-                    BackToolbar(
+                    AppToolbar(
                         onBackClick = onBackClick,
                         modifier = Modifier.padding(
                             top = WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding()
@@ -84,12 +90,28 @@ internal fun OpenDocumentScreen(
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState()),
                 ) {
-                    BackToolbar(
+                    AppToolbar(
                         onBackClick = onBackClick,
                         modifier = Modifier.padding(
                             top = WindowInsets.safeDrawing.asPaddingValues().calculateTopPadding()
                         )
-                    )
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            IconButton(
+                                onClick = onDeleteClick
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Delete,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(28.dp)
+                                )
+                            }
+                        }
+                    }
                     Column(Modifier.padding(horizontal = 16.dp)) {
                         ScreenTitle(title = state.document.title)
                         Spacer(Modifier.height(28.dp))
@@ -153,7 +175,7 @@ internal fun OpenDocumentScreen(
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, locale = "ru")
 @Composable
-internal fun OpenDocumentScreenPreview(modifier: Modifier = Modifier) {
+internal fun OpenDocumentScreenPreview() {
     OpenDocumentScreen(
         state = OpenDocumentState(
             isError = false,
@@ -175,5 +197,6 @@ internal fun OpenDocumentScreenPreview(modifier: Modifier = Modifier) {
             isLoading = false,
         ),
         onBackClick = {},
+        onDeleteClick = {},
     )
 }
