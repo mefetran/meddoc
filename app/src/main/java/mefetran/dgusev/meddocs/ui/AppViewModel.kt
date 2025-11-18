@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mefetran.dgusev.meddocs.domain.repository.user.UserRepository
 import mefetran.dgusev.meddocs.token.TokenManager
-import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.proto.Settings
 import javax.inject.Inject
 
@@ -25,7 +24,7 @@ import javax.inject.Inject
 class AppViewModel @Inject constructor(
     private val settingsDataStore: DataStore<Settings>,
     private val dispatcher: CoroutineDispatcher,
-    @RealRepository val userRepository: UserRepository,
+    private val userRepository: UserRepository,
     private val tokenManager: TokenManager,
 ) : ViewModel() {
     private val _isLoadingState = MutableStateFlow(true)

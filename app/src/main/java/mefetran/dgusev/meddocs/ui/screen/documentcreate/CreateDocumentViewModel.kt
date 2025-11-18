@@ -22,7 +22,6 @@ import mefetran.dgusev.meddocs.app.DOCUMENT_TITLE_LENGTH
 import mefetran.dgusev.meddocs.app.DOCUMENT_CONTENT_ITEM_DESC_LENGTH
 import mefetran.dgusev.meddocs.domain.model.Category
 import mefetran.dgusev.meddocs.domain.repository.document.DocumentRepository
-import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.ui.components.formatDate
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.model.CreateDocumentEvent
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.model.CreateDocumentState
@@ -30,7 +29,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateDocumentViewModel @Inject constructor(
-    @RealRepository private val documentRepository: DocumentRepository,
+    private val documentRepository: DocumentRepository,
     private val dispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val _state = MutableStateFlow(CreateDocumentState())

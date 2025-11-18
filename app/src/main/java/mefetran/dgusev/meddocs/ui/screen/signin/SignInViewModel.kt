@@ -27,7 +27,6 @@ import mefetran.dgusev.meddocs.app.EMAIL_LENGTH
 import mefetran.dgusev.meddocs.app.PASSWORD_MAX_LENGTH
 import mefetran.dgusev.meddocs.app.datastore.withBearerToken
 import mefetran.dgusev.meddocs.domain.repository.user.UserRepository
-import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.proto.Settings
 import mefetran.dgusev.meddocs.ui.screen.signin.model.SignInState
 import mefetran.dgusev.meddocs.ui.screen.signin.model.SignInUiEvent
@@ -37,7 +36,7 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     private val settingsDataStore: DataStore<Settings>,
     private val dispatcher: CoroutineDispatcher,
-    @RealRepository val userRepository: UserRepository,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
     private val _emailValue = MutableStateFlow(TextFieldValue(""))
     val emailValue = _emailValue.asStateFlow()

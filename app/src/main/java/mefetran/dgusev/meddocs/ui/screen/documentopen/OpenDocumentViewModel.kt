@@ -15,14 +15,13 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import mefetran.dgusev.meddocs.domain.repository.document.DocumentRepository
-import mefetran.dgusev.meddocs.di.RealRepository
 import mefetran.dgusev.meddocs.ui.screen.documentopen.model.OpenDocumentEvent
 import mefetran.dgusev.meddocs.ui.screen.documentopen.model.OpenDocumentState
 import javax.inject.Inject
 
 @HiltViewModel
 class OpenDocumentViewModel @Inject constructor(
-    @RealRepository private val documentRepository: DocumentRepository,
+    private val documentRepository: DocumentRepository,
     private val dispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val _state = MutableStateFlow(OpenDocumentState())
