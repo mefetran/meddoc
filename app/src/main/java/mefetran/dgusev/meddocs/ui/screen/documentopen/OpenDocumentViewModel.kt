@@ -1,5 +1,6 @@
 package mefetran.dgusev.meddocs.ui.screen.documentopen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,8 +19,10 @@ import mefetran.dgusev.meddocs.domain.usecase.document.DeleteDocumentLocalUseCas
 import mefetran.dgusev.meddocs.domain.usecase.document.DeleteDocumentRemoteUseCase
 import mefetran.dgusev.meddocs.domain.usecase.document.GetDocumentLocalUseCase
 import mefetran.dgusev.meddocs.domain.usecase.document.GetDocumentRemoteUseCase
+import mefetran.dgusev.meddocs.domain.usecase.document.UpdateDocumentLocalUseCase
 import mefetran.dgusev.meddocs.ui.screen.documentopen.model.OpenDocumentEvent
 import mefetran.dgusev.meddocs.ui.screen.documentopen.model.OpenDocumentState
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,6 +32,7 @@ class OpenDocumentViewModel @Inject constructor(
     private val getDocumentRemoteUseCase: GetDocumentRemoteUseCase,
     private val deleteDocumentRemoteUseCase: DeleteDocumentRemoteUseCase,
     private val deleteDocumentLocalUseCase: DeleteDocumentLocalUseCase,
+    private val updateDocumentLocalUseCase: UpdateDocumentLocalUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(OpenDocumentState())
     val state = _state.asStateFlow()
@@ -100,5 +104,29 @@ class OpenDocumentViewModel @Inject constructor(
                     _state.update { OpenDocumentState(isError = true) }
                 }
         }
+    }
+
+    fun saveLocalFilePath(file: File) {
+        viewModelScope.launch {
+            startLoading()
+
+            val localFilePath = file.absolutePath
+
+            val updateDocumentLocalParams = UpdateDocumentLocalUseCase.Params(
+                id = _state.value.document.id,
+                localFilePath = localFilePath,
+            )
+            updateDocumentLocalUseCase.execute(updateDocumentLocalParams)
+
+            val getDocumentLocalParams = GetDocumentLocalUseCase.Params(_state.value.document.id)
+            val document = getDocumentLocalUseCase.execute(getDocumentLocalParams)
+            stopLoading()
+            document?.let {
+                _state.update { currentState -> currentState.copy(document = document) }
+                Log.d("MEDDOC", "The local file path: ${document.localFilePath}")
+                return@launch
+            }
+        }
+
     }
 }

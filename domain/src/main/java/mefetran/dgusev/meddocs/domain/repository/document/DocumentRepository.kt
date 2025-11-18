@@ -10,6 +10,7 @@ interface DocumentRepository {
         title: String,
         description: String? = null,
         date: String? = null,
+        localFilePath: String? = null,
         file: String? = null,
         category: Category? = null,
         priority: Int? = null,
@@ -34,4 +35,15 @@ interface DocumentRepository {
     suspend fun getDocumentOrNullLocal(documentId: String): Document?
     suspend fun deleteDocumentLocal(documentId: String)
     suspend fun observeDocuments(): Flow<List<Document>>
+    suspend fun updateDocumentLocal(
+        id: String,
+        title: String? = null,
+        description: String? = null,
+        date: String? = null,
+        localFilePath: String? = null,
+        file: String? = null,
+        category: Category? = null,
+        priority: Int? = null,
+        content: Map<String, String>? = null,
+    )
 }

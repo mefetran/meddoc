@@ -25,6 +25,7 @@ appCompat = "1.7.1"
 jetbrainsKotlinJvm = "2.2.10"
 material = "1.13.0"
 inject = "1"
+securityCrypto = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,7 +47,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appCompat"}
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appCompat" }
 
 # SplashScreen API
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen" }
@@ -93,7 +94,10 @@ org-jetbrains-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", na
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 # Javax Inject
-javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "inject"}
+javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "inject" }
+
+# Jetpack Security
+androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

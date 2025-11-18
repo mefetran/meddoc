@@ -12,6 +12,7 @@ data class OpenDocumentState(
         title = "",
         description = "",
         date = "",
+        localFilePath = "",
         file = "",
         category = Category.Other,
         priority = 0,

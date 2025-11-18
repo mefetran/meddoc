@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import mefetran.dgusev.meddocs.domain.usecase.document.GetDocumentsLocalUseCase
 import mefetran.dgusev.meddocs.domain.usecase.document.GetDocumentsUseCase
 import mefetran.dgusev.meddocs.domain.usecase.document.ObserveDocumentsUseCase
 import mefetran.dgusev.meddocs.domain.usecase.document.SaveDocumentsListLocalUseCase
@@ -24,6 +25,7 @@ class DocumentsViewModel @Inject constructor(
     private val getDocumentsUseCase: GetDocumentsUseCase,
     private val saveDocumentsListLocalUseCase: SaveDocumentsListLocalUseCase,
     private val observeDocumentsUseCase: ObserveDocumentsUseCase,
+    private val getDocumentsLocalUseCase: GetDocumentsLocalUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(DocumentsState())
     val state = _state.asStateFlow()
@@ -43,7 +45,22 @@ class DocumentsViewModel @Inject constructor(
             // TODO implement syncing documents from db to backend
             documents
                 .onSuccess { newList ->
-                    val saveParams = SaveDocumentsListLocalUseCase.Params(newList)
+                    val listToSave = newList.toMutableList()
+                    val documentsLocal = getDocumentsLocalUseCase.execute(Unit)
+
+                    documentsLocal?.forEach { documentLocal ->
+                        var documentToUpdate = listToSave.firstOrNull { it.id == documentLocal.id }
+
+                        if (documentToUpdate != null && documentToUpdate.localFilePath != documentLocal.localFilePath) {
+                            val index = listToSave.indexOf(documentToUpdate)
+                            documentToUpdate = documentToUpdate.copy(
+                                localFilePath = documentLocal.localFilePath,
+                            )
+                            listToSave[index] = documentToUpdate
+                        }
+                    }
+
+                    val saveParams = SaveDocumentsListLocalUseCase.Params(listToSave.toList())
                     saveDocumentsListLocalUseCase.execute(saveParams)
                     stopLoading()
                 }

@@ -13,6 +13,7 @@ class CreateDocumentUseCaseImpl @Inject constructor(
         title = input.title,
         description = input.description,
         date = input.date,
+        localFilePath = input.localFilePath,
         file = input.file,
         category = input.category,
         priority = input.priority,

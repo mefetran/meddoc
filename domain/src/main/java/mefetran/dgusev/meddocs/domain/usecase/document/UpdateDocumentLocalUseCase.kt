@@ -1,13 +1,12 @@
 package mefetran.dgusev.meddocs.domain.usecase.document
 
-import kotlinx.coroutines.flow.Flow
 import mefetran.dgusev.meddocs.domain.model.Category
-import mefetran.dgusev.meddocs.domain.model.Document
 import mefetran.dgusev.meddocs.domain.usecase.UseCase
 
-interface CreateDocumentUseCase : UseCase<CreateDocumentUseCase.Params, Flow<Result<Document>>> {
+interface UpdateDocumentLocalUseCase : UseCase<UpdateDocumentLocalUseCase.Params, Unit> {
     data class Params(
-        val title: String,
+        val id: String,
+        val title: String? = null,
         val description: String? = null,
         val date: String? = null,
         val localFilePath: String? = null,

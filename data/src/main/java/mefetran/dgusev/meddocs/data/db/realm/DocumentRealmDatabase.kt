@@ -11,6 +11,8 @@ import mefetran.dgusev.meddocs.data.model.DocumentEntity
 import mefetran.dgusev.meddocs.data.db.realm.model.DocumentRealmEntity
 import mefetran.dgusev.meddocs.data.db.realm.model.toDocumentEntity
 import mefetran.dgusev.meddocs.data.db.realm.model.toDocumentRealmEntity
+import mefetran.dgusev.meddocs.data.db.realm.model.toRealmDictionary
+import mefetran.dgusev.meddocs.domain.model.Category
 import javax.inject.Inject
 
 class DocumentRealmDatabase @Inject constructor() : DocumentDatabaseApi {
@@ -78,5 +80,37 @@ class DocumentRealmDatabase @Inject constructor() : DocumentDatabaseApi {
                     .sortedByDescending { it.updatedAt }
             }
             .flowOn(Dispatchers.Main)
+    }
+
+    override suspend fun updateDocument(
+        id: String,
+        title: String?,
+        description: String?,
+        date: String?,
+        localFilePath: String?,
+        file: String?,
+        category: Category?,
+        priority: Int?,
+        content: Map<String, String>?
+    ) {
+        Realm.getDefaultInstance().use { realm ->
+            val currentDocument = realm.where(DocumentRealmEntity::class.java)
+                .equalTo("id", id)
+                .findFirst()?.let { realm.copyFromRealm(it) }
+            currentDocument?.let {
+                title?.let { currentDocument.title = title }
+                description?.let{ currentDocument.description = description}
+                date?.let { currentDocument.date = date }
+                localFilePath?.let { currentDocument.localFilePath = localFilePath }
+                file?.let { currentDocument.file = file }
+                category?.let { currentDocument.category = category.name }
+                priority?.let { currentDocument.priority = priority }
+                content?.let { currentDocument.content = content.toRealmDictionary() }
+
+                realm.executeTransaction { transactionRealm ->
+                    transactionRealm.insertOrUpdate(currentDocument)
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,10 @@
 package mefetran.dgusev.meddocs.ui.screen.documentopen
 
+import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +19,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Icon
@@ -25,10 +31,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import mefetran.dgusev.meddocs.R
+import mefetran.dgusev.meddocs.app.PDF_MIME_TYPE
+import mefetran.dgusev.meddocs.app.decryptPdfToTempFile
 import mefetran.dgusev.meddocs.domain.model.Category
 import mefetran.dgusev.meddocs.domain.model.Document
 import mefetran.dgusev.meddocs.ui.components.AppToolbar
@@ -38,6 +48,7 @@ import mefetran.dgusev.meddocs.ui.components.ScreenTitle
 import mefetran.dgusev.meddocs.ui.components.getLabelRes
 import mefetran.dgusev.meddocs.ui.components.icon
 import mefetran.dgusev.meddocs.ui.screen.documentopen.model.OpenDocumentState
+import java.io.File
 import java.time.LocalDate
 import kotlin.random.Random
 
@@ -47,7 +58,16 @@ internal fun OpenDocumentScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onPdfFileSelected: (Uri) -> Unit,
 ) {
+    val pdfPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let {
+            onPdfFileSelected(it)
+        }
+    }
+    val context = LocalContext.current
 
     BackHandler { onBackClick() }
 
@@ -94,6 +114,46 @@ internal fun OpenDocumentScreen(
                             horizontalArrangement = Arrangement.End,
                             modifier = Modifier.weight(1f)
                         ) {
+                            if (state.document.localFilePath.isBlank()) {
+                                IconButton(
+                                    onClick = {
+                                        pdfPickerLauncher.launch(arrayOf(PDF_MIME_TYPE))
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.AttachFile,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(28.dp)
+                                    )
+                                }
+                            }
+                            if (state.document.localFilePath.isNotBlank()) {
+                                IconButton(
+                                    onClick = {
+                                        val encryptedFile = File(state.document.localFilePath)
+                                        val decryptedFile = decryptPdfToTempFile(context, encryptedFile)
+
+                                        val uri = FileProvider.getUriForFile(
+                                            context,
+                                            "${context.packageName}.provider",
+                                            decryptedFile,
+                                        )
+                                        val intent = Intent(Intent.ACTION_VIEW).apply {
+                                            setDataAndType(uri, PDF_MIME_TYPE)
+                                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                        }
+                                        context.startActivity(intent)
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.PictureAsPdf,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(28.dp)
+                                    )
+                                }
+                            }
                             IconButton(
                                 onClick = onDeleteClick
                             ) {
@@ -189,6 +249,7 @@ internal fun OpenDocumentScreenPreview() {
                 ),
                 id = "0",
                 file = "",
+                localFilePath = "",
                 priority = 0,
                 createdAt = "",
                 updatedAt = "",
@@ -197,5 +258,6 @@ internal fun OpenDocumentScreenPreview() {
         ),
         onBackClick = {},
         onDeleteClick = {},
+        onPdfFileSelected = {},
     )
 }

@@ -30,6 +30,7 @@ fun DocumentResponse.toDocumentEntity() = DocumentEntity(
     updatedAt = this.updatedAt,
     description = this.description,
     date = this.date,
+    localFilePath = "",
     file = this.file,
     category = Category.valueOf(this.category),
     priority = this.priority,

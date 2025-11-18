@@ -71,6 +71,9 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
 
+    // Jetpack Security
+    implementation(libs.androidx.security.crypto)
+
     // SplashScreen
     implementation(libs.androidx.core.splashscreen)
 

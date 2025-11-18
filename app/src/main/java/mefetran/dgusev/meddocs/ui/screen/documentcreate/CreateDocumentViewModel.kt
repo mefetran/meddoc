@@ -63,6 +63,7 @@ class CreateDocumentViewModel @Inject constructor(
                 date = _date.value.text.ifBlank { null },
                 category = state.value.category,
                 content = state.value.contentMap.ifEmpty { null },
+                localFilePath = null,
                 file = null,
             )
             val createDocumentResult = async {

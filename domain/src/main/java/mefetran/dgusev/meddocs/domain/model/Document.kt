@@ -5,6 +5,7 @@ data class Document(
     val title: String,
     val description: String,
     val date: String,
+    val localFilePath: String,
     val file: String,
     val category: Category,
     val priority: Int,

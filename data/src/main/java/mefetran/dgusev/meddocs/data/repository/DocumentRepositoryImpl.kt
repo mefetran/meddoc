@@ -36,6 +36,7 @@ class DocumentRepositoryImpl @Inject constructor(
         title: String,
         description: String?,
         date: String?,
+        localFilePath: String?,
         file: String?,
         category: Category?,
         priority: Int?,
@@ -113,6 +114,30 @@ class DocumentRepositoryImpl @Inject constructor(
         documentDatabaseApi
             .observeDocuments()
             .map { documentEntities -> documentEntities.map { documentEntity -> documentEntity.toDocument() } }
+
+    override suspend fun updateDocumentLocal(
+        id: String,
+        title: String?,
+        description: String?,
+        date: String?,
+        localFilePath: String?,
+        file: String?,
+        category: Category?,
+        priority: Int?,
+        content: Map<String, String>?
+    ) {
+        documentDatabaseApi.updateDocument(
+            id = id,
+            title = title,
+            description = description,
+            date = date,
+            localFilePath = localFilePath,
+            file = file,
+            category = category,
+            priority = priority,
+            content = content,
+        )
+    }
 }
 
 class FakeDocumentRepositoryImpl @Inject constructor(
@@ -127,6 +152,7 @@ class FakeDocumentRepositoryImpl @Inject constructor(
                     description = "Показатели общего анализа крови в норме, без признаков воспаления или инфекции.",
                     category = Category.Laboratory,
                     id = UUID.randomUUID().toString(),
+                    localFilePath = "",
                     file = "",
                     priority = 0,
                     content = HashMap<String, String>(),
@@ -139,6 +165,7 @@ class FakeDocumentRepositoryImpl @Inject constructor(
                     description = "Результаты ЭКГ в пределах нормы, нарушений ритма не выявлено.",
                     category = Category.ECG,
                     id = UUID.randomUUID().toString(),
+                    localFilePath = "",
                     file = "",
                     priority = 0,
                     content = HashMap<String, String>(),
@@ -151,6 +178,7 @@ class FakeDocumentRepositoryImpl @Inject constructor(
                     description = "Печень, поджелудочная и селезёнка без патологии, размеры в пределах нормы.",
                     category = Category.Ultrasound,
                     id = UUID.randomUUID().toString(),
+                    localFilePath = "",
                     file = "",
                     priority = 0,
                     content = HashMap<String, String>(),
@@ -163,6 +191,7 @@ class FakeDocumentRepositoryImpl @Inject constructor(
                     description = "Отсутствие признаков опухолевых образований или очаговых изменений.",
                     category = Category.MRI,
                     id = UUID.randomUUID().toString(),
+                    localFilePath = "",
                     file = "",
                     priority = 0,
                     content = HashMap<String, String>(),
@@ -175,6 +204,7 @@ class FakeDocumentRepositoryImpl @Inject constructor(
                     description = "Выявлен поверхностный гастрит, биопсия не проводилась.",
                     category = Category.Endoscopy,
                     id = UUID.randomUUID().toString(),
+                    localFilePath = "",
                     file = "",
                     priority = 0,
                     content = HashMap<String, String>(),
@@ -189,6 +219,7 @@ class FakeDocumentRepositoryImpl @Inject constructor(
         title: String,
         description: String?,
         date: String?,
+        localFilePath : String?,
         file: String?,
         category: Category?,
         priority: Int?,
@@ -199,6 +230,7 @@ class FakeDocumentRepositoryImpl @Inject constructor(
                 Document(
                     title = title,
                     id = UUID.randomUUID().toString(),
+                    localFilePath = localFilePath ?: "",
                     file = file ?: "",
                     priority = priority ?: 0,
                     content = content ?: HashMap<String, String>(),
@@ -219,6 +251,7 @@ class FakeDocumentRepositoryImpl @Inject constructor(
                 date = LocalDate.now().minusDays(Random.nextLong(30, 90)).toString(),
                 description = "КТ-картина соответствует норме, патологических изменений не выявлено.",
                 category = Category.CT,
+                localFilePath = "",
                 file = "",
                 priority = 0,
                 content = HashMap<String, String>(),
@@ -243,6 +276,7 @@ class FakeDocumentRepositoryImpl @Inject constructor(
             title = title ?: "",
             description = description ?: "",
             date = date ?: "",
+            localFilePath = "",
             file = file ?: "",
             category = category ?: Category.Other,
             priority = priority ?: 0,
@@ -276,4 +310,28 @@ class FakeDocumentRepositoryImpl @Inject constructor(
         documentDatabaseApi
             .observeDocuments()
             .map { documentEntities -> documentEntities.map { documentEntity -> documentEntity.toDocument() } }
+
+    override suspend fun updateDocumentLocal(
+        id: String,
+        title: String?,
+        description: String?,
+        date: String?,
+        localFilePath: String?,
+        file: String?,
+        category: Category?,
+        priority: Int?,
+        content: Map<String, String>?
+    ) {
+        documentDatabaseApi.updateDocument(
+            id = id,
+            title = title,
+            description = description,
+            date = date,
+            localFilePath = localFilePath,
+            file = file,
+            category = category,
+            priority = priority,
+            content = content,
+        )
+    }
 }
