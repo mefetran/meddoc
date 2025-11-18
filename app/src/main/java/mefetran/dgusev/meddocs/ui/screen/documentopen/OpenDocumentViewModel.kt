@@ -14,15 +14,21 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import mefetran.dgusev.meddocs.domain.repository.document.DocumentRepository
+import mefetran.dgusev.meddocs.domain.usecase.document.DeleteDocumentLocalUseCase
+import mefetran.dgusev.meddocs.domain.usecase.document.DeleteDocumentRemoteUseCase
+import mefetran.dgusev.meddocs.domain.usecase.document.GetDocumentLocalUseCase
+import mefetran.dgusev.meddocs.domain.usecase.document.GetDocumentRemoteUseCase
 import mefetran.dgusev.meddocs.ui.screen.documentopen.model.OpenDocumentEvent
 import mefetran.dgusev.meddocs.ui.screen.documentopen.model.OpenDocumentState
 import javax.inject.Inject
 
 @HiltViewModel
 class OpenDocumentViewModel @Inject constructor(
-    private val documentRepository: DocumentRepository,
     private val dispatcher: CoroutineDispatcher,
+    private val getDocumentLocalUseCase: GetDocumentLocalUseCase,
+    private val getDocumentRemoteUseCase: GetDocumentRemoteUseCase,
+    private val deleteDocumentRemoteUseCase: DeleteDocumentRemoteUseCase,
+    private val deleteDocumentLocalUseCase: DeleteDocumentLocalUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(OpenDocumentState())
     val state = _state.asStateFlow()
@@ -45,15 +51,17 @@ class OpenDocumentViewModel @Inject constructor(
 
         viewModelScope.launch {
             startLoading()
-            val document = documentRepository.getDocumentOrNullLocal(documentId)
+            val getDocumentLocalParams = GetDocumentLocalUseCase.Params(documentId)
+            val document = getDocumentLocalUseCase.execute(getDocumentLocalParams)
             document?.let {
                 _state.update { currentState -> currentState.copy(document = document) }
                 stopLoading()
                 return@launch
             }
 
+            val getDocumentRemoteParams = GetDocumentRemoteUseCase.Params(documentId)
             val documentDeferredResult = async {
-                documentRepository.getDocumentById(documentId).flowOn(dispatcher).first()
+                getDocumentRemoteUseCase.execute(getDocumentRemoteParams).flowOn(dispatcher).first()
             }
             val documentResult = documentDeferredResult.await()
 
@@ -74,15 +82,17 @@ class OpenDocumentViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            val deleteDocumentRemoteParams = DeleteDocumentRemoteUseCase.Params(documentId)
             val deleteDocumentDeferredResult = async {
-                documentRepository.deleteDocumentById(documentId)
+                deleteDocumentRemoteUseCase.execute(deleteDocumentRemoteParams)
             }
             val deleteDocumentResult = deleteDocumentDeferredResult.await()
             deleteDocumentResult
                 .onSuccess {
                     val httpStatusCode = HttpStatusCode.fromValue(it)
                     if (httpStatusCode == HttpStatusCode.NoContent) {
-                        documentRepository.deleteDocumentLocal(documentId)
+                        val deleteDocumentLocalParams = DeleteDocumentLocalUseCase.Params(documentId)
+                        deleteDocumentLocalUseCase.execute(deleteDocumentLocalParams)
                         _uiEvent.emit(OpenDocumentEvent.CloseScreen)
                     }
                 }

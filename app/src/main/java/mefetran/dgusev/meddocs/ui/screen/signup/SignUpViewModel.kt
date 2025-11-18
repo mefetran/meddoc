@@ -28,7 +28,9 @@ import mefetran.dgusev.meddocs.app.NAME_LENGTH
 import mefetran.dgusev.meddocs.app.PASSWORD_MAX_LENGTH
 import mefetran.dgusev.meddocs.app.PASSWORD_MIN_LENGTH
 import mefetran.dgusev.meddocs.app.datastore.withBearerToken
-import mefetran.dgusev.meddocs.domain.repository.user.UserRepository
+import mefetran.dgusev.meddocs.domain.usecase.user.SaveUserUseCase
+import mefetran.dgusev.meddocs.domain.usecase.user.SignInUserUseCase
+import mefetran.dgusev.meddocs.domain.usecase.user.SignUpUserUseCase
 import mefetran.dgusev.meddocs.proto.Settings
 import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpState
 import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpUiEvent
@@ -38,7 +40,9 @@ import javax.inject.Inject
 class SignUpViewModel @Inject constructor(
     private val settingsDataStore: DataStore<Settings>,
     private val dispatcher: CoroutineDispatcher,
-    private val userRepository: UserRepository,
+    private val signInUserUseCase: SignInUserUseCase,
+    private val signUpUserUseCase: SignUpUserUseCase,
+    private val saveUserUseCase: SaveUserUseCase,
 ) : ViewModel() {
     private val _emailValue = MutableStateFlow(TextFieldValue(""))
     val emailValue = _emailValue.asStateFlow()
@@ -163,23 +167,31 @@ class SignUpViewModel @Inject constructor(
         }
         startLoading()
         viewModelScope.launch {
+            val signUpParams = SignUpUserUseCase.Params(
+                email = _emailValue.value.text,
+                password = _passwordValue.value.text,
+                name = _nameValue.value.text.ifBlank { null }
+            )
             val signUpDeferred = async {
-                userRepository.signUpUser(
-                    email = _emailValue.value.text,
-                    password = _passwordValue.value.text,
-                    name = _nameValue.value.text.ifBlank { null }
-                ).flowOn(dispatcher).first()
+                signUpUserUseCase
+                    .execute(signUpParams)
+                    .flowOn(dispatcher)
+                    .first()
             }
             val signUpResult = signUpDeferred.await()
 
             signUpResult
                 .onSuccess { user ->
-                    userRepository.saveUser(user)
+                    val saveUserParams = SaveUserUseCase.Params(user)
+                    saveUserUseCase.execute(saveUserParams)
+                    val signInParams = SignInUserUseCase.Params(
+                        email = _emailValue.value.text,
+                        password = _passwordValue.value.text
+                    )
                     val signInDeferred = async {
-                        userRepository.signInUser(
-                            email = _emailValue.value.text,
-                            password = _passwordValue.value.text
-                        ).flowOn(dispatcher)
+                        signInUserUseCase
+                            .execute(signInParams)
+                            .flowOn(dispatcher)
                             .first()
                     }
                     val signInResult = signInDeferred.await()

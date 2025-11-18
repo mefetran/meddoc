@@ -12,14 +12,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import mefetran.dgusev.meddocs.domain.repository.document.DocumentRepository
+import mefetran.dgusev.meddocs.domain.usecase.document.GetDocumentsUseCase
+import mefetran.dgusev.meddocs.domain.usecase.document.ObserveDocumentsUseCase
+import mefetran.dgusev.meddocs.domain.usecase.document.SaveDocumentsListLocalUseCase
 import mefetran.dgusev.meddocs.ui.screen.documents.model.DocumentsState
 import javax.inject.Inject
 
 @HiltViewModel
 class DocumentsViewModel @Inject constructor(
-    private val documentRepository: DocumentRepository,
     private val dispatcher: CoroutineDispatcher,
+    private val getDocumentsUseCase: GetDocumentsUseCase,
+    private val saveDocumentsListLocalUseCase: SaveDocumentsListLocalUseCase,
+    private val observeDocumentsUseCase: ObserveDocumentsUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(DocumentsState())
     val state = _state.asStateFlow()
@@ -32,13 +36,15 @@ class DocumentsViewModel @Inject constructor(
     private fun loadDocuments() {
         viewModelScope.launch {
             startLoading()
-            val resultDeferred = async { documentRepository.getDocuments().flowOn(dispatcher).first() }
+            val resultDeferred =
+                async { getDocumentsUseCase.execute(Unit).flowOn(dispatcher).first() }
             val documents = resultDeferred.await()
 
             // TODO implement syncing documents from db to backend
             documents
                 .onSuccess { newList ->
-                    documentRepository.saveDocumentsListLocal(newList)
+                    val saveParams = SaveDocumentsListLocalUseCase.Params(newList)
+                    saveDocumentsListLocalUseCase.execute(saveParams)
                     stopLoading()
                 }
                 .onFailure { exception: Throwable ->
@@ -50,7 +56,7 @@ class DocumentsViewModel @Inject constructor(
 
     private fun observeDocuments() {
         viewModelScope.launch {
-            documentRepository.observeDocuments().collect { newDocuments ->
+            observeDocumentsUseCase.execute(Unit).collect { newDocuments ->
                 startLoading()
                 _state.update { it.copy(documents = newDocuments.toMutableStateList()) }
                 stopLoading()

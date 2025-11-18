@@ -26,7 +26,7 @@ import mefetran.dgusev.meddocs.R
 import mefetran.dgusev.meddocs.app.EMAIL_LENGTH
 import mefetran.dgusev.meddocs.app.PASSWORD_MAX_LENGTH
 import mefetran.dgusev.meddocs.app.datastore.withBearerToken
-import mefetran.dgusev.meddocs.domain.repository.user.UserRepository
+import mefetran.dgusev.meddocs.domain.usecase.user.SignInUserUseCase
 import mefetran.dgusev.meddocs.proto.Settings
 import mefetran.dgusev.meddocs.ui.screen.signin.model.SignInState
 import mefetran.dgusev.meddocs.ui.screen.signin.model.SignInUiEvent
@@ -36,7 +36,7 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     private val settingsDataStore: DataStore<Settings>,
     private val dispatcher: CoroutineDispatcher,
-    private val userRepository: UserRepository,
+    private val signInUserUseCase: SignInUserUseCase,
 ) : ViewModel() {
     private val _emailValue = MutableStateFlow(TextFieldValue(""))
     val emailValue = _emailValue.asStateFlow()
@@ -139,11 +139,12 @@ class SignInViewModel @Inject constructor(
         }
         startLoading()
         viewModelScope.launch {
+            val signInParams = SignInUserUseCase.Params(
+                email = _emailValue.value.text,
+                password = _passwordValue.value.text,
+            )
             val signInDeferred = async {
-                userRepository.signInUser(
-                    email = _emailValue.value.text,
-                    password = _passwordValue.value.text,
-                ).flowOn(dispatcher).first()
+                signInUserUseCase.execute(signInParams).flowOn(dispatcher).first()
             }
             val signInResult = signInDeferred.await()
             signInResult

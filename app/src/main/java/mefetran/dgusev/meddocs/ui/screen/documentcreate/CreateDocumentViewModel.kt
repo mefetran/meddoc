@@ -21,7 +21,8 @@ import mefetran.dgusev.meddocs.app.DOCUMENT_CONTENT_ITEM_TITLE_LENGTH
 import mefetran.dgusev.meddocs.app.DOCUMENT_TITLE_LENGTH
 import mefetran.dgusev.meddocs.app.DOCUMENT_CONTENT_ITEM_DESC_LENGTH
 import mefetran.dgusev.meddocs.domain.model.Category
-import mefetran.dgusev.meddocs.domain.repository.document.DocumentRepository
+import mefetran.dgusev.meddocs.domain.usecase.document.CreateDocumentUseCase
+import mefetran.dgusev.meddocs.domain.usecase.document.SaveDocumentLocalUseCase
 import mefetran.dgusev.meddocs.ui.components.formatDate
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.model.CreateDocumentEvent
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.model.CreateDocumentState
@@ -29,8 +30,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateDocumentViewModel @Inject constructor(
-    private val documentRepository: DocumentRepository,
     private val dispatcher: CoroutineDispatcher,
+    private val createDocumentUseCase: CreateDocumentUseCase,
+    private val saveDocumentLocalUseCase: SaveDocumentLocalUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(CreateDocumentState())
     val state = _state.asStateFlow()
@@ -55,22 +57,26 @@ class CreateDocumentViewModel @Inject constructor(
 
     fun createDocument() {
         viewModelScope.launch {
+            val createDocumentParams = CreateDocumentUseCase.Params(
+                title = _documentTitle.value.text,
+                description = _documentDescription.value.text.ifBlank { null },
+                date = _date.value.text.ifBlank { null },
+                category = state.value.category,
+                content = state.value.contentMap.ifEmpty { null },
+                file = null,
+            )
             val createDocumentResult = async {
-                documentRepository.createDocument(
-                    title = _documentTitle.value.text,
-                    description = _documentDescription.value.text.ifBlank { null },
-                    date = _date.value.text.ifBlank { null },
-                    category = state.value.category,
-                    content = state.value.contentMap.ifEmpty { null },
-                    file = null,
-                ).flowOn(dispatcher)
+                createDocumentUseCase
+                    .execute(createDocumentParams)
+                    .flowOn(dispatcher)
                     .first()
             }
             val newDocument = createDocumentResult.await()
 
             newDocument
                 .onSuccess { document ->
-                    documentRepository.saveDocumentLocal(document)
+                    val saveDocumentLocalParams = SaveDocumentLocalUseCase.Params(document)
+                    saveDocumentLocalUseCase.execute(saveDocumentLocalParams)
                     _uiEvents.emit(CreateDocumentEvent.Back)
                 }
                 .onFailure { throwable ->

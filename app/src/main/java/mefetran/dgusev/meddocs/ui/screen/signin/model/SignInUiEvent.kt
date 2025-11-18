@@ -6,7 +6,7 @@ sealed interface SignInUiEvent {
     data object SignIn : SignInUiEvent
 
     data class ShowSnackbar(
-        @StringRes val messageResId: Int,
+        @param:StringRes val messageResId: Int,
         val errorDescription: String? = null,
     ) : SignInUiEvent
 }
