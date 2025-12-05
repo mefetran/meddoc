@@ -23,10 +23,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.io.IOException
 import mefetran.dgusev.meddocs.R
-import mefetran.dgusev.meddocs.app.EMAIL_LENGTH
-import mefetran.dgusev.meddocs.app.PASSWORD_MAX_LENGTH
 import mefetran.dgusev.meddocs.app.datastore.withBearerToken
+import mefetran.dgusev.meddocs.data.model.EMAIL_LENGTH
+import mefetran.dgusev.meddocs.data.model.PASSWORD_MAX_LENGTH
+import mefetran.dgusev.meddocs.domain.model.ValidateResult
 import mefetran.dgusev.meddocs.domain.usecase.user.SignInUserUseCase
+import mefetran.dgusev.meddocs.domain.usecase.user.ValidateUserCredentialsUseCase
 import mefetran.dgusev.meddocs.proto.Settings
 import mefetran.dgusev.meddocs.ui.screen.signin.model.SignInState
 import mefetran.dgusev.meddocs.ui.screen.signin.model.SignInUiEvent
@@ -37,6 +39,7 @@ class SignInViewModel @Inject constructor(
     private val settingsDataStore: DataStore<Settings>,
     private val dispatcher: CoroutineDispatcher,
     private val signInUserUseCase: SignInUserUseCase,
+    private val validateUserCredentialsUseCase: ValidateUserCredentialsUseCase,
 ) : ViewModel() {
     private val _emailValue = MutableStateFlow(TextFieldValue(""))
     val emailValue = _emailValue.asStateFlow()
@@ -139,6 +142,22 @@ class SignInViewModel @Inject constructor(
         }
         startLoading()
         viewModelScope.launch {
+            val validateParams = ValidateUserCredentialsUseCase.Params(
+                email = _emailValue.value.text,
+                password = _passwordValue.value.text,
+            )
+
+            when (val validateResult = validateUserCredentialsUseCase.execute(validateParams)) {
+                is ValidateResult.Error -> {
+                    _uiEvents.emit(SignInUiEvent.ShowSnackbar(validateResult.message))
+                    stopLoading()
+                    return@launch
+                }
+                ValidateResult.Success -> {
+                    Log.i("${SignInViewModel::class.simpleName}", "Success validating credentials! Start signing up...")
+                }
+            }
+
             val signInParams = SignInUserUseCase.Params(
                 email = _emailValue.value.text,
                 password = _passwordValue.value.text,
@@ -180,7 +199,7 @@ class SignInViewModel @Inject constructor(
                 else -> R.string.error_unknown to singInException.message
             }
 
-            _uiEvents.emit(SignInUiEvent.ShowSnackbar(messageResId, errorDescription))
+            _uiEvents.emit(SignInUiEvent.ShowSnackbarRes(messageResId, errorDescription))
         }
     }
 }

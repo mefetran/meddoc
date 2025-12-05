@@ -1,4 +1,4 @@
-package mefetran.dgusev.meddocs.app
+package mefetran.dgusev.meddocs.data.model
 
 const val EMAIL_LENGTH = 40
 const val PASSWORD_MIN_LENGTH = 8

@@ -12,6 +12,7 @@ import mefetran.dgusev.meddocs.data.db.UserDatabaseApi
 import mefetran.dgusev.meddocs.data.api.request.user.UserRegistrationRequestBody
 import mefetran.dgusev.meddocs.data.api.request.user.UserSignInRequestBody
 import mefetran.dgusev.meddocs.data.api.response.user.toTokenPair
+import mefetran.dgusev.meddocs.data.api.response.user.toUserEntity
 import mefetran.dgusev.meddocs.data.model.toUser
 import mefetran.dgusev.meddocs.data.model.toUserEntity
 import javax.inject.Inject
@@ -39,7 +40,7 @@ class UserRepositoryImpl @Inject constructor(
 
         return userApi
             .signUpUser(credentials)
-            .map { result -> result.map { userEntity -> userEntity.toUser() } }
+            .map { result -> result.map { userResponse -> userResponse.toUserEntity().toUser() } }
     }
 
     override suspend fun signInUser(

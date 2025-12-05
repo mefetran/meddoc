@@ -13,13 +13,13 @@ import mefetran.dgusev.meddocs.data.api.UserApi
 import mefetran.dgusev.meddocs.data.api.request.user.UserRegistrationRequestBody
 import mefetran.dgusev.meddocs.data.api.request.user.UserSignInRequestBody
 import mefetran.dgusev.meddocs.data.api.response.user.TokenPairResponse
-import mefetran.dgusev.meddocs.data.model.UserEntity
+import mefetran.dgusev.meddocs.data.api.response.user.UserResponse
 import javax.inject.Inject
 
 class UserKtorApiImpl @Inject constructor(
     @AuthClient private val httpClient: HttpClient,
 ) : UserApi {
-    override suspend fun signUpUser(userSignUpCredentials: UserRegistrationRequestBody): Flow<Result<UserEntity>> =
+    override suspend fun signUpUser(userSignUpCredentials: UserRegistrationRequestBody): Flow<Result<UserResponse>> =
         flow {
             emit(kotlin.runCatching {
                 httpClient.post("register") {

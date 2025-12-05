@@ -37,7 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import mefetran.dgusev.meddocs.R
-import mefetran.dgusev.meddocs.app.PDF_MIME_TYPE
+import mefetran.dgusev.meddocs.data.model.PDF_MIME_TYPE
 import mefetran.dgusev.meddocs.app.decryptPdfToTempFile
 import mefetran.dgusev.meddocs.domain.model.Category
 import mefetran.dgusev.meddocs.domain.model.Document

@@ -16,13 +16,15 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import mefetran.dgusev.meddocs.app.DOCUMENT_DESCRIPTION_LENGTH
-import mefetran.dgusev.meddocs.app.DOCUMENT_CONTENT_ITEM_TITLE_LENGTH
-import mefetran.dgusev.meddocs.app.DOCUMENT_TITLE_LENGTH
-import mefetran.dgusev.meddocs.app.DOCUMENT_CONTENT_ITEM_DESC_LENGTH
+import mefetran.dgusev.meddocs.data.model.DOCUMENT_DESCRIPTION_LENGTH
+import mefetran.dgusev.meddocs.data.model.DOCUMENT_CONTENT_ITEM_TITLE_LENGTH
+import mefetran.dgusev.meddocs.data.model.DOCUMENT_TITLE_LENGTH
+import mefetran.dgusev.meddocs.data.model.DOCUMENT_CONTENT_ITEM_DESC_LENGTH
 import mefetran.dgusev.meddocs.domain.model.Category
+import mefetran.dgusev.meddocs.domain.model.ValidateResult
 import mefetran.dgusev.meddocs.domain.usecase.document.CreateDocumentUseCase
 import mefetran.dgusev.meddocs.domain.usecase.document.SaveDocumentLocalUseCase
+import mefetran.dgusev.meddocs.domain.usecase.document.ValidateDocumentUseCase
 import mefetran.dgusev.meddocs.ui.components.formatDate
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.model.CreateDocumentEvent
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.model.CreateDocumentState
@@ -33,6 +35,7 @@ class CreateDocumentViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatcher,
     private val createDocumentUseCase: CreateDocumentUseCase,
     private val saveDocumentLocalUseCase: SaveDocumentLocalUseCase,
+    private val validateDocumentUseCase: ValidateDocumentUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(CreateDocumentState())
     val state = _state.asStateFlow()
@@ -57,6 +60,25 @@ class CreateDocumentViewModel @Inject constructor(
 
     fun createDocument() {
         viewModelScope.launch {
+            val validateParams = ValidateDocumentUseCase.Params(
+                title = _documentTitle.value.text,
+                description = _documentDescription.value.text.ifBlank { null },
+                date = _date.value.text.ifBlank { null },
+                category = state.value.category,
+                priority = null,
+                content = state.value.contentMap.ifEmpty { null },
+            )
+
+            when (val validateResult = validateDocumentUseCase.execute(validateParams)) {
+                is ValidateResult.Error -> {
+                    _uiEvents.emit(CreateDocumentEvent.ShowSnackbar(validateResult.message))
+                    return@launch
+                }
+                ValidateResult.Success -> {
+                    Log.i("${CreateDocumentViewModel::class.simpleName}", "Success validating the document! Start creating the document...")
+                }
+            }
+
             val createDocumentParams = CreateDocumentUseCase.Params(
                 title = _documentTitle.value.text,
                 description = _documentDescription.value.text.ifBlank { null },

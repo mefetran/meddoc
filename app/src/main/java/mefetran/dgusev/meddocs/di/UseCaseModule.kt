@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import mefetran.dgusev.meddocs.data.usecase.document.CreateDocumentUseCaseImpl
+import mefetran.dgusev.meddocs.data.usecase.document.DeleteAllDocumentsLocalUseCaseImpl
 import mefetran.dgusev.meddocs.data.usecase.document.DeleteDocumentLocalUseCaseImpl
 import mefetran.dgusev.meddocs.data.usecase.document.DeleteDocumentRemoteUseCaseImpl
 import mefetran.dgusev.meddocs.data.usecase.document.GetDocumentLocalUseCaseImpl
@@ -15,12 +16,15 @@ import mefetran.dgusev.meddocs.data.usecase.document.ObserveDocumentsUseCaseImpl
 import mefetran.dgusev.meddocs.data.usecase.document.SaveDocumentLocalUseCaseImpl
 import mefetran.dgusev.meddocs.data.usecase.document.SaveDocumentsListLocalUseCaseImpl
 import mefetran.dgusev.meddocs.data.usecase.document.UpdateDocumentLocalUseCaseImpl
+import mefetran.dgusev.meddocs.data.usecase.document.ValidateDocumentUseCaseImpl
 import mefetran.dgusev.meddocs.data.usecase.user.DeleteUserUseCaseImpl
 import mefetran.dgusev.meddocs.data.usecase.user.GetUserUseCaseImpl
 import mefetran.dgusev.meddocs.data.usecase.user.SaveUserUseCaseImpl
 import mefetran.dgusev.meddocs.data.usecase.user.SignInUserUseCaseImpl
 import mefetran.dgusev.meddocs.data.usecase.user.SignUpUserUseCaseImpl
+import mefetran.dgusev.meddocs.data.usecase.user.ValidateUserCredentialsUseCaseImpl
 import mefetran.dgusev.meddocs.domain.usecase.document.CreateDocumentUseCase
+import mefetran.dgusev.meddocs.domain.usecase.document.DeleteAllDocumentsLocalUseCase
 import mefetran.dgusev.meddocs.domain.usecase.document.DeleteDocumentLocalUseCase
 import mefetran.dgusev.meddocs.domain.usecase.document.DeleteDocumentRemoteUseCase
 import mefetran.dgusev.meddocs.domain.usecase.document.GetDocumentLocalUseCase
@@ -31,12 +35,13 @@ import mefetran.dgusev.meddocs.domain.usecase.document.ObserveDocumentsUseCase
 import mefetran.dgusev.meddocs.domain.usecase.document.SaveDocumentLocalUseCase
 import mefetran.dgusev.meddocs.domain.usecase.document.SaveDocumentsListLocalUseCase
 import mefetran.dgusev.meddocs.domain.usecase.document.UpdateDocumentLocalUseCase
+import mefetran.dgusev.meddocs.domain.usecase.document.ValidateDocumentUseCase
 import mefetran.dgusev.meddocs.domain.usecase.user.DeleteUserUseCase
 import mefetran.dgusev.meddocs.domain.usecase.user.GetUserUseCase
 import mefetran.dgusev.meddocs.domain.usecase.user.SaveUserUseCase
 import mefetran.dgusev.meddocs.domain.usecase.user.SignInUserUseCase
 import mefetran.dgusev.meddocs.domain.usecase.user.SignUpUserUseCase
-import javax.inject.Singleton
+import mefetran.dgusev.meddocs.domain.usecase.user.ValidateUserCredentialsUseCase
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -88,4 +93,19 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindGetDocumentsLocalUseCase(impl: GetDocumentsLocalUseCaseImpl): GetDocumentsLocalUseCase
+
+    @Binds
+    abstract fun bindValidateDocumentUseCase(
+        impl: ValidateDocumentUseCaseImpl
+    ): ValidateDocumentUseCase
+
+    @Binds
+    abstract fun bindValidateUserCredentialsUseCase(
+        impl: ValidateUserCredentialsUseCaseImpl
+    ): ValidateUserCredentialsUseCase
+
+    @Binds
+    abstract fun bindDeleteAllDocumentsLocalUseCase(
+        impl: DeleteAllDocumentsLocalUseCaseImpl
+    ): DeleteAllDocumentsLocalUseCase
 }

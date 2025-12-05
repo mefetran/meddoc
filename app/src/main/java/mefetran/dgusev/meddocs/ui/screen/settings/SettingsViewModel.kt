@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import mefetran.dgusev.meddocs.app.datastore.defaultSettings
 import mefetran.dgusev.meddocs.app.datastore.withLanguage
 import mefetran.dgusev.meddocs.app.datastore.withTheme
+import mefetran.dgusev.meddocs.domain.usecase.document.DeleteAllDocumentsLocalUseCase
 import mefetran.dgusev.meddocs.domain.usecase.user.DeleteUserUseCase
 import mefetran.dgusev.meddocs.proto.Settings
 import mefetran.dgusev.meddocs.ui.screen.settings.model.SettingsEvent
@@ -27,6 +28,7 @@ class SettingsViewModel @Inject constructor(
     private val settingsDataStore: DataStore<Settings>,
     private val dispatcher: CoroutineDispatcher,
     private val deleteUserUseCase: DeleteUserUseCase,
+    private val deleteAllDocumentsLocalUseCase: DeleteAllDocumentsLocalUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingsState())
     val state = _state.asStateFlow()
@@ -74,6 +76,7 @@ class SettingsViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
+            deleteAllDocumentsLocalUseCase.execute(Unit)
             deleteUserUseCase.execute(Unit)
             settingsDataStore.updateData { defaultSettings() }
             _uiEvents.emit(SettingsEvent.SignIn)

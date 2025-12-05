@@ -23,14 +23,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.io.IOException
 import mefetran.dgusev.meddocs.R
-import mefetran.dgusev.meddocs.app.EMAIL_LENGTH
-import mefetran.dgusev.meddocs.app.NAME_LENGTH
-import mefetran.dgusev.meddocs.app.PASSWORD_MAX_LENGTH
-import mefetran.dgusev.meddocs.app.PASSWORD_MIN_LENGTH
+import mefetran.dgusev.meddocs.data.model.EMAIL_LENGTH
+import mefetran.dgusev.meddocs.data.model.NAME_LENGTH
+import mefetran.dgusev.meddocs.data.model.PASSWORD_MAX_LENGTH
+import mefetran.dgusev.meddocs.data.model.PASSWORD_MIN_LENGTH
 import mefetran.dgusev.meddocs.app.datastore.withBearerToken
+import mefetran.dgusev.meddocs.domain.model.ValidateResult
 import mefetran.dgusev.meddocs.domain.usecase.user.SaveUserUseCase
 import mefetran.dgusev.meddocs.domain.usecase.user.SignInUserUseCase
 import mefetran.dgusev.meddocs.domain.usecase.user.SignUpUserUseCase
+import mefetran.dgusev.meddocs.domain.usecase.user.ValidateUserCredentialsUseCase
 import mefetran.dgusev.meddocs.proto.Settings
 import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpState
 import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpUiEvent
@@ -43,6 +45,7 @@ class SignUpViewModel @Inject constructor(
     private val signInUserUseCase: SignInUserUseCase,
     private val signUpUserUseCase: SignUpUserUseCase,
     private val saveUserUseCase: SaveUserUseCase,
+    private val validateUserCredentialsUseCase: ValidateUserCredentialsUseCase,
 ) : ViewModel() {
     private val _emailValue = MutableStateFlow(TextFieldValue(""))
     val emailValue = _emailValue.asStateFlow()
@@ -167,6 +170,23 @@ class SignUpViewModel @Inject constructor(
         }
         startLoading()
         viewModelScope.launch {
+            val validateParams = ValidateUserCredentialsUseCase.Params(
+                email = _emailValue.value.text,
+                password = _passwordValue.value.text,
+                name = _nameValue.value.text
+            )
+
+            when (val validateResult = validateUserCredentialsUseCase.execute(validateParams)) {
+                is ValidateResult.Error -> {
+                    _uiEvents.emit(SignUpUiEvent.ShowSnackbar(validateResult.message))
+                    stopLoading()
+                    return@launch
+                }
+                ValidateResult.Success -> {
+                    Log.i("${SignUpViewModel::class.simpleName}", "Success validating credentials! Start signing up...")
+                }
+            }
+
             val signUpParams = SignUpUserUseCase.Params(
                 email = _emailValue.value.text,
                 password = _passwordValue.value.text,
@@ -232,7 +252,7 @@ class SignUpViewModel @Inject constructor(
                 else -> R.string.error_unknown to singUpException.message
             }
 
-            _uiEvents.emit(SignUpUiEvent.ShowSnackbar(messageResId, errorDescription))
+            _uiEvents.emit(SignUpUiEvent.ShowSnackbarRes(messageResId, errorDescription))
         }
     }
 }

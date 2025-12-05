@@ -1,13 +1,17 @@
 package mefetran.dgusev.meddocs.ui.screen.documentcreate
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import mefetran.dgusev.meddocs.ui.components.ObserveAsEvents
+import mefetran.dgusev.meddocs.ui.components.SnackbarController
+import mefetran.dgusev.meddocs.ui.components.SnackbarEvent
 import mefetran.dgusev.meddocs.ui.screen.documentcreate.model.CreateDocumentEvent
 
 @Serializable
@@ -24,10 +28,16 @@ fun NavGraphBuilder.createDocumentDestination(
         val date by createDocumentViewModel.date.collectAsStateWithLifecycle()
         val newField by createDocumentViewModel.contentItemTitle.collectAsStateWithLifecycle()
         val newFieldValue by createDocumentViewModel.contentItemDescription.collectAsStateWithLifecycle()
+        val scope = rememberCoroutineScope()
 
         ObserveAsEvents(flow = createDocumentViewModel.uiEvents) { event ->
             when (event) {
                 CreateDocumentEvent.Back -> onBackClick()
+                is CreateDocumentEvent.ShowSnackbar -> {
+                    scope.launch {
+                        SnackbarController.sendEvent(SnackbarEvent(event.message))
+                    }
+                }
             }
         }
 

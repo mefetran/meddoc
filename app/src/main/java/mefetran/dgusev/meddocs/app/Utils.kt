@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKey
+import mefetran.dgusev.meddocs.data.model.PDF_FILES_DIR
 import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID

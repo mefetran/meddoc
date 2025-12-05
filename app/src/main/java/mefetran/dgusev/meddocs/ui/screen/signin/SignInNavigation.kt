@@ -61,10 +61,16 @@ fun NavGraphBuilder.signInDestination(
                     onNavigateToMain()
                 }
 
-                is SignInUiEvent.ShowSnackbar -> {
+                is SignInUiEvent.ShowSnackbarRes -> {
                     scope.launch {
                         val message = context.getString(event.messageResId, event.errorDescription)
                         SnackbarController.sendEvent(SnackbarEvent(message = message))
+                    }
+                }
+
+                is SignInUiEvent.ShowSnackbar -> {
+                    scope.launch {
+                        SnackbarController.sendEvent(SnackbarEvent(event.message))
                     }
                 }
             }

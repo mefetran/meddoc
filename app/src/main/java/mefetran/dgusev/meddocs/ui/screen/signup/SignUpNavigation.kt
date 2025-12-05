@@ -52,10 +52,16 @@ fun NavGraphBuilder.signUpDestination(
                     onNavigateToMain()
                 }
 
-                is SignUpUiEvent.ShowSnackbar -> {
+                is SignUpUiEvent.ShowSnackbarRes -> {
                     scope.launch {
                         val message = context.getString(event.messageResId, event.errorDescription)
                         SnackbarController.sendEvent(SnackbarEvent(message = message))
+                    }
+                }
+
+                is SignUpUiEvent.ShowSnackbar -> {
+                    scope.launch {
+                        SnackbarController.sendEvent(SnackbarEvent(event.message))
                     }
                 }
             }
