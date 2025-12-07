@@ -12,7 +12,6 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-
 private const val DOCUMENT_ID = "1"
 private const val DOCUMENT_TITLE = "some title"
 private const val DOCUMENT_DESCRIPTION = "some description"

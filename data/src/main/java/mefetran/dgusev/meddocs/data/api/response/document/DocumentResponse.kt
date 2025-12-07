@@ -2,7 +2,6 @@ package mefetran.dgusev.meddocs.data.api.response.document
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import mefetran.dgusev.meddocs.data.db.realm.model.toRealmDictionary
 import mefetran.dgusev.meddocs.domain.model.Category
 import mefetran.dgusev.meddocs.data.model.DocumentEntity
 
@@ -25,7 +24,7 @@ data class DocumentResponse(
 fun DocumentResponse.toDocumentEntity() = DocumentEntity(
     id = this.id,
     title = this.title,
-    content = this.content.toRealmDictionary(),
+    content = this.content,
     createdAt = this.createdAt,
     updatedAt = this.updatedAt,
     description = this.description,

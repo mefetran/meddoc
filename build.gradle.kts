@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.android.library) apply false
+//    id("info.solidsoft.pitest") version "1.19.0-rc.2" apply false
 }
 
 buildscript {
