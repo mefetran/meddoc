@@ -60,11 +60,17 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.test)
+    implementation(libs.kotlin.test)
+
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.junit.jupiter.params)
     testImplementation(libs.mockk)
     testImplementation(libs.kotest.assertions.core)
+    testImplementation(libs.hamcrest)
     androidTestImplementation(libs.androidx.espresso.core)
 }
 
