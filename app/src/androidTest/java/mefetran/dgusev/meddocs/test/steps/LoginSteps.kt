@@ -44,6 +44,7 @@ class LoginSteps(
 
     @Then("I should see Home screen")
     fun homeScreen() {
+        rule.waitForIdle()
         rule.onNodeWithTag("documentsNavBarTag").assertIsDisplayed()
     }
 }

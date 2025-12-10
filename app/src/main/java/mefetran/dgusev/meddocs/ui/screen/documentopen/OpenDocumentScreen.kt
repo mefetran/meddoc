@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -161,13 +162,13 @@ internal fun OpenDocumentScreen(
                                     imageVector = Icons.Filled.Delete,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(28.dp)
+                                    modifier = Modifier.testTag("openDocBackClickTag").size(28.dp)
                                 )
                             }
                         }
                     }
                     Column(Modifier.padding(horizontal = 16.dp)) {
-                        ScreenTitle(title = state.document.title)
+                        ScreenTitle(title = state.document.title, modifier = Modifier.testTag("screenTitleDocumentTag"))
                         Spacer(Modifier.height(28.dp))
                         AssistChip(
                             onClick = {},

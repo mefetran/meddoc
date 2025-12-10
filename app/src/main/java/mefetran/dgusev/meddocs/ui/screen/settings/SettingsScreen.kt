@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -94,8 +95,15 @@ internal fun SettingsScreen(
                 options = languagesList,
                 label = stringResource(id = R.string.language_label),
                 initialValue = when (state.currentLanguageCode) {
-                    "en" -> stringResource(id = languagesList.find { it == LanguageOption.English }?.localizedName ?: languagesList.first().localizedName)
-                    "ru" -> stringResource(id = languagesList.find { it == LanguageOption.Russian }?.localizedName ?: languagesList.first().localizedName)
+                    "en" -> stringResource(
+                        id = languagesList.find { it == LanguageOption.English }?.localizedName
+                            ?: languagesList.first().localizedName
+                    )
+
+                    "ru" -> stringResource(
+                        id = languagesList.find { it == LanguageOption.Russian }?.localizedName
+                            ?: languagesList.first().localizedName
+                    )
 
                     else -> stringResource(id = R.string.language_unknown)
                 },
@@ -110,7 +118,10 @@ internal fun SettingsScreen(
             Spacer(Modifier.weight(1f))
             Button(
                 onClick = onLogoutClick,
-                modifier = Modifier.height(48.dp).align(Alignment.CenterHorizontally),
+                modifier = Modifier
+                    .testTag("logoutButtonTag")
+                    .height(48.dp)
+                    .align(Alignment.CenterHorizontally),
             ) {
                 Text(
                     text = stringResource(id = R.string.logout_button),
@@ -123,7 +134,7 @@ internal fun SettingsScreen(
 
 @Preview(showBackground = true, locale = "ru")
 @Composable
-internal fun SettingsScreenPreview(modifier: Modifier = Modifier) {
+internal fun SettingsScreenPreview() {
     MeddocsTheme {
         SettingsScreen(
             state = SettingsState(currentLanguageCode = "ru"),

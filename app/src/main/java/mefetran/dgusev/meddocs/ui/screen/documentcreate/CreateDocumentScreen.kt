@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -110,7 +111,9 @@ internal fun CreateDocumentScreen(
                         },
                         singleLine = true,
                         isError = isError,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .testTag("nameOfNewDocTag")
+                            .fillMaxWidth()
                     )
                     Spacer(Modifier.height(8.dp))
                     DocumentTextField(
@@ -121,7 +124,9 @@ internal fun CreateDocumentScreen(
                             Text(stringResource(id = R.string.description_label))
                         },
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .testTag("descriptionOfNewDocTag")
+                            .fillMaxWidth()
                     )
                     Spacer(Modifier.height(8.dp))
                     Row(
@@ -207,6 +212,7 @@ internal fun CreateDocumentScreen(
                             Text(stringResource(id = R.string.field_label))
                         },
                         singleLine = true,
+                        modifier = Modifier.testTag("keyAddInfoTag")
                     )
                     Spacer(Modifier.height(8.dp))
                     DocumentTextField(
@@ -216,6 +222,7 @@ internal fun CreateDocumentScreen(
                         label = {
                             Text(stringResource(id = R.string.value_label))
                         },
+                        modifier = Modifier.testTag("valueAddInfoTag")
                     )
                     Spacer(Modifier.height(8.dp))
                     Button(
@@ -224,7 +231,7 @@ internal fun CreateDocumentScreen(
                                 onAddContentClick()
                             }
                         },
-                        modifier = Modifier.align(Alignment.End),
+                        modifier = Modifier.testTag("buttonAddInfoTag").align(Alignment.End),
                     ) {
                         Text(
                             text = stringResource(id = R.string.add_button),
@@ -242,6 +249,7 @@ internal fun CreateDocumentScreen(
                     }
                 },
                 modifier = Modifier
+                    .testTag("buttonCreateDocumentTag")
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .imePadding()
