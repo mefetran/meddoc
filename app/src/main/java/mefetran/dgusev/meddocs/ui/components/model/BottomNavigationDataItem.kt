@@ -7,4 +7,5 @@ internal data class BottomNavigationDataItem<T : Any>(
     @param:StringRes val localizedName: Int,
     val route: T,
     val icon: ImageVector,
+    val testTag: String,
 )

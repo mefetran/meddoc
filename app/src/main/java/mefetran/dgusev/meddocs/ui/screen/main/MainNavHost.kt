@@ -14,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,11 +52,13 @@ internal fun MainNavHost(
                 localizedName = R.string.nav_documents,
                 route = Documents,
                 icon = Icons.Default.MedicalServices,
+                testTag = "documentsNavBarTag",
             ),
             BottomNavigationDataItem(
                 localizedName = R.string.nav_settings,
                 route = Settings,
                 icon = Icons.Default.Settings,
+                testTag = "settingsNavBarTag",
             ),
         )
     }
@@ -92,6 +95,7 @@ internal fun MainNavHost(
                                 restoreState = true
                             }
                         },
+                        modifier = Modifier.testTag(bottomNavigationDataItem.testTag)
                     )
                 }
             }

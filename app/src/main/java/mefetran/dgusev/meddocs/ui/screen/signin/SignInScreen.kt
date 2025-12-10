@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
@@ -58,7 +59,7 @@ internal fun SignInScreen(
 ) {
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
-    
+
     Surface(
         color = MaterialTheme.colorScheme.surface,
         modifier = modifier.fillMaxSize(),
@@ -99,6 +100,7 @@ internal fun SignInScreen(
                     onNewEmailValue(newTextFieldValue)
                 },
                 modifier = Modifier
+                    .testTag("usernameInput")
                     .align(Alignment.Start)
                     .fillMaxWidth(),
                 label = {
@@ -138,6 +140,7 @@ internal fun SignInScreen(
                     onNewPasswordValue(newTextFieldValue)
                 },
                 modifier = Modifier
+                    .testTag("passwordInput")
                     .align(Alignment.Start)
                     .fillMaxWidth(),
                 label = {
@@ -178,7 +181,10 @@ internal fun SignInScreen(
                     keyboardController?.hide()
                     onSignIn()
                 },
-                modifier = Modifier.fillMaxWidth().height(48.dp)
+                modifier = Modifier
+                    .testTag("loginButton")
+                    .fillMaxWidth()
+                    .height(48.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.sign_in_button),
@@ -220,7 +226,11 @@ internal fun SignInScreenPreview() {
 
     MeddocsTheme {
         SignInScreen(
-            state = SignInState(isEmailError = false, isPasswordEmptyError = false, isLoading = true),
+            state = SignInState(
+                isEmailError = false,
+                isPasswordEmptyError = false,
+                isLoading = false
+            ),
             emailValue = emailValue,
             passwordValue = passwordValue,
             onSignIn = {},
