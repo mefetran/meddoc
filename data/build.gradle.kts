@@ -23,8 +23,14 @@ android {
 
     defaultConfig {
         minSdk = 29
+        testApplicationId = "mefetran.dgusev.meddocs.data.test"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "io.cucumber.android.runner.CucumberAndroidJUnitRunner"
+
+        sourceSets {
+            getByName("androidTest").assets.srcDirs("src/androidTest/assets")
+        }
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -40,9 +46,18 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "17"
+    }
+
+    packagingOptions {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            merges += "META-INF/LICENSE.md"
+            merges += "META-INF/LICENSE-notice.md"
+        }
     }
 }
 
@@ -83,6 +98,18 @@ dependencies {
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.hamcrest)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    testImplementation(libs.junit4)
+    testRuntimeOnly(libs.junit.vintage.engine)
+
+    androidTestImplementation(libs.cucumber.android)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.mockk.agent)
+    androidTestImplementation(libs.kotest.assertions.core)
+    coreLibraryDesugaring(libs.android.tools.desugar)
 
 //    pitest("org.pitest:pitest-junit5-plugin:1.2.3")
 //    pitest("com.arcmutate:pitest-kotlin-plugin:1.5.0")
