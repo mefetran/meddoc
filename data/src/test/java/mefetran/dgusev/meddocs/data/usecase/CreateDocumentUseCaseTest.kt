@@ -203,4 +203,88 @@ class CreateDocumentUseCaseTest {
             )
         }
     }
+
+
+    @Test
+    fun `load test - create document multiple times`() = runTest {
+        val timesHundred = 100
+        val timesFiveHundred = 500
+        val timesThousand = 1000
+        val timesFiveThousand = 5000
+        val timingsHundred = mutableListOf<Long>()
+        val timingsFiveHundred = mutableListOf<Long>()
+        val timingsThousand = mutableListOf<Long>()
+        val timingsFiveThousand = mutableListOf<Long>()
+
+        val created = Document(
+            id = DOCUMENT_ID,
+            title = DOCUMENT_TITLE,
+            description = DOCUMENT_DESCRIPTION,
+            date = DOCUMENT_DATE,
+            localFilePath = "",
+            file = "",
+            category = DOCUMENT_CATEGORY,
+            priority = DOCUMENT_PRIORITY,
+            content = DOCUMENT_CONTENT,
+            createdAt = "",
+            updatedAt = "",
+        )
+
+        coEvery {
+            repository.createDocument(any(), any(), any(), any(), any(), any(), any(), any())
+        } returns flow { emit(Result.success(created)) }
+
+        val params = CreateDocumentUseCase.Params(
+            title = DOCUMENT_TITLE,
+            description = DOCUMENT_DESCRIPTION,
+            date = DOCUMENT_DATE,
+            localFilePath = null,
+            file = null,
+            category = DOCUMENT_CATEGORY,
+            priority = DOCUMENT_PRIORITY,
+            content = DOCUMENT_CONTENT,
+        )
+
+        repeat(timesHundred) {
+            val start = System.nanoTime()
+            useCase.execute(params).first()
+            val end = System.nanoTime()
+            timingsHundred += (end - start)
+        }
+
+        repeat(timesFiveHundred) {
+            val start = System.nanoTime()
+            useCase.execute(params).first()
+            val end = System.nanoTime()
+            timingsFiveHundred += (end - start)
+        }
+
+        repeat(timesThousand) {
+            val start = System.nanoTime()
+            useCase.execute(params).first()
+            val end = System.nanoTime()
+            timingsThousand += (end - start)
+        }
+
+        repeat(timesFiveThousand) {
+            val start = System.nanoTime()
+            useCase.execute(params).first()
+            val end = System.nanoTime()
+            timingsFiveThousand += (end - start)
+        }
+
+        val avgMsHundred = (timingsHundred.average() / 1_000_000)
+        val avgMsFiveHundred = (timingsFiveHundred.average() / 1_000_000)
+        val avgMsThousand = (timingsThousand.average() / 1_000_000)
+        val avgMsFiveThousand = (timingsFiveThousand.average() / 1_000_000)
+
+        println("""
+            Unit loadtest:
+            ${CreateDocumentUseCaseTest::class.simpleName}.load test - create document multiple times()
+            iterations=$timesHundred avg_time_ms=$avgMsHundred
+            iterations=$timesFiveHundred avg_time_ms=$avgMsFiveHundred
+            iterations=$timesThousand avg_time_ms=$avgMsThousand
+            iterations=$timesFiveThousand avg_time_ms=$avgMsFiveThousand
+        """.trimIndent())
+    }
 }

@@ -29,6 +29,8 @@ class CreateDocumentSteps {
     private var userAuthenticated = false
     private var featureAvailable = false
 
+    private var avgMs: Double = 0.0
+
     @Given("the user is authenticated in the system")
     fun userAuthenticated() {
         userAuthenticated = true
@@ -276,6 +278,36 @@ class CreateDocumentSteps {
                 emptyMap()
             )
         }
+    }
+
+    @When("I load test CreateDocumentUseCase with {string} iterations")
+    fun loadTestCreateDocument(iterationsString: String) = runTest {
+        val iterations = iterationsString.toInt()
+        val params = CreateDocumentUseCase.Params(
+            title = "some title",
+            description = "some description",
+            date = "2024-01-01",
+            localFilePath = null,
+            file = null,
+            category = Category.Laboratory,
+            priority = 0,
+            content = emptyMap(),
+        )
+
+        val timings = mutableListOf<Long>()
+
+        repeat(iterations) {
+            val start = System.nanoTime()
+            useCase.execute(params).first()
+            val end = System.nanoTime()
+            timings += (end - start)
+        }
+
+        avgMs = timings.average() / 1_000_000
+        println("BDD LOADTEST: iterations=$iterations avg_time_ms=$avgMs")
+        println("""
+            ${CreateDocumentSteps::class.simpleName} iterations=$iterations avg_time_ms=$avgMs
+        """.trimIndent())
     }
 
     private fun String?.nullIfDeclaredNull(): String? =

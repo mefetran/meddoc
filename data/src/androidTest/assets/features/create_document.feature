@@ -56,3 +56,16 @@ Feature: Create document
         | priority    | 0              |
       Then the spy repository should return success with matching title
       And spy repository createDocument should have been invoked with correct parameters
+
+    Scenario Outline: Load test for CreateDocument
+      Given the user is authenticated in the system
+      And document creation functionality is available
+      And a mocked DocumentRepository that returns a created document
+      And a CreateDocumentUseCase
+      When I load test CreateDocumentUseCase with "<iter>" iterations
+      Examples:
+        | iter |
+        | 100 |
+        | 500 |
+        | 1000 |
+        | 5000 |
