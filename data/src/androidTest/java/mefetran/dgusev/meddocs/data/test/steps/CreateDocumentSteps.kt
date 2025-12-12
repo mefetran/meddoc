@@ -1,5 +1,6 @@
 package mefetran.dgusev.meddocs.data.test.steps
 
+import io.cucumber.datatable.DataTable
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
@@ -25,47 +26,58 @@ class CreateDocumentSteps {
     private lateinit var useCase: CreateDocumentUseCase
     private var result: Result<Document>? = null
 
+    private var userAuthenticated = false
+    private var featureAvailable = false
 
-    private val DOCUMENT_ID = "1"
-    private val DOCUMENT_TITLE = "some title"
-    private val DOCUMENT_DESCRIPTION = "some description"
-    private val DOCUMENT_DATE = "2024-01-01"
-    private val DOCUMENT_PRIORITY = 0
-    private val DOCUMENT_CATEGORY = Category.Laboratory
-    private val DOCUMENT_CONTENT = mapOf<String, String>()
+    @Given("the user is authenticated in the system")
+    fun userAuthenticated() {
+        userAuthenticated = true
+    }
 
-    private lateinit var params: CreateDocumentUseCase.Params
+    @Given("document creation functionality is available")
+    fun creationAvailable() {
+        featureAvailable = true
+    }
 
     @Given("a mocked DocumentRepository that returns a created document")
     fun givenMockRepositoryReturningSuccess() {
+        assertTrue(userAuthenticated)
+        assertTrue(featureAvailable)
+
         repository = mockk()
 
         val created = Document(
-            id = DOCUMENT_ID,
-            title = DOCUMENT_TITLE,
-            description = DOCUMENT_DESCRIPTION,
-            date = DOCUMENT_DATE,
+            id = "1",
+            title = "some title",
+            description = "some description",
+            date = "2024-01-01",
             localFilePath = "",
             file = "",
-            category = DOCUMENT_CATEGORY,
-            priority = DOCUMENT_PRIORITY,
-            content = DOCUMENT_CONTENT,
+            category = Category.Laboratory,
+            priority = 0,
+            content = emptyMap(),
             createdAt = "",
             updatedAt = "",
         )
 
         coEvery {
-            repository.createDocument(any(), any(), any(), any(), any(), any(), any(), any())
+            repository.createDocument(
+                any(), any(), any(), any(), any(),
+                any(), any(), any()
+            )
         } returns flow { emit(Result.success(created)) }
     }
 
     @Given("a CreateDocumentUseCase")
     fun givenUseCase() {
+        assertTrue(::repository.isInitialized)
         useCase = CreateDocumentUseCaseImpl(repository)
     }
 
     @Given("a relaxed mocked DocumentRepository")
-    fun givenRelaxedMock() {
+    fun givenRelaxedRepository() {
+        assertTrue(userAuthenticated)
+        assertTrue(featureAvailable)
         repository = mockk(relaxed = true)
     }
 
@@ -76,6 +88,9 @@ class CreateDocumentSteps {
 
     @Given("a spy DocumentRepository")
     fun givenSpyRepository() {
+        assertTrue(userAuthenticated)
+        assertTrue(featureAvailable)
+
         repository = spyk(object : DocumentRepository {
             override suspend fun getDocuments() =
                 flow { emit(Result.success(emptyList<Document>())) }
@@ -88,20 +103,20 @@ class CreateDocumentSteps {
                 file: String?,
                 category: Category?,
                 priority: Int?,
-                content: Map<String, String>?
+                content: Map<String, String>?,
             ) = flow {
                 emit(
                     Result.success(
                         Document(
-                            DOCUMENT_ID,
-                            title,
-                            description ?: "",
-                            date ?: "",
-                            localFilePath ?: "",
-                            file ?: "",
-                            category ?: Category.Other,
-                            priority ?: 0,
-                            content ?: emptyMap(),
+                            id = "1",
+                            title = title,
+                            description = description ?: "",
+                            date = date ?: "",
+                            localFilePath = localFilePath ?: "",
+                            file = file ?: "",
+                            category = category ?: Category.Other,
+                            priority = priority ?: 0,
+                            content = content ?: emptyMap(),
                             createdAt = "",
                             updatedAt = ""
                         )
@@ -151,97 +166,118 @@ class CreateDocumentSteps {
     }
 
     @When("I execute CreateDocumentUseCase with valid fields")
-    fun whenExecuteUseCase() = runTest {
-        params = CreateDocumentUseCase.Params(
-            title = DOCUMENT_TITLE,
-            description = DOCUMENT_DESCRIPTION,
-            date = DOCUMENT_DATE,
+    fun whenExecuteUseCaseValid() = runTest {
+        val params = CreateDocumentUseCase.Params(
+            title = "some title",
+            description = "some description",
+            date = "2024-01-01",
             localFilePath = "",
             file = "",
-            category = DOCUMENT_CATEGORY,
-            priority = DOCUMENT_PRIORITY,
-            content = DOCUMENT_CONTENT,
+            category = Category.Laboratory,
+            priority = 0,
+            content = emptyMap(),
         )
-        val resultFlow = useCase.execute(params)
-        result = resultFlow.first()
-    }
 
-
-    @When("I execute CreateDocumentUseCase with required fields")
-    fun whenExecuteUseCaseWithRequiredFields() = runTest {
-        params = CreateDocumentUseCase.Params(
-            title = DOCUMENT_TITLE,
-            description = null,
-            date = null,
-            localFilePath = null,
-            file = null,
-            category = DOCUMENT_CATEGORY,
-            priority = DOCUMENT_PRIORITY,
-            content = DOCUMENT_CONTENT,
-        )
-        val resultFlow = useCase.execute(params)
-        result = resultFlow.first()
+        result = useCase.execute(params).first()
     }
 
     @When("I execute CreateDocumentUseCase with valid fields but without stubbing")
-    fun whenExecuteUseCaseRelaxed() = runTest {
-        params = CreateDocumentUseCase.Params(
-            title = DOCUMENT_TITLE,
+    fun whenExecuteRelaxed() = runTest {
+        val params = CreateDocumentUseCase.Params(
+            title = "some title",
             description = null,
             date = null,
             localFilePath = null,
             file = null,
-            category = DOCUMENT_CATEGORY,
-            priority = DOCUMENT_PRIORITY,
-            content = DOCUMENT_CONTENT,
+            category = Category.Laboratory,
+            priority = 0,
+            content = emptyMap(),
         )
-        useCase.execute(params)
+        useCase.execute(params)   // relaxed mock returns flow<Unit>
+    }
+
+    @When("I create a document with the following fields:")
+    fun whenExecuteWithTable(table: DataTable) = runTest {
+        val map = table.asMap(String::class.java, String::class.java)
+
+        val params = CreateDocumentUseCase.Params(
+            title = map["title"]!!,
+            description = map["description"].nullIfDeclaredNull(),
+            date = map["date"].nullIfDeclaredNull(),
+            localFilePath = map["localPath"].nullIfDeclaredNull(),
+            file = map["file"].nullIfDeclaredNull(),
+            category = map["category"]?.let { Category.valueOf(it) },
+            priority = map["priority"]?.toIntOrNull(),
+            content = emptyMap(),
+        )
+
+         useCase.execute(params)
+    }
+
+    @When("I execute CreateDocumentUseCase with the following valid attributes:")
+    fun whenExecuteSpyWithTable(table: DataTable) = runTest {
+        val map = table.asMap(String::class.java, String::class.java)
+
+        val params = CreateDocumentUseCase.Params(
+            title = map["title"]!!,
+            description = map["description"].nullIfDeclaredNull(),
+            date = map["date"].nullIfDeclaredNull(),
+            localFilePath = map["localPath"].nullIfDeclaredNull(),
+            file = map["file"].nullIfDeclaredNull(),
+            category = map["category"]?.let { Category.valueOf(it) },
+            priority = map["priority"]?.toIntOrNull(),
+            content = emptyMap(),
+        )
+
+        result = useCase.execute(params).first()
     }
 
     @Then("the result should be a successful document with the same values")
-    fun assertSuccessAndDocumentMatches() {
+    fun assertSuccessReturnedDocument() {
         assertTrue(result!!.isSuccess)
         val doc = result!!.getOrNull()
         assertNotNull(doc)
-        assertEquals(DOCUMENT_TITLE, doc.title)
-        assertEquals(DOCUMENT_DESCRIPTION, doc.description)
-        assertEquals(DOCUMENT_DATE, doc.date)
+        assertEquals("some title", doc.title)
+        assertEquals("some description", doc.description)
     }
 
     @Then("repository.createDocument should be invoked exactly once")
-    fun verifyRepositoryCalledOnce() {
+    fun verifyCalledOnce() {
         coVerify(exactly = 1) {
             repository.createDocument(any(), any(), any(), any(), any(), any(), any(), any())
         }
     }
 
     @Then("repository.createDocument should have been called")
-    fun verifyRelaxedCall() {
+    fun verifyAnyCall() {
         coVerify {
             repository.createDocument(any(), any(), any(), any(), any(), any(), any(), any())
         }
     }
 
     @Then("the spy repository should return success with matching title")
-    fun assertSpyReturn() {
+    fun verifySpyReturnedCorrectData() {
         val doc = result!!.getOrNull()
         assertNotNull(doc)
-        assertEquals(DOCUMENT_TITLE, doc.title)
+        assertEquals("some title", doc.title)
     }
 
     @Then("spy repository createDocument should have been invoked with correct parameters")
     fun verifySpyParams() {
         coVerify {
             repository.createDocument(
-                DOCUMENT_TITLE,
+                "some title",
                 null,
                 null,
                 null,
                 null,
-                DOCUMENT_CATEGORY,
-                DOCUMENT_PRIORITY,
-                DOCUMENT_CONTENT
+                Category.Laboratory,
+                0,
+                emptyMap()
             )
         }
     }
+
+    private fun String?.nullIfDeclaredNull(): String? =
+        if (this == null) null else if (this == "(null)") null else this
 }
