@@ -25,3 +25,8 @@ local.properties
 /.idea/vcs.xml
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/deviceManager.xml
+/fuzz-artifacts
+/fuzz-corpus
+/fuzz-results
+Crash_*
+/.idea

@@ -34,6 +34,7 @@ androidxTest = "1.7.0"
 desugar = "2.0.4"
 extJunit = "1.3.0"
 uiAutomator = "2.2.0"
+jazzer = "0.28.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -135,6 +136,9 @@ hamcrest = { group = "org.hamcrest", name = "hamcrest", version.ref = "hamcrest"
 # Cucumber Android
 cucumber-android = { group = "io.cucumber", name = "cucumber-android", version.ref = "cucumber" }
 cucumber-picocontainer = { group = "io.cucumber", name = "cucumber-picocontainer", version.ref = "cucumber" }
+
+# Jazzer
+jazzer-unit = { group = "com.code-intelligence", name = "jazzer-junit", version.ref = "jazzer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

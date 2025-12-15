@@ -18,6 +18,8 @@ class ValidateUserCredentialsUseCaseImpl @Inject constructor() :
     ValidateUserCredentialsUseCase {
 
     override suspend fun execute(input: ValidateUserCredentialsUseCase.Params): ValidateResult {
+//        for fuzzing
+//        val firstChar = input.email[0]
 
         if (input.email.isBlank() ||
             !input.email.isEmail()

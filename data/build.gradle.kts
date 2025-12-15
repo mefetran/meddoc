@@ -111,10 +111,52 @@ dependencies {
     androidTestImplementation(libs.kotest.assertions.core)
     coreLibraryDesugaring(libs.android.tools.desugar)
 
+    testImplementation(libs.jazzer.unit)
+
 //    pitest("org.pitest:pitest-junit5-plugin:1.2.3")
 //    pitest("com.arcmutate:pitest-kotlin-plugin:1.5.0")
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.register("printTestClasspathFiles") {
+    doLast {
+        val paths = mutableSetOf<String>()
+
+        // Test classes
+        paths.add("${project.buildDir}/tmp/kotlin-classes/debugUnitTest")
+        paths.add("${project.buildDir}/intermediates/javac/debugUnitTest/classes")
+
+        // Main classes
+        paths.add("${project.buildDir}/tmp/kotlin-classes/debug")
+        paths.add("${project.buildDir}/intermediates/javac/debug/classes")
+
+        // Domain classes
+        val domainProject = project(":domain")
+        val domainPaths = listOf(
+            "${domainProject.buildDir}/classes/kotlin/main",
+            "${domainProject.buildDir}/tmp/kotlin-classes/main",
+            "${domainProject.buildDir}/tmp/kotlin-classes/debug"
+        )
+        domainPaths.forEach { path ->
+            if (File(path).exists()) {
+                paths.add(path)
+            }
+        }
+
+        // Get dependencies
+        try {
+            configurations.getByName("testCompileClasspath").files.forEach { file ->
+                if (file.exists()) {
+                    paths.add(file.absolutePath)
+                }
+            }
+        } catch (e: Exception) {
+
+        }
+
+        println(paths.filter { File(it).exists() }.joinToString(":"))
+    }
 }
