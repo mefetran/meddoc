@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.detekt)
+//    id("jacoco")
 //    kotlin("jvm")
 //    id("info.solidsoft.pitest") version "1.19.0-rc.2"
     kotlin("kapt")
@@ -15,6 +17,38 @@ plugins {
 //
 //    threads.set(4)
 //    outputFormats.set(listOf("HTML"))
+//}
+
+detekt {
+    source.setFrom(
+        files(
+            "src/main/kotlin",
+            "src/main/java",
+            "src/test/java",
+            "src/test/kotlin",
+            "src/androidTest/kotlin",
+        )
+    )
+    buildUponDefaultConfig = true
+    config.setFrom("$projectDir/config/detekt.yml")
+    reports {
+        html.required.set(true)
+        html.outputLocation.set(file("build/reports/detekt/detekt_composeApp.html"))
+
+        xml.required.set(true)
+        txt.required.set(false)
+        sarif.required.set(false)
+    }
+}
+
+
+//sonarqube {
+//    properties {
+//        property("sonar.sources", "src/main/java,src/main/kotlin")
+//        property("sonar.tests", "src/test/java,src/test/kotlin")
+//        property("sonar.exclusions", "**/R.class,**/R\$*.class,**/BuildConfig.*,**/Manifest*.*")
+//        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+//    }
 //}
 
 android {

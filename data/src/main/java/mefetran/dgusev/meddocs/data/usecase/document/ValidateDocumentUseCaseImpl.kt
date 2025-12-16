@@ -22,6 +22,10 @@ const val ERROR_DATE_MUST_BE_IN_FORMAT = "Date must be in format YYYY-MM-DD"
 class ValidateDocumentUseCaseImpl @Inject constructor() : ValidateDocumentUseCase {
 
     override suspend fun execute(input: ValidateDocumentUseCase.Params): ValidateResult {
+
+//      for fuzzing
+//        val year = input.date!![0].digitToInt()
+
         if (input.title.isBlank()) {
             return ValidateResult.Error(ERROR_TITLE_CANNOT_BE_BLANK)
         }

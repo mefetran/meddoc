@@ -6,9 +6,43 @@ plugins {
     alias(libs.plugins.google.protobuf)
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.detekt)
+//    id("jacoco")
     kotlin("kapt")
     id("realm-android")
 }
+
+detekt {
+    source.setFrom(
+        files(
+            "src/main/kotlin",
+            "src/main/java",
+            "src/test/java",
+            "src/test/kotlin",
+            "src/androidTest/kotlin",
+        )
+    )
+    buildUponDefaultConfig = true
+//    config.setFrom("$projectDir/config/detekt.yml")
+//    reports {
+//        html.required.set(true)
+//        html.outputLocation.set(file("build/reports/detekt/detekt_composeApp.html"))
+//
+//        xml.required.set(true)
+//        txt.required.set(false)
+//        sarif.required.set(false)
+//    }
+}
+
+//sonarqube {
+//    properties {
+//        property("sonar.sources", "src/main/java,src/main/kotlin")
+//        property("sonar.tests", "src/test/java,src/test/kotlin")
+////        property("sonar.gradle.scanAll", true)
+//        property("sonar.exclusions", "**/R.class,**/R\$*.class,**/BuildConfig.*,**/Manifest*.*")
+//        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+//    }
+//}
 
 android {
     namespace = "mefetran.dgusev.meddocs"
@@ -73,6 +107,8 @@ protobuf {
 }
 
 dependencies {
+    detektPlugins(libs.detekt.formatting)
+
     // Domain and Data module
     implementation(project(":domain"))
     implementation(project(":data"))
