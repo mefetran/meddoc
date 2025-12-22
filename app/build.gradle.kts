@@ -50,13 +50,14 @@ android {
 
     defaultConfig {
         applicationId = "mefetran.dgusev.meddocs"
-        testApplicationId = "mefetran.dgusev.meddocs.test"
+//        testApplicationId = "mefetran.dgusev.meddocs.test"
         minSdk = 29
         targetSdk = 36
         versionCode = 1
         versionName = "0.0.1"
 
-        testInstrumentationRunner = "io.cucumber.android.runner.CucumberAndroidJUnitRunner"
+//        testInstrumentationRunner = "io.cucumber.android.runner.CucumberAndroidJUnitRunner"
+        testInstrumentationRunner = "mefetran.dgusev.meddocs.HiltTestRunner"
 
         sourceSets {
             getByName("androidTest").assets.srcDirs("src/androidTest/assets")
@@ -87,6 +88,14 @@ android {
     // Just want to try it
     androidResources {
         localeFilters.addAll(setOf("en", "ru"))
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            merges += "META-INF/LICENSE.md"
+            merges += "META-INF/LICENSE-notice.md"
+        }
     }
 }
 
@@ -182,6 +191,13 @@ dependencies {
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.hamcrest)
 
+    androidTestImplementation(libs.junit4)
+    androidTestImplementation(libs.mockk)
+    androidTestImplementation(libs.ultron.compose)
+
+    androidTestImplementation(libs.kaspresso)
+    androidTestImplementation(libs.kaspresso.compose)
+
     androidTestImplementation(libs.cucumber.android)
     androidTestImplementation(libs.androidx.compose.ui.test.junit)
     androidTestImplementation(libs.androidx.compose.ui.test.manifest)
@@ -192,4 +208,8 @@ dependencies {
     kspAndroidTest(libs.hilt.android.compiler)
     androidTestImplementation(libs.cucumber.picocontainer)
     coreLibraryDesugaring(libs.android.tools.desugar)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

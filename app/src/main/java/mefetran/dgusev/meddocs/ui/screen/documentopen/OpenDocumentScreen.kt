@@ -74,7 +74,9 @@ internal fun OpenDocumentScreen(
 
     Surface(
         color = MaterialTheme.colorScheme.surface,
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .testTag("OpenDocumentScreenTag")
+            .fillMaxSize(),
     ) {
         when (state.isError) {
             true -> {

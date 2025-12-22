@@ -31,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
@@ -102,7 +103,9 @@ internal fun SignUpScreen(
 
                         onNewEmailValue(newTextFieldValue)
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .testTag("emailTestTag")
+                        .fillMaxWidth(),
                     label = {
                         Text(
                             text = "${stringResource(id = R.string.email_label)}*",
@@ -111,7 +114,8 @@ internal fun SignUpScreen(
                     supportingText = {
                         if (state.isEmailError) {
                             Text(
-                                text = stringResource(id = R.string.error_invalid_email)
+                                text = stringResource(id = R.string.error_invalid_email),
+                                modifier = Modifier.testTag("emailErrorSignUpTag")
                             )
                         }
                     },
@@ -139,7 +143,9 @@ internal fun SignUpScreen(
 
                         onNewPasswordValue(newTextFieldValue)
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .testTag("passwordTestTag")
+                        .fillMaxWidth(),
                     label = {
                         Text(
                             text = "${stringResource(id = R.string.password_label)}*",
@@ -148,7 +154,8 @@ internal fun SignUpScreen(
                     supportingText = {
                         if (state.isPasswordShortError) {
                             Text(
-                                text = stringResource(id = R.string.error_short_password)
+                                text = stringResource(id = R.string.error_short_password),
+                                modifier = Modifier.testTag("passwordErrorSignUpTag")
                             )
                         }
                     },
@@ -206,6 +213,7 @@ internal fun SignUpScreen(
                     onSignUp()
                 },
                 modifier = Modifier
+                    .testTag("createAccountButtonTag")
                     .padding(all = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp)

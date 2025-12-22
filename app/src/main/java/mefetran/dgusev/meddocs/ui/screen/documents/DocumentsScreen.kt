@@ -58,7 +58,9 @@ internal fun DocumentsScreen(
                     bottom = safePaddings.calculateBottomPadding()
                 ),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .testTag("documentsTag")
+                    .fillMaxSize(),
             ) {
                 item {
                     ScreenTitle(
@@ -77,6 +79,7 @@ internal fun DocumentsScreen(
                         date = item.date,
                         category = item.category,
                         description = item.description,
+                        modifier = Modifier.testTag("doc_${item.id}"),
                         onClick = {
                             onNavigateToOpenDocument(item.id)
                         }

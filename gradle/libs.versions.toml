@@ -3,7 +3,10 @@ agp = "8.12.1"
 kotlin = "2.2.10"
 coreKtx = "1.17.0"
 junit4 = "4.13.2"
-junit5 = "6.0.1"
+#junit5 = "6.0.1"
+junit5 = "5.9.3"
+junit5Plugin = "1.14.0.0"
+junitPlatform = "1.9.3"
 espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.9.2"
 activityCompose = "1.10.1"
@@ -37,6 +40,8 @@ uiAutomator = "2.2.0"
 jazzer = "0.28.0"
 sonarqube = "7.2.1.6560"
 detekt = "1.23.8"
+ultron = "2.6.2"
+kaspresso = "1.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -121,7 +126,7 @@ junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit5" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit5" }
 junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params", version.ref = "junit5" }
-junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junit5" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junitPlatform" }
 junit-vintage-engine = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junit5" }
 
 # Mockk
@@ -143,8 +148,14 @@ cucumber-picocontainer = { group = "io.cucumber", name = "cucumber-picocontainer
 jazzer-unit = { group = "com.code-intelligence", name = "jazzer-junit", version.ref = "jazzer" }
 
 # Detekt formatting
-
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+
+# Ultron
+ultron-compose = { group = "com.atiurin", name = "ultron-compose", version.ref = "ultron" }
+
+# Kaspresso
+kaspresso = { group = "com.kaspersky.android-components", name = "kaspresso", version.ref = "kaspresso" }
+kaspresso-compose = { group = "com.kaspersky.android-components", name = "kaspresso-compose-support", version.ref = "kaspresso" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -166,3 +177,6 @@ sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 
 # Detekt
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+
+# JUnit 5
+junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "junit5Plugin" }

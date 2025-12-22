@@ -214,7 +214,7 @@ internal fun SignInScreen(
     }
 
     if (state.isLoading) {
-        LoadingScreen()
+        LoadingScreen(Modifier.testTag("loadingScreenTag"))
     }
 }
 

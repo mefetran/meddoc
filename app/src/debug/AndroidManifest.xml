@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application tools:ignore="MissingApplicationIcon">
+        <activity
+            android:name="mefetran.dgusev.meddocs.HiltTestActivity"
+            android:exported="false">
+        </activity>
+    </application>
+
+</manifest>

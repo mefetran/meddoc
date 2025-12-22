@@ -48,7 +48,7 @@ import mefetran.dgusev.meddocs.ui.theme.MeddocsTheme
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     private val appViewModel: AppViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
