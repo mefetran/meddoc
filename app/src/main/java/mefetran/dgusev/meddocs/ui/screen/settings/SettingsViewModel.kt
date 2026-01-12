@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import mefetran.dgusev.meddocs.app.datastore.defaultSettings
+import mefetran.dgusev.meddocs.app.datastore.withBiometric
 import mefetran.dgusev.meddocs.app.datastore.withLanguage
 import mefetran.dgusev.meddocs.app.datastore.withTheme
 import mefetran.dgusev.meddocs.domain.usecase.document.DeleteAllDocumentsLocalUseCase
@@ -44,6 +45,7 @@ class SettingsViewModel @Inject constructor(
                         useSystemTheme = settings.darkThemeSettings.useSystemSettings,
                         useDarkTheme = settings.darkThemeSettings.useDarkTheme,
                         currentLanguageCode = settings.currentLanguageCode,
+                        isBiometricEnabled = settings.securitySettings.biometricEnabled,
                     )
                 }
             }
@@ -80,6 +82,12 @@ class SettingsViewModel @Inject constructor(
             deleteUserUseCase.execute(Unit)
             settingsDataStore.updateData { defaultSettings() }
             _uiEvents.emit(SettingsEvent.SignIn)
+        }
+    }
+
+    fun selectBiometric(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsDataStore.updateData { it.withBiometric(enabled) }
         }
     }
 }

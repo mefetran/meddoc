@@ -4,4 +4,5 @@ data class SettingsState(
     val useDarkTheme: Boolean = true,
     val useSystemTheme: Boolean = true,
     val currentLanguageCode: String = "en",
+    val isBiometricEnabled: Boolean = false,
 )

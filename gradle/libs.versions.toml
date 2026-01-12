@@ -42,6 +42,7 @@ sonarqube = "7.2.1.6560"
 detekt = "1.23.8"
 ultron = "2.6.2"
 kaspresso = "1.6.0"
+biometric = "1.4.0-alpha02"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -156,6 +157,9 @@ ultron-compose = { group = "com.atiurin", name = "ultron-compose", version.ref =
 # Kaspresso
 kaspresso = { group = "com.kaspersky.android-components", name = "kaspresso", version.ref = "kaspresso" }
 kaspresso-compose = { group = "com.kaspersky.android-components", name = "kaspresso-compose-support", version.ref = "kaspresso" }
+
+# AndroidX Biometric
+androidx-biometric-ktx = { group = "androidx.biometric", name = "biometric-ktx", version.ref = "biometric" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

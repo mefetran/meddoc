@@ -1,8 +1,10 @@
 package mefetran.dgusev.meddocs.ui.screen.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -11,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -35,6 +38,8 @@ internal fun SettingsScreen(
     onThemeOptionClick: (ThemeOption) -> Unit,
     onLanguageOptionClick: (LanguageOption) -> Unit,
     onLogoutClick: () -> Unit,
+    onShowBiometricPrompt: () -> Unit,
+    onDisableBiometric: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val themesList = remember {
@@ -115,6 +120,25 @@ internal fun SettingsScreen(
                 },
                 onOptionClicked = onLanguageOptionClick,
             )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.use_biometric),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Spacer(Modifier.weight(1f))
+                Switch(
+                    checked = state.isBiometricEnabled,
+                    onCheckedChange = { checked ->
+                        when (checked) {
+                            true -> onShowBiometricPrompt()
+                            false -> onDisableBiometric()
+                        }
+                    }
+                )
+            }
             Spacer(Modifier.weight(1f))
             Button(
                 onClick = onLogoutClick,
@@ -140,7 +164,9 @@ internal fun SettingsScreenPreview() {
             state = SettingsState(currentLanguageCode = "ru"),
             onThemeOptionClick = {},
             onLanguageOptionClick = {},
-            onLogoutClick = {}
+            onLogoutClick = {},
+            onDisableBiometric = {},
+            onShowBiometricPrompt = {},
         )
     }
 }

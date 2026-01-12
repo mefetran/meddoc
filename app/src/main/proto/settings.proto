@@ -7,6 +7,7 @@ message Settings {
     DarkThemeSettings dark_theme_settings = 1;
     BearerTokens bearer_tokens = 2;
     string current_language_code = 3;
+    SecuritySettings security_settings = 4;
 }
 
 message DarkThemeSettings {
@@ -18,4 +19,10 @@ message BearerTokens {
     string access_token = 1;
     string refresh_token = 2;
     int64 timestamp_sec = 3;
+}
+
+message SecuritySettings {
+    bool pin_enabled = 1;
+    bool biometric_enabled = 2;
+    string pin = 3;
 }

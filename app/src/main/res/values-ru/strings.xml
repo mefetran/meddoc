@@ -63,4 +63,10 @@
     <string name="error_server">Ошибка сервера. Попробуйте позже. (%1$s)</string>
     <string name="error_network">Проблема с соединением. Проверьте интернет.</string>
     <string name="error_unknown">Неизвестная ошибка: %1$s</string>
+    <string name="create_pin">Создание пин-кода</string>
+    <string name="enter_pin">Введите пин-код</string>
+    <string name="incorrect_pin">Неправильный пин-код</string>
+    <string name="biometric_title">Биометрический вход</string>
+    <string name="biometric_subtitle">Войдите с помощью биометрических данных</string>
+    <string name="use_biometric">Использовать биометрию</string>
 </resources>

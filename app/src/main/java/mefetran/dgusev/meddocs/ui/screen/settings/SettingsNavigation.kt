@@ -11,12 +11,14 @@ import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 import mefetran.dgusev.meddocs.ui.components.ObserveAsEvents
 import mefetran.dgusev.meddocs.ui.components.model.ThemeOption
+import mefetran.dgusev.meddocs.ui.screen.pin.model.BiometricAuthenticator
 import mefetran.dgusev.meddocs.ui.screen.settings.model.SettingsEvent
 
 @Serializable
 internal data object Settings
 
 fun NavGraphBuilder.settingsDestination(
+    biometricAuthenticator: BiometricAuthenticator,
     onNavigateToSignIn: () -> Unit,
 ) {
     composable<Settings> {
@@ -60,7 +62,20 @@ fun NavGraphBuilder.settingsDestination(
                     settingsViewModel.selectLanguage(languageOption.languageCode)
                 }
             },
-            onLogoutClick = settingsViewModel::logout
+            onLogoutClick = settingsViewModel::logout,
+            onShowBiometricPrompt = {
+                biometricAuthenticator.authenticate(
+                    onSuccess = {
+                        settingsViewModel.selectBiometric(true)
+                    },
+                    onError = {
+                        settingsViewModel.selectBiometric(false)
+                    }
+                )
+            },
+            onDisableBiometric = {
+                settingsViewModel.selectBiometric(false)
+            }
         )
     }
 }

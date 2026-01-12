@@ -219,7 +219,7 @@ class SignUpViewModel @Inject constructor(
                         .onSuccess { bearerTokens ->
                             settingsDataStore.updateData { settings ->
                                 settings.withBearerToken(tokenPair = bearerTokens)
-                            }.also { _uiEvents.tryEmit(SignUpUiEvent.SignUp) }
+                            }.also { _uiEvents.emit(SignUpUiEvent.SignUp) }
                             stopLoading()
                         }
                         .onFailure { singInException ->

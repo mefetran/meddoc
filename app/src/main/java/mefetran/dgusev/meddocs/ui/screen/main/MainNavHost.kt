@@ -29,11 +29,13 @@ import mefetran.dgusev.meddocs.ui.components.model.BottomNavigationDataItem
 import mefetran.dgusev.meddocs.ui.screen.documents.Documents
 import mefetran.dgusev.meddocs.ui.screen.documents.documentsDestination
 import mefetran.dgusev.meddocs.ui.screen.home.homeDestination
+import mefetran.dgusev.meddocs.ui.screen.pin.model.BiometricAuthenticator
 import mefetran.dgusev.meddocs.ui.screen.settings.Settings
 import mefetran.dgusev.meddocs.ui.screen.settings.settingsDestination
 
 @Composable
 internal fun MainNavHost(
+    biometricAuthenticator: BiometricAuthenticator,
     onNavigateToSignIn: () -> Unit,
     onNavigateToCreateDocument: () -> Unit,
     onNavigateToOpenDocument: (String) -> Unit
@@ -43,11 +45,6 @@ internal fun MainNavHost(
     val navController = rememberNavController()
     val bottomNavigationDataItems = remember {
         listOf(
-//            BottomNavigationDataItem(
-//                localizedName = R.string.nav_home,
-//                route = Home,
-//                icon = Icons.Default.Home,
-//            ),
             BottomNavigationDataItem(
                 localizedName = R.string.nav_documents,
                 route = Documents,
@@ -107,7 +104,10 @@ internal fun MainNavHost(
             modifier = Modifier.padding(innerPadding)
         ) {
             homeDestination()
-            settingsDestination(onNavigateToSignIn = onNavigateToSignIn)
+            settingsDestination(
+                biometricAuthenticator = biometricAuthenticator,
+                onNavigateToSignIn = onNavigateToSignIn
+            )
             documentsDestination(
                 onNavigateToCreateDocument = onNavigateToCreateDocument,
                 onNavigateToOpenDocument = onNavigateToOpenDocument,

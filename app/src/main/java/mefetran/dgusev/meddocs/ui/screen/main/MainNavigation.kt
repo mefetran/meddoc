@@ -6,12 +6,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
+import mefetran.dgusev.meddocs.ui.screen.pin.model.BiometricAuthenticator
 import mefetran.dgusev.meddocs.ui.screen.signin.SignIn
 
 @Serializable
 internal data object Main
 
 fun NavGraphBuilder.mainDestination(
+    biometricAuthenticator: BiometricAuthenticator,
     onNavigateToSignIn: () -> Unit,
     onNavigateToCreateDocument: () -> Unit,
     onNavigateToOpenDocument: (String) -> Unit
@@ -31,6 +33,7 @@ fun NavGraphBuilder.mainDestination(
         },
     ) {
         MainNavHost(
+            biometricAuthenticator = biometricAuthenticator,
             onNavigateToSignIn = onNavigateToSignIn,
             onNavigateToCreateDocument = onNavigateToCreateDocument,
             onNavigateToOpenDocument = onNavigateToOpenDocument

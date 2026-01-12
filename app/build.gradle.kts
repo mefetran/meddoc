@@ -118,6 +118,9 @@ protobuf {
 dependencies {
     detektPlugins(libs.detekt.formatting)
 
+    // AndroidX Biometric
+    implementation(libs.androidx.biometric.ktx)
+
     // Domain and Data module
     implementation(project(":domain"))
     implementation(project(":data"))

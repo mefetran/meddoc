@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import mefetran.dgusev.meddocs.app.datastore.isBlank
 import mefetran.dgusev.meddocs.domain.usecase.user.GetUserUseCase
 import mefetran.dgusev.meddocs.token.TokenManager
 import mefetran.dgusev.meddocs.proto.Settings
@@ -42,17 +43,33 @@ class AppViewModel @Inject constructor(
         loadInitSettings()
     }
 
+    fun unlockApp() {
+        _state.update { it.copy(isAppLocked = false) }
+    }
+
+    fun lockApp() {
+        _state.update {
+            if (it.isPinEnabled) it.copy(isAppLocked = true)
+            else it
+        }
+    }
+
     private fun loadInitSettings() {
         runBlocking {
             tokenManager.checkAndUpdateToken()
             val user = getUserUseCase.execute(Unit)
             val settings = settingsDataStore.data.first()
 
+            val isAuthorized = !settings.bearerTokens.isBlank()
+
             _state.update {
                 AppState(
                     darkThemeSettings = settings.darkThemeSettings,
                     bearerTokens = settings.bearerTokens,
                     user = user,
+                    isPinEnabled = settings.securitySettings.pinEnabled,
+                    isBiometricEnabled = settings.securitySettings.biometricEnabled,
+                    isAppLocked = isAuthorized && settings.securitySettings.pinEnabled,
                 )
             }
 
@@ -65,16 +82,21 @@ class AppViewModel @Inject constructor(
         viewModelScope.launch {
             tokenManager.getTokenInvalidationEmitterFlow().collect {
                 _uiEvents.emit(AppEvent.SignIn)
+                _state.update { it.copy(isAppLocked = false) }
             }
         }
     }
 
     private suspend fun collectSettings() {
         settingsDataStore.data.flowOn(dispatcher).collectLatest { currentSettings ->
+            val isAuthorized = !currentSettings.bearerTokens.isBlank()
             _state.update {
                 it.copy(
                     darkThemeSettings = currentSettings.darkThemeSettings,
                     bearerTokens = currentSettings.bearerTokens,
+                    isPinEnabled = currentSettings.securitySettings.pinEnabled,
+                    isBiometricEnabled = currentSettings.securitySettings.biometricEnabled,
+                    isAppLocked = isAuthorized && currentSettings.securitySettings.pinEnabled,
                 )
             }
         }

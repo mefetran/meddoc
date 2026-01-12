@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -39,6 +38,10 @@ import mefetran.dgusev.meddocs.ui.screen.documentopen.openDocumentDestination
 import mefetran.dgusev.meddocs.ui.screen.main.Main
 import mefetran.dgusev.meddocs.ui.screen.main.mainDestination
 import mefetran.dgusev.meddocs.ui.screen.main.navigateToMain
+import mefetran.dgusev.meddocs.ui.screen.pin.Pin
+import mefetran.dgusev.meddocs.ui.screen.pin.model.BiometricAuthenticator
+import mefetran.dgusev.meddocs.ui.screen.pin.navigateToCreatePin
+import mefetran.dgusev.meddocs.ui.screen.pin.pinDestination
 import mefetran.dgusev.meddocs.ui.screen.signin.SignIn
 import mefetran.dgusev.meddocs.ui.screen.signin.navigateToSignIn
 import mefetran.dgusev.meddocs.ui.screen.signin.signInDestination
@@ -63,6 +66,17 @@ class MainActivity : BaseActivity() {
             val navController = rememberNavController()
             val snackbarHostState = remember { SnackbarHostState() }
             val scope = rememberCoroutineScope()
+            val biometricAuthenticator = remember { BiometricAuthenticator(this) }
+            val startDestination = remember {
+                when {
+                    appViewModel.state.value.bearerTokens.isBlank() &&
+                            appViewModel.state.value.user == null -> SignIn
+
+                    appViewModel.state.value.isAppLocked -> Pin(false)
+
+                    else -> Main
+                }
+            }
 
             ObserveAsEvents(flow = appViewModel.uiEvents) { event ->
                 when (event) {
@@ -95,19 +109,32 @@ class MainActivity : BaseActivity() {
                 Box(modifier = Modifier.fillMaxSize()) {
                     NavHost(
                         navController = navController,
-                        startDestination = if (state.bearerTokens.isBlank() && state.user == null) SignIn else Main
+                        startDestination = startDestination
                     ) {
+                        pinDestination(
+                            biometricEnabled = state.isBiometricEnabled && biometricAuthenticator.canAuthenticate(),
+                            biometricAuthenticator = biometricAuthenticator,
+                            onPinSuccessUnlock = {
+                                appViewModel.unlockApp()
+                                navController.navigateToMain()
+                            },
+                            onPinSuccessCreate = {
+                                appViewModel.unlockApp()
+                                navController.navigateToMain()
+                            }
+                        )
                         signInDestination(
-                            onNavigateToMain = navController::navigateToMain,
+                            onNavigateToCreatePin = navController::navigateToCreatePin,
                             onNavigateToSignUp = navController::navigateToSignUp,
                         )
                         signUpDestination(
-                            onNavigateToMain = navController::navigateToMain,
+                            onNavigateToCreatePin = navController::navigateToCreatePin,
                             onBackClicked = {
                                 navController.popBackStack()
                             },
                         )
                         mainDestination(
+                            biometricAuthenticator = biometricAuthenticator,
                             onNavigateToSignIn = navController::navigateToSignIn,
                             onNavigateToCreateDocument = navController::navigateToCreateDocument,
                             onNavigateToOpenDocument = navController::navigateToOpenDocument,

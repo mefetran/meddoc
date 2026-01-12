@@ -21,7 +21,7 @@ import mefetran.dgusev.meddocs.ui.screen.signup.model.SignUpUiEvent
 internal data object SignUp
 
 fun NavGraphBuilder.signUpDestination(
-    onNavigateToMain: () -> Unit,
+    onNavigateToCreatePin: () -> Unit,
     onBackClicked: () -> Unit,
 ) {
     composable<SignUp>(
@@ -49,7 +49,7 @@ fun NavGraphBuilder.signUpDestination(
         ObserveAsEvents(flow = signUpViewModel.uiEvents) { event ->
             when (event) {
                 SignUpUiEvent.SignUp -> {
-                    onNavigateToMain()
+                    onNavigateToCreatePin()
                 }
 
                 is SignUpUiEvent.ShowSnackbarRes -> {

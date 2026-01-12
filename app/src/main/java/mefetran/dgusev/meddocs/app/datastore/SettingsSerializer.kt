@@ -10,6 +10,7 @@ import com.google.protobuf.InvalidProtocolBufferException
 import mefetran.dgusev.meddocs.domain.model.TokenPair
 import mefetran.dgusev.meddocs.proto.BearerTokens
 import mefetran.dgusev.meddocs.proto.DarkThemeSettings
+import mefetran.dgusev.meddocs.proto.SecuritySettings
 import mefetran.dgusev.meddocs.proto.Settings
 import java.io.InputStream
 import java.io.OutputStream
@@ -61,7 +62,30 @@ fun Settings.withBearerToken(tokenPair: TokenPair): Settings = this
         this.bearerTokens.toBuilder()
             .setAccessToken(tokenPair.accessToken)
             .setRefreshToken(tokenPair.refreshToken)
-            .setTimestampSec(System.currentTimeMillis() / 1000 + (tokenPair.expiresInSec - 60).coerceAtLeast(0))
+            .setTimestampSec(
+                System.currentTimeMillis() / 1000 + (tokenPair.expiresInSec - 60).coerceAtLeast(
+                    0
+                )
+            )
+            .build()
+    )
+    .build()
+
+fun Settings.withPin(newPin: String): Settings = this
+    .toBuilder()
+    .setSecuritySettings(
+        this.securitySettings.toBuilder()
+            .setPin(newPin)
+            .setPinEnabled(true)
+            .build()
+    )
+    .build()
+
+fun Settings.withBiometric(enabled: Boolean): Settings = this
+    .toBuilder()
+    .setSecuritySettings(
+        this.securitySettings.toBuilder()
+            .setBiometricEnabled(enabled)
             .build()
     )
     .build()
@@ -84,6 +108,17 @@ fun defaultSettings(): Settings = Settings
             .setTimestampSec(System.currentTimeMillis() / 1000)
             .build()
     )
+    .setSecuritySettings(
+        SecuritySettings
+            .newBuilder()
+            .setPinEnabled(false)
+            .setBiometricEnabled(false)
+            .setPin("")
+            .build()
+    )
     .build()
 
 fun BearerTokens.isBlank() = this.accessToken.isNullOrBlank() && this.refreshToken.isNullOrBlank()
+
+val Settings.isPinEnabled get() = this.securitySettings.pinEnabled
+val Settings.isBiometricEnabled get() = this.securitySettings.biometricEnabled

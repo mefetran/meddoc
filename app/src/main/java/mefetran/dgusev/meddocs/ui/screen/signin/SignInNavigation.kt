@@ -25,7 +25,7 @@ internal data object SignIn : RouteName {
 }
 
 fun NavGraphBuilder.signInDestination(
-    onNavigateToMain: () -> Unit,
+    onNavigateToCreatePin: () -> Unit,
     onNavigateToSignUp: () -> Unit,
 ) {
     composable<SignIn>(
@@ -58,7 +58,7 @@ fun NavGraphBuilder.signInDestination(
         ObserveAsEvents(flow = signInViewModel.uiEvents) { event ->
             when (event) {
                 SignInUiEvent.SignIn -> {
-                    onNavigateToMain()
+                    onNavigateToCreatePin()
                 }
 
                 is SignInUiEvent.ShowSnackbarRes -> {
